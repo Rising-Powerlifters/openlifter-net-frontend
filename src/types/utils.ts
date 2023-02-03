@@ -29,7 +29,7 @@ import { AgeCoefficients, Flight, Formula, Lift, Sex } from "./dataTypes";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function checkExhausted(value: never): void {}
 
-// Convenience function to narrow a variables type down to a string
+// Convenience function to narrow a variable's type down to a string.
 export function isString(value: any): value is string {
   return typeof value === "string";
 }
@@ -43,9 +43,14 @@ export function assertString(value: any): value is string {
   return result;
 }
 
-// Throws an error if value isn't a number, narrows the type if it is.
+// Convenience function to narrow a variable's type to a finite number.
+export function isNumber(value: any): value is number {
+  return typeof value === "number" && isFinite(value);
+}
+
+// Throws an error if value isn't a finite number, narrows the type if it is.
 export function assertNumber(value: any): value is number {
-  const result = typeof value === "number";
+  const result = isNumber(value);
   if (!result) {
     throw new Error(`Expected a number, but got ${value}`);
   }
