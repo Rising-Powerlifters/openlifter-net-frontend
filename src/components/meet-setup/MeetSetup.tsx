@@ -117,7 +117,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
     const stringIPFGLPoints = getString("formula.ipf-gl-points", language);
     const stringIPFPoints = getString("formula.ipf-points", language);
     const stringNASAPoints = getString("formula.nasa-points", language);
-    // const stringReshel = getString("formula.reshel", language);
+    const stringReshel = getString("formula.reshel", language);
     const stringSchwartzMalone = getString("formula.schwartz-malone", language);
     const stringTotal = getString("formula.total", language);
     const stringWilks = getString("formula.wilks", language);
@@ -215,6 +215,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                     <option value="IPF GL Points">{stringIPFGLPoints}</option>
                     <option value="IPF Points">{stringIPFPoints}</option>
                     <option value="NASA Points">{stringNASAPoints}</option>
+                    <option value="Reshel">{stringReshel}</option>
                     <option value="Schwartz/Malone">{stringSchwartzMalone}</option>
                     <option value="Total">{stringTotal}</option>
                     <option value="Wilks">{stringWilks}</option>
