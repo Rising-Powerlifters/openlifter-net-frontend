@@ -42,7 +42,6 @@ import { PointsCategory, PointsCategoryResults } from "../../logic/pointsPlace";
 import { AgeCoefficients, Entry, Formula, Language, Sex } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
 import { checkExhausted } from "../../types/utils";
-import { fosterMcCulloch } from "../../logic/coefficients/foster-mcculloch";
 
 interface StateProps {
   inKg: boolean;
@@ -275,8 +274,10 @@ class ByPoints extends React.Component<Props> {
         switch (this.props.ageCoefficients) {
           case "None":
             return true;
-          case "FosterMcCulloch": // No bump at 40, but they're considered Masters.
-            return e.age >= 40 || fosterMcCulloch(e.age) !== 1.0;
+          case "FosterMcCulloch":
+            // McCulloch has no bump at 40, but they're considered Masters.
+            // Likewise, Foster has no bump at 23, but they're considered Juniors.
+            return e.age <= 23 || e.age >= 40;
           default:
             checkExhausted(this.props.ageCoefficients);
             return true;
