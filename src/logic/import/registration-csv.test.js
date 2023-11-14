@@ -238,3 +238,16 @@ describe("loadRegistrations", () => {
     expect(typeof entries).toEqual("object");
   });
 });
+
+describe("loadRegistrations", () => {
+  it("should ignore rows where every field is empty", () => {
+    const example = makeExampleRegistrationsCsv("en");
+    const csv = new Csv().fromString(example);
+
+    const emptyRow = Array(csv.fieldnames.length).fill("");
+    csv.rows.push(emptyRow);
+
+    const entries = loadRegistrations(makeState("en"), csv, "en");
+    expect(typeof entries).toEqual("object");
+  });
+});

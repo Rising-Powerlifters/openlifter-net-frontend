@@ -220,6 +220,11 @@ export const loadRegistrations = (state: GlobalState, csv: Csv, language: Langua
 
   // The fieldnames are valid! Now we can start building Entries.
   for (let i = 0; i < csv.rows.length; ++i) {
+    // Ignore the row if every field is empty.
+    if (csv.rows[i].every((val) => val === "")) {
+      continue;
+    }
+
     const entry: Entry = newDefaultEntry(nextEntryId++);
     entries.push(entry);
 

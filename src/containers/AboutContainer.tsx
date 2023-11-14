@@ -84,6 +84,7 @@ class AboutContainer extends React.Component<{}> {
                     <li>Giulio Maschi &mdash; Italian localization</li>
                     <li>Trystan Oakley &mdash; Testing</li>
                     <li>Matt Pearce &mdash; Coefficient calculations</li>
+                    <li>César Pedraza &mdash; Programming</li>
                     <li>Laura Rettig &mdash; German localization</li>
                     <li>Jaak Ruusmaa &mdash; Estonian localization</li>
                     <li>David Sacras &mdash; Portuguese localization</li>
