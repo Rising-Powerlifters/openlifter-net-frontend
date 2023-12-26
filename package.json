@@ -35,10 +35,10 @@
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "set CI=true && react-scripts --openssl-legacy-provider build",
-    "test": "react-scripts --openssl-legacy-provider test",
+    "test": "react-scripts test",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
     "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src/",
-    "eject": "react-scripts --openssl-legacy-provider eject",
+    "eject": "react-scripts eject",
     "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-pack": "build -c.extraMetadata.main=build/electron.js",
     "preelectron-pack": "yarn build",
