@@ -81,5 +81,5 @@ clean:
 # Remove everything that could possibly carry implicit state between builds.
 .PHONY: veryclean
 veryclean: clean
+	yarn run test --clearCache; true # Remove the Jest cache in /tmp/jest_rs.
 	rm -rf node_modules # Upgrading a package doesn't remove the old version.
-	yarn run test -- --clearCache # Remove the Jest cache in /tmp/jest_rs.
