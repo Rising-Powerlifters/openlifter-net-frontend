@@ -19,7 +19,7 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import OpenLifterIntlProvider from "./components/translations/OpenLifterIntlProvider";
 
@@ -53,40 +53,22 @@ class App extends React.Component {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <OpenLifterIntlProvider>
-            <Router basename={process.env.REACT_APP_ROUTER_BASENAME}>
+            <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASENAME}>
               <div>
                 <Navigation />
-                <Switch>
-                  <Route exact path="/">
-                    <RootContainer />
-                  </Route>
-                  <Route path="/meet-setup">
-                    <MeetSetupContainer />
-                  </Route>
-                  <Route path="/registration">
-                    <RegistrationContainer />
-                  </Route>
-                  <Route path="/weigh-ins">
-                    <WeighinsContainer />
-                  </Route>
-                  <Route path="/flight-order">
-                    <FlightOrderContainer />
-                  </Route>
-                  <Route path="/lifting">
-                    <LiftingContainer />
-                  </Route>
-                  <Route path="/results">
-                    <ResultsContainer />
-                  </Route>
-                  <Route path="/debug">
-                    <DebugContainer />
-                  </Route>
-                  <Route path="/about">
-                    <AboutContainer />
-                  </Route>
-                </Switch>
+                <Routes>
+                  <Route path="/" element={<RootContainer />} />
+                  <Route path="/meet-setup" element={<MeetSetupContainer />} />
+                  <Route path="/registration" element={<RegistrationContainer />} />
+                  <Route path="/weigh-ins" element={<WeighinsContainer />} />
+                  <Route path="/flight-order" element={<FlightOrderContainer />} />
+                  <Route path="/lifting" element={<LiftingContainer />} />
+                  <Route path="/results" element={<ResultsContainer />} />
+                  <Route path="/debug" element={<DebugContainer />} />
+                  <Route path="/about" element={<AboutContainer />} />
+                </Routes>
               </div>
-            </Router>
+            </BrowserRouter>
           </OpenLifterIntlProvider>
         </PersistGate>
       </Provider>
