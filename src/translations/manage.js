@@ -32,7 +32,7 @@ const { strings } = require("./strings.js");
 const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
-const rimraf = require("rimraf");
+const { rimrafSync } = require('rimraf');
 const parser = require("typescript-react-intl").default;
 const manageTranslations = require("react-intl-translations-manager").default;
 const { readMessageFiles, getDefaultMessages } = require("react-intl-translations-manager");
@@ -88,5 +88,5 @@ extractTranslations(EXTRACT_MESSAGE_FILE_PATTERN, function (messages) {
     },
   });
 
-  rimraf.sync(TEMP_DIR);
+  rimrafSync(TEMP_DIR);
 });
