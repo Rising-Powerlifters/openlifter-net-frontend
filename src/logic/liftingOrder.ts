@@ -148,7 +148,7 @@ export const compareEntriesByAttempt = (a: Entry, b: Entry, fieldKg: FieldKg, at
 export const orderEntriesByAttempt = (
   entries: Array<Entry>,
   fieldKg: FieldKg,
-  attemptOneIndexed: number
+  attemptOneIndexed: number,
 ): Array<Entry> => {
   return entries.sort((a, b) => {
     return compareEntriesByAttempt(a, b, fieldKg, attemptOneIndexed);
@@ -159,7 +159,7 @@ export const orderEntriesByAttempt = (
 const orderEntriesForAttempt = (
   entriesInFlight: Array<Entry>,
   lifting: LiftingState,
-  attemptOneIndexed: number
+  attemptOneIndexed: number,
 ): Array<Entry> => {
   const lift = lifting.lift;
   const fieldKg = liftToAttemptFieldName(lift);
@@ -209,7 +209,7 @@ const orderEntriesForAttempt = (
 const getCurrentEntryId = (
   lifting: LiftingState,
   orderedEntries: Array<Entry>,
-  attemptOneIndexed: number
+  attemptOneIndexed: number,
 ): number | null => {
   const lift = lifting.lift;
   const fieldKg = liftToAttemptFieldName(lift);
@@ -245,7 +245,7 @@ const getNextEntryInfo = (
   lifting: LiftingState,
   currentEntryId: number | null,
   orderedEntries: Array<Entry>,
-  attemptOneIndexed: number
+  attemptOneIndexed: number,
 ): NextEntryInfo | null => {
   const lift = lifting.lift;
   const fieldKg = liftToAttemptFieldName(lift);

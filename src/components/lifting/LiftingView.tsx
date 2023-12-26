@@ -153,7 +153,7 @@ const mapStateToProps = (state: GlobalState): StateProps => {
   const flight = state.lifting.flight;
 
   const entriesOnPlatform = state.registration.entries.filter(
-    (entry) => entry.day === day && entry.platform === platform
+    (entry) => entry.day === day && entry.platform === platform,
   );
 
   // Determine available flights from the entries themselves.
