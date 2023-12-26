@@ -57,15 +57,33 @@ class App extends React.Component {
               <div>
                 <Navigation />
                 <Switch>
-                  <Route exact path="/" component={RootContainer} />
-                  <Route path="/meet-setup" component={MeetSetupContainer} />
-                  <Route path="/registration" component={RegistrationContainer} />
-                  <Route path="/weigh-ins" component={WeighinsContainer} />
-                  <Route path="/flight-order" component={FlightOrderContainer} />
-                  <Route path="/lifting" component={LiftingContainer} />
-                  <Route path="/results" component={ResultsContainer} />
-                  <Route path="/debug" component={DebugContainer} />
-                  <Route path="/about" component={AboutContainer} />
+                  <Route exact path="/">
+                    <RootContainer />
+                  </Route>
+                  <Route path="/meet-setup">
+                    <MeetSetupContainer />
+                  </Route>
+                  <Route path="/registration">
+                    <RegistrationContainer />
+                  </Route>
+                  <Route path="/weigh-ins">
+                    <WeighinsContainer />
+                  </Route>
+                  <Route path="/flight-order">
+                    <FlightOrderContainer />
+                  </Route>
+                  <Route path="/lifting">
+                    <LiftingContainer />
+                  </Route>
+                  <Route path="/results">
+                    <ResultsContainer />
+                  </Route>
+                  <Route path="/debug">
+                    <DebugContainer />
+                  </Route>
+                  <Route path="/about">
+                    <AboutContainer />
+                  </Route>
                 </Switch>
               </div>
             </Router>
