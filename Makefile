@@ -78,6 +78,8 @@ clean:
 	$(MAKE) -C website clean
 	cd src-tauri && cargo clean || true
 
+# Remove everything that could possibly carry implicit state between builds.
 .PHONY: veryclean
 veryclean: clean
-	rm -rf node_modules
+	rm -rf node_modules # Upgrading a package doesn't remove the old version.
+	yarn run test -- --clearCache # Remove the Jest cache in /tmp/jest_rs.
