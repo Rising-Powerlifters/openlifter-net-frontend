@@ -34,7 +34,7 @@
   "main": "public/electron.js",
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "set CI=false && react-scripts --openssl-legacy-provider build",
+    "build": "CI=false react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
     "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src/",
