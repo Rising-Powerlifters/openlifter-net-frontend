@@ -53,12 +53,12 @@ release-web: build
 build: build-deps
 	yarn run build
 
-# Overwrites settings in package.json to allow the Beta site's Router
+# Overwrites settings in package.json to allow the Latest site's Router
 # to function correctly when deployed in production.
-.PHONY: apply-beta-basename
-apply-beta-basename:
-	sed -i 's;"homepage": "./";"homepage": "https://www.openlifter.com/releases/beta/";' package.json
-	sed -i 's;"router_basename": "/";"router_basename": "/releases/beta/";' package.json
+.PHONY: apply-latest-basename
+apply-latest-basename:
+	sed -i 's;"homepage": "./";"homepage": "https://www.openlifter.com/releases/latest/";' package.json
+	sed -i 's;"router_basename": "/";"router_basename": "/releases/latest/";' package.json
 
 # Runs JS tests.
 .PHONY: test

@@ -188,21 +188,6 @@ class HomeContainer extends React.Component<Props, InternalState> {
       newMeetButton = <LinkContainer to="/meet-setup">{newMeetButton}</LinkContainer>;
     }
 
-    const isBeta: boolean = releaseVersion.includes("eta");
-    let betaWarning = null;
-    if (isBeta === true) {
-      betaWarning = (
-        <h3>
-          <p>
-            <FormattedMessage
-              id="home.beta-warning"
-              defaultMessage="This is the in-development, next version of OpenLifter. The internal data format is unstable. Do not use this to run competitions!"
-            />
-          </p>
-        </h3>
-      );
-    }
-
     const wrongVersion: boolean = this.props.redux.versions.stateVersion !== stateVersion;
     const dataReleaseVersion = this.props.redux.versions.releaseVersion;
 
@@ -238,7 +223,6 @@ class HomeContainer extends React.Component<Props, InternalState> {
 
         <Card.Header>
           <img alt="OpenLifter" src="openlifter.svg" />
-          {betaWarning}
         </Card.Header>
 
         <Card.Body>

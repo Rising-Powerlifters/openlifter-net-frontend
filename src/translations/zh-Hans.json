@@ -107,7 +107,6 @@
   "formula.total": "总成绩",
   "formula.wilks": "维京系数 (Wilks)",
   "formula.wilks2020": "维京系数2020",
-  "home.beta-warning": "这是正在开发的 OpenLifter 下一版。这里的数据形式可能会出错。不要在比赛里使用这个版本！",
   "home.button-continue": "继续 {meetName}",
   "home.button-credits": "鸣谢与版权",
   "home.button-load-from-file": "读取文件",

@@ -1,6 +1,6 @@
 {
   "name": "openlifter",
-  "version": "beta",
+  "version": "1.4",
   "homepage": "./",
   "router_basename": "/",
   "author": "Sean Stangl <sean.stangl@gmail.com>",

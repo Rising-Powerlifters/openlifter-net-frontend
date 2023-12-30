@@ -107,7 +107,6 @@
   "formula.total": "Сумма",
   "formula.wilks": "Вилкс",
   "formula.wilks2020": "Wilks2020",
-  "home.beta-warning": "Это новая версия OpenLifter в разработке. Внутренний формат данных нестабилен. Не используйте её для запуска соревнований!",
   "home.button-continue": "Продолжить {meetName}",
   "home.button-credits": "Благодарности и лицензия",
   "home.button-load-from-file": "Загрузить из Документа",
