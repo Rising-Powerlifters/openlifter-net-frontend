@@ -99,7 +99,7 @@ const addEntriesRow = (
   entry: Entry,
   index: number,
 ) => {
-  const unit: string = inKg ? "Kg" : "LBS";
+  const unit: string = inKg ? "Kg" : "Lbs";
   const finalEventTotalKg = getFinalEventTotalKg(entry, category.event);
 
   // Helper functions to keep things one-liners below. Handles Kg/Lbs conversion.
@@ -173,7 +173,7 @@ const addEntriesRow = (
 
 const makeEntriesCsv = (state: GlobalState): Csv => {
   const inKg: boolean = state.meet.inKg;
-  const unit: string = inKg ? "Kg" : "LBS";
+  const unit: string = inKg ? "Kg" : "Lbs";
 
   const csv = new Csv();
 
