@@ -99,7 +99,7 @@ const addEntriesRow = (
   entry: Entry,
   index: number,
 ) => {
-  const unit: string = inKg ? "Kg" : "Lbs";
+  const unit: string = inKg ? "Kg" : "LBS";
   const finalEventTotalKg = getFinalEventTotalKg(entry, category.event);
 
   // Helper functions to keep things one-liners below. Handles Kg/Lbs conversion.
