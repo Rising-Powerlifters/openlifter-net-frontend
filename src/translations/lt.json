@@ -58,7 +58,7 @@
   "error.csv-field-suffix-sex-invalid": "galimos lytis yra {M}, {F}, ir {Mx}.",
   "error.csv-field-unknown-boolean": "tikėtasi '{Yes}', '{No}', arba tuščias laukas.",
   "error.csv-missing-header": "Privalomas stulpelis {name} nerastas.",
-  "error.csv-unknown-header": "Nežinoma antraštė  {name} {ABC} stulpelyje. Galimi stulpelių pavadinimai: {validList}.",
+  "error.csv-unknown-header": "Nežinoma antraštė {name} {ABC} stulpelyje. Galimi stulpelių pavadinimai: {validList}.",
   "error.internal-error": "Netikėta vidinė klaida.",
   "error.invalid-openlifter": "Nepanašu, kad tai OpenLifter failas.",
   "error.meetname-mismatch": "Šios varžybos užvadintos '{thisName}', bet pasirinktas failas yra varžyboms pavadinimu '{otherName}'. Saugumo sumetimais, norint sujungti duomenis, pavadinimai turi sutapti.",
