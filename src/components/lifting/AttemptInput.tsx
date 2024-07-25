@@ -18,151 +18,151 @@
 
 // An editable component for attempt manipulation in the LiftingContent.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Form from "react-bootstrap/Form";
+import Form from 'react-bootstrap/Form'
 
-import { liftToAttemptFieldName, liftToStatusFieldName } from "../../logic/entry";
-import { enterAttempt } from "../../actions/liftingActions";
-import { kg2lbs, lbs2kg, string2number, displayWeight } from "../../logic/units";
+import { liftToAttemptFieldName, liftToStatusFieldName } from '../../logic/entry'
+import { enterAttempt } from '../../actions/liftingActions'
+import { kg2lbs, lbs2kg, string2number, displayWeight } from '../../logic/units'
 
-import { Entry, Language, Lift, Validation } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
+import { Entry, Language, Lift, Validation } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
 
-import styles from "./LiftingTable.module.scss";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import styles from './LiftingTable.module.scss'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  inKg: boolean;
-  language: Language;
+  inKg: boolean
+  language: Language
 }
 
 interface OwnProps {
-  entry: Entry;
-  lift: Lift;
-  attemptOneIndexed: number;
-  id: string;
+  entry: Entry
+  lift: Lift
+  attemptOneIndexed: number
+  id: string
 }
 
-type Props = StateProps & OwnProps;
+type Props = StateProps & OwnProps
 
 interface InternalState {
-  lastGoodValue: string;
-  value: string;
+  lastGoodValue: string
+  value: string
 }
 
 class AttemptInput extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validate = this.validate.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    this.validate = this.validate.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleBlur = this.handleBlur.bind(this)
 
-    const fieldKg = liftToAttemptFieldName(this.props.lift);
-    const weightKg: number = this.props.entry[fieldKg][this.props.attemptOneIndexed - 1];
+    const fieldKg = liftToAttemptFieldName(this.props.lift)
+    const weightKg: number = this.props.entry[fieldKg][this.props.attemptOneIndexed - 1]
 
-    let weightStr = "";
+    let weightStr = ''
     if (weightKg !== 0) {
-      weightStr = displayWeight(this.props.inKg ? weightKg : kg2lbs(weightKg), this.props.language);
+      weightStr = displayWeight(this.props.inKg ? weightKg : kg2lbs(weightKg), this.props.language)
     }
 
     this.state = {
       lastGoodValue: weightStr,
-      value: weightStr,
-    };
+      value: weightStr
+    }
   }
 
   enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
-    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
-  };
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg))
+  }
 
   validate = (): Validation => {
-    let { value } = this.state;
-    if (value === "") return null;
+    let { value } = this.state
+    if (value === '') return null
 
     // Allow use of commas as decimal separator.
-    value = value.replace(",", ".");
+    value = value.replace(',', '.')
 
     // Handle all errors before all warnings.
     // Check that the input is a number.
-    const asNumber = Number(value);
-    if (isNaN(asNumber)) return "error";
-    if (!isFinite(asNumber)) return "error";
-    if (asNumber < 0) return "error";
+    const asNumber = Number(value)
+    if (isNaN(asNumber)) return 'error'
+    if (!isFinite(asNumber)) return 'error'
+    if (asNumber < 0) return 'error'
 
     // The bar weight must be monotonically increasing between attempts.
     if (this.props.attemptOneIndexed > 1) {
-      const asKg = this.props.inKg ? asNumber : lbs2kg(asNumber);
+      const asKg = this.props.inKg ? asNumber : lbs2kg(asNumber)
 
-      const entry = this.props.entry;
-      const fieldKg = liftToAttemptFieldName(this.props.lift);
-      const fieldStatus = liftToStatusFieldName(this.props.lift);
+      const entry = this.props.entry
+      const fieldKg = liftToAttemptFieldName(this.props.lift)
+      const fieldStatus = liftToStatusFieldName(this.props.lift)
 
-      const prevAttemptOneIndexed = this.props.attemptOneIndexed - 1;
+      const prevAttemptOneIndexed = this.props.attemptOneIndexed - 1
 
       // Check for validity against all previous attempts.
       for (let i = 0; i < prevAttemptOneIndexed; ++i) {
-        const prevWeightKg = entry[fieldKg][i];
+        const prevWeightKg = entry[fieldKg][i]
 
         // Disallow this weight if it's a decrease from a previous attempt.
-        if (prevWeightKg > asKg) return "error";
+        if (prevWeightKg > asKg) return 'error'
 
         if (prevWeightKg === asKg) {
-          const prevStatus = entry[fieldStatus][i];
+          const prevStatus = entry[fieldStatus][i]
 
           // Disallow this weight if it was already successfully lifted.
-          if (prevStatus === 1) return "error";
+          if (prevStatus === 1) return 'error'
 
           // If the weight is a repeat but has no status, allow it, but complain.
-          if (prevStatus === 0) return "warning";
+          if (prevStatus === 0) return 'warning'
         }
       }
     }
 
-    if (asNumber % 2.5 !== 0) return "warning";
-    return null;
-  };
+    if (asNumber % 2.5 !== 0) return 'warning'
+    return null
+  }
 
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.currentTarget.blur();
+    if (event.key === 'Enter') {
+      event.currentTarget.blur()
     }
-  };
+  }
 
   handleChange = (event: React.BaseSyntheticEvent) => {
-    const value = event.currentTarget.value;
-    if (typeof value === "string") {
-      let fixups = value.replace(" ", "");
+    const value = event.currentTarget.value
+    if (typeof value === 'string') {
+      let fixups = value.replace(' ', '')
 
       // Dvorak "e" corresponds to QWERTY ".", but also is used in exponential
       // notation, which is a fairly impactful typo.
-      fixups = value.replace("e", ".");
+      fixups = value.replace('e', '.')
 
-      this.setState({ value: fixups });
+      this.setState({ value: fixups })
     }
-  };
+  }
 
   handleBlur = () => {
-    if (this.validate() === "error") {
-      this.setState({ value: this.state.lastGoodValue });
-      return;
+    if (this.validate() === 'error') {
+      this.setState({ value: this.state.lastGoodValue })
+      return
     }
 
-    const entryId = this.props.entry.id;
-    const lift = this.props.lift;
-    const attemptOneIndexed = this.props.attemptOneIndexed;
-    const asNumber = string2number(this.state.value);
-    const weightKg = this.props.inKg ? asNumber : lbs2kg(asNumber);
+    const entryId = this.props.entry.id
+    const lift = this.props.lift
+    const attemptOneIndexed = this.props.attemptOneIndexed
+    const asNumber = string2number(this.state.value)
+    const weightKg = this.props.inKg ? asNumber : lbs2kg(asNumber)
 
-    this.enterAttempt(entryId, lift, attemptOneIndexed, weightKg);
-    this.setState({ lastGoodValue: this.state.value });
-  };
+    this.enterAttempt(entryId, lift, attemptOneIndexed, weightKg)
+    this.setState({ lastGoodValue: this.state.value })
+  }
 
   render() {
-    const validation: Validation = this.validate();
+    const validation: Validation = this.validate()
 
     return (
       <Form.Group style={{ marginBottom: 0 }}>
@@ -175,19 +175,21 @@ class AttemptInput extends React.Component<Props, InternalState> {
           onChange={this.handleChange}
           onBlur={this.handleBlur}
           // Nothing for Valid == we don't want borders.
-          isInvalid={validation === "error"}
+          isInvalid={validation === 'error'}
           // Special rules in the _openlifter.scss override warning styles.
           // Makes the borders look normal but shows a yellow background.
-          className={(validation === "warning" ? "is-warning " : "") + styles.attemptInput + " attempt-input"}
+          className={
+            (validation === 'warning' ? 'is-warning ' : '') + styles.attemptInput + ' attempt-input'
+          }
         />
       </Form.Group>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   inKg: state.meet.inKg,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(AttemptInput);
+export default connect(mapStateToProps)(AttemptInput)

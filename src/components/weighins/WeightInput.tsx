@@ -21,128 +21,128 @@
 //
 // For consistency purposes, weights are always stored in kg.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import FormControl from "react-bootstrap/FormControl";
-import FormGroup from "react-bootstrap/FormGroup";
+import FormControl from 'react-bootstrap/FormControl'
+import FormGroup from 'react-bootstrap/FormGroup'
 
-import { updateRegistration } from "../../actions/registrationActions";
-import { enterAttempt } from "../../actions/liftingActions";
+import { updateRegistration } from '../../actions/registrationActions'
+import { enterAttempt } from '../../actions/liftingActions'
 
-import { liftToAttemptFieldName } from "../../logic/entry";
-import { kg2lbs, lbs2kg, string2number, displayWeight } from "../../logic/units";
+import { liftToAttemptFieldName } from '../../logic/entry'
+import { kg2lbs, lbs2kg, string2number, displayWeight } from '../../logic/units'
 
-import { Entry, Language, Lift, Validation } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
-import { assertString } from "../../types/utils";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Entry, Language, Lift, Validation } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
+import { assertString } from '../../types/utils'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface OwnProps {
-  id: number; // The EntryID.
+  id: number // The EntryID.
 
   // The valid type here should be all keys of Entry where the value is a number
   // Something like keyof<Partial> where (key,value) => typeof value === Number - if that is possible in typescript?
   // Otherwise manually specifying all the valid keys of Entry is a fair approach too!
-  field?: "bodyweightKg";
-  disabled: boolean;
+  field?: 'bodyweightKg'
+  disabled: boolean
 
   // Optional attributes used only for lifts (as opposed to for bodyweights).
-  placeholder?: string;
-  lift?: Lift;
-  attemptOneIndexed?: number;
-  multipleOf?: number;
+  placeholder?: string
+  lift?: Lift
+  attemptOneIndexed?: number
+  multipleOf?: number
 }
 
 interface StateProps {
-  inKg: boolean;
-  weightKg: number;
-  language: Language;
+  inKg: boolean
+  weightKg: number
+  language: Language
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 interface InternalState {
-  weightStr: string;
+  weightStr: string
 }
 
 class WeightInput extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    super(props)
+    this.validate = this.validate.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleBlur = this.handleBlur.bind(this)
 
-    let weight = this.props.weightKg;
+    let weight = this.props.weightKg
     if (!this.props.inKg) {
-      weight = kg2lbs(weight);
+      weight = kg2lbs(weight)
     }
 
     // Internal state, for purposes of validation.
     // To avoid confusion (auto-rounding) when typing, just store a String.
     this.state = {
       // Prefer displaying an empty string to 0.0.
-      weightStr: weight === 0.0 ? "" : displayWeight(weight, props.language),
-    };
+      weightStr: weight === 0.0 ? '' : displayWeight(weight, props.language)
+    }
   }
 
   updateRegistration = (entryId: number, obj: Partial<Entry>) => {
-    rpcDispatch(updateRegistration(entryId, obj));
-  };
+    rpcDispatch(updateRegistration(entryId, obj))
+  }
 
   enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
-    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
-  };
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg))
+  }
 
   validate = (): Validation => {
-    const weightNum = string2number(this.state.weightStr);
-    if (isNaN(weightNum) || weightNum < 0) return "error";
+    const weightNum = string2number(this.state.weightStr)
+    if (isNaN(weightNum) || weightNum < 0) return 'error'
     if (this.props.multipleOf !== undefined && weightNum % this.props.multipleOf !== 0.0) {
-      return "warning";
+      return 'warning'
     }
-    if (this.state.weightStr.length > 0) return "success";
-    return null;
-  };
+    if (this.state.weightStr.length > 0) return 'success'
+    return null
+  }
 
   // Update the internal state, used for validation.
   handleChange = (event: React.BaseSyntheticEvent) => {
-    const weightStr = event.currentTarget.value;
+    const weightStr = event.currentTarget.value
     if (assertString(weightStr)) {
-      this.setState({ weightStr: weightStr });
+      this.setState({ weightStr: weightStr })
     }
-  };
+  }
 
   // Update the Redux store.
   handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const weightNum = string2number(event.currentTarget.value);
+    const weightNum = string2number(event.currentTarget.value)
 
-    if (this.validate() === "error") {
-      return;
+    if (this.validate() === 'error') {
+      return
     }
 
-    const weightKg = this.props.inKg ? weightNum : lbs2kg(weightNum);
+    const weightKg = this.props.inKg ? weightNum : lbs2kg(weightNum)
     if (this.props.weightKg === weightKg) {
-      return;
+      return
     }
 
     // If "attempt" is set, a specific attempt is selected.
     if (this.props.attemptOneIndexed !== undefined && this.props.lift !== undefined) {
-      const attemptOneIndexed = this.props.attemptOneIndexed;
-      const lift = this.props.lift;
-      this.enterAttempt(this.props.id, lift, attemptOneIndexed, weightKg);
+      const attemptOneIndexed = this.props.attemptOneIndexed
+      const lift = this.props.lift
+      this.enterAttempt(this.props.id, lift, attemptOneIndexed, weightKg)
     } else if (this.props.field !== undefined) {
       // Otherwise, the field is a Number.
-      const newfields: Partial<Entry> = {};
-      newfields[this.props.field] = weightKg;
-      this.updateRegistration(this.props.id, newfields);
+      const newfields: Partial<Entry> = {}
+      newfields[this.props.field] = weightKg
+      this.updateRegistration(this.props.id, newfields)
     }
-  };
+  }
 
   render() {
     // FormGroup provides a default padding of 15, but FormGroup is only being
     // used here to accept a validationState. It's not really a group.
-    const undoDefaultPadding = { marginBottom: "0" };
-    const validation: Validation = this.validate();
+    const undoDefaultPadding = { marginBottom: '0' }
+    const validation: Validation = this.validate()
 
     return (
       <FormGroup style={undoDefaultPadding}>
@@ -153,37 +153,37 @@ class WeightInput extends React.Component<Props, InternalState> {
           value={this.state.weightStr}
           onChange={this.handleChange}
           onBlur={this.handleBlur}
-          isValid={validation === "success"}
-          isInvalid={validation === "error"}
-          className={validation === "warning" ? "is-warning" : undefined}
+          isValid={validation === 'success'}
+          isInvalid={validation === 'error'}
+          className={validation === 'warning' ? 'is-warning' : undefined}
         />
       </FormGroup>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => {
   // Only have props for the entry corresponding to this one row.
-  const lookup = state.registration.lookup;
-  const entry = state.registration.entries[lookup[ownProps.id]];
+  const lookup = state.registration.lookup
+  const entry = state.registration.entries[lookup[ownProps.id]]
 
   // If `field` is set, then read the Number from the given field name.
-  let weightKg = 0.0;
+  let weightKg = 0.0
   if (ownProps.field !== undefined) {
-    weightKg = entry[ownProps.field];
+    weightKg = entry[ownProps.field]
   } else if (ownProps.lift !== undefined && ownProps.attemptOneIndexed !== undefined) {
     // Otherwise, refer to a specific lift and attempt.
-    const lift = ownProps.lift;
-    const attemptOneIndexed = ownProps.attemptOneIndexed;
-    const field = liftToAttemptFieldName(lift);
-    weightKg = entry[field][attemptOneIndexed - 1];
+    const lift = ownProps.lift
+    const attemptOneIndexed = ownProps.attemptOneIndexed
+    const field = liftToAttemptFieldName(lift)
+    weightKg = entry[field][attemptOneIndexed - 1]
   }
 
   return {
     inKg: state.meet.inKg,
     weightKg: weightKg,
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
-export default connect(mapStateToProps)(WeightInput);
+export default connect(mapStateToProps)(WeightInput)

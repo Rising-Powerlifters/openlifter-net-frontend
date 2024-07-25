@@ -32,51 +32,51 @@
 //
 // Implementation taken from the main OpenPowerlifting repo, also AGPLv3+.
 
-import { Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
 function dotsPoly(a: number, b: number, c: number, d: number, e: number, x: number): number {
-  const x2 = x * x;
-  const x3 = x2 * x;
-  const x4 = x3 * x;
-  return 500.0 / (a * x4 + b * x3 + c * x2 + d * x + e);
+  const x2 = x * x
+  const x3 = x2 * x
+  const x4 = x3 * x
+  return 500.0 / (a * x4 + b * x3 + c * x2 + d * x + e)
 }
 
 export function dotsMen(bodyweightKg: number): number {
-  const A = -0.000001093;
-  const B = 0.0007391293;
-  const C = -0.1918759221;
-  const D = 24.0900756;
-  const E = -307.75076;
+  const A = -0.000001093
+  const B = 0.0007391293
+  const C = -0.1918759221
+  const D = 24.0900756
+  const E = -307.75076
 
-  const adjusted = Math.max(Math.min(bodyweightKg, 210.0), 40.0);
-  return dotsPoly(A, B, C, D, E, adjusted);
+  const adjusted = Math.max(Math.min(bodyweightKg, 210.0), 40.0)
+  return dotsPoly(A, B, C, D, E, adjusted)
 }
 
 export function dotsWomen(bodyweightKg: number): number {
-  const A = -0.0000010706;
-  const B = 0.0005158568;
-  const C = -0.1126655495;
-  const D = 13.6175032;
-  const E = -57.96288;
+  const A = -0.0000010706
+  const B = 0.0005158568
+  const C = -0.1126655495
+  const D = 13.6175032
+  const E = -57.96288
 
-  const adjusted = Math.max(Math.min(bodyweightKg, 150.0), 40.0);
-  return dotsPoly(A, B, C, D, E, adjusted);
+  const adjusted = Math.max(Math.min(bodyweightKg, 150.0), 40.0)
+  return dotsPoly(A, B, C, D, E, adjusted)
 }
 
 export const dots = (sex: Sex, bodyweightKg: number, totalKg: number): number => {
   if (bodyweightKg === 0 || totalKg === 0) {
-    return 0.0;
+    return 0.0
   }
 
   switch (sex) {
-    case "M":
-    case "Mx":
-      return dotsMen(bodyweightKg) * totalKg;
-    case "F":
-      return dotsWomen(bodyweightKg) * totalKg;
+    case 'M':
+    case 'Mx':
+      return dotsMen(bodyweightKg) * totalKg
+    case 'F':
+      return dotsWomen(bodyweightKg) * totalKg
     default:
-      checkExhausted(sex);
-      return 0;
+      checkExhausted(sex)
+      return 0
   }
-};
+}

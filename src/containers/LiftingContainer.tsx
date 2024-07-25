@@ -18,13 +18,13 @@
 
 // Container for the Lifting page.
 
-import React from "react";
-import LiftingView from "../components/lifting/LiftingView";
+import React from 'react'
+import LiftingView from '../components/lifting/LiftingView'
 
 class LiftingContainer extends React.Component<{}> {
   render() {
-    return <LiftingView />;
+    return <LiftingView />
   }
 }
 
-export default LiftingContainer;
+export default LiftingContainer

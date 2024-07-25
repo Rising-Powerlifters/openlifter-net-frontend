@@ -16,22 +16,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { ChangeLanguageAction, OverwriteStoreAction } from "../types/actionTypes";
-import { Language } from "../types/dataTypes";
-import { checkExhausted } from "../types/utils";
+import { ChangeLanguageAction, OverwriteStoreAction } from '../types/actionTypes'
+import { Language } from '../types/dataTypes'
+import { checkExhausted } from '../types/utils'
 
-type Action = ChangeLanguageAction | OverwriteStoreAction;
+type Action = ChangeLanguageAction | OverwriteStoreAction
 
-export default function languageReducer(state: Language = "en", action: Action): Language {
+export default function languageReducer(state: Language = 'en', action: Action): Language {
   switch (action.type) {
-    case "CHANGE_LANGUAGE":
-      return action.language;
+    case 'CHANGE_LANGUAGE':
+      return action.language
 
-    case "OVERWRITE_STORE":
-      return action.store.language;
+    case 'OVERWRITE_STORE':
+      return action.store.language
 
     default:
-      checkExhausted(action);
-      return state;
+      checkExhausted(action)
+      return state
   }
 }

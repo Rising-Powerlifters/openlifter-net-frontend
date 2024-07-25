@@ -16,78 +16,78 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { parseInteger, parseEvent, parseDate } from "./parsers";
+import { parseInteger, parseEvent, parseDate } from './parsers'
 
-describe("parseInteger", () => {
-  it("successfully parses integers", () => {
-    expect(parseInteger("0")).toEqual(0);
-    expect(parseInteger("1")).toEqual(1);
-    expect(parseInteger("3965")).toEqual(3965);
-    expect(parseInteger("-237")).toEqual(-237);
-  });
+describe('parseInteger', () => {
+  it('successfully parses integers', () => {
+    expect(parseInteger('0')).toEqual(0)
+    expect(parseInteger('1')).toEqual(1)
+    expect(parseInteger('3965')).toEqual(3965)
+    expect(parseInteger('-237')).toEqual(-237)
+  })
 
-  it("fails on floating-point numbers", () => {
-    expect(parseInteger("0.0")).toEqual(undefined);
-    expect(parseInteger("1.0")).toEqual(undefined);
-    expect(parseInteger("1.")).toEqual(undefined);
-    expect(parseInteger("-1.0")).toEqual(undefined);
-  });
+  it('fails on floating-point numbers', () => {
+    expect(parseInteger('0.0')).toEqual(undefined)
+    expect(parseInteger('1.0')).toEqual(undefined)
+    expect(parseInteger('1.')).toEqual(undefined)
+    expect(parseInteger('-1.0')).toEqual(undefined)
+  })
 
-  it("fails on non-numbers", () => {
-    expect(parseInteger("")).toEqual(undefined);
-    expect(parseInteger("--237")).toEqual(undefined);
-    expect(parseInteger("237-")).toEqual(undefined);
-    expect(parseInteger(" 237")).toEqual(undefined);
-    expect(parseInteger("23 7")).toEqual(undefined);
-    expect(parseInteger("kittens")).toEqual(undefined);
-    expect(parseInteger("0xCAFE")).toEqual(undefined);
-    expect(parseInteger("1..0")).toEqual(undefined);
-  });
-});
+  it('fails on non-numbers', () => {
+    expect(parseInteger('')).toEqual(undefined)
+    expect(parseInteger('--237')).toEqual(undefined)
+    expect(parseInteger('237-')).toEqual(undefined)
+    expect(parseInteger(' 237')).toEqual(undefined)
+    expect(parseInteger('23 7')).toEqual(undefined)
+    expect(parseInteger('kittens')).toEqual(undefined)
+    expect(parseInteger('0xCAFE')).toEqual(undefined)
+    expect(parseInteger('1..0')).toEqual(undefined)
+  })
+})
 
-describe("parseEvent", () => {
-  it("parses valid Events", () => {
-    expect(parseEvent("SBD")).toEqual("SBD");
-    expect(parseEvent("SB")).toEqual("SB");
-    expect(parseEvent("SD")).toEqual("SD");
-    expect(parseEvent("BD")).toEqual("BD");
-    expect(parseEvent("S")).toEqual("S");
-    expect(parseEvent("B")).toEqual("B");
-    expect(parseEvent("D")).toEqual("D");
-  });
+describe('parseEvent', () => {
+  it('parses valid Events', () => {
+    expect(parseEvent('SBD')).toEqual('SBD')
+    expect(parseEvent('SB')).toEqual('SB')
+    expect(parseEvent('SD')).toEqual('SD')
+    expect(parseEvent('BD')).toEqual('BD')
+    expect(parseEvent('S')).toEqual('S')
+    expect(parseEvent('B')).toEqual('B')
+    expect(parseEvent('D')).toEqual('D')
+  })
 
-  it("fails on invalid Events", () => {
-    expect(parseEvent("")).toEqual(undefined);
-    expect(parseEvent("floof")).toEqual(undefined);
-    expect(parseEvent("SSS")).toEqual(undefined);
-    expect(parseEvent("DMX")).toEqual(undefined);
-    expect(parseEvent("SBBD")).toEqual(undefined);
-    expect(parseEvent("DBS")).toEqual(undefined);
-    expect(parseEvent("DB")).toEqual(undefined);
-  });
-});
+  it('fails on invalid Events', () => {
+    expect(parseEvent('')).toEqual(undefined)
+    expect(parseEvent('floof')).toEqual(undefined)
+    expect(parseEvent('SSS')).toEqual(undefined)
+    expect(parseEvent('DMX')).toEqual(undefined)
+    expect(parseEvent('SBBD')).toEqual(undefined)
+    expect(parseEvent('DBS')).toEqual(undefined)
+    expect(parseEvent('DB')).toEqual(undefined)
+  })
+})
 
-describe("parseDate", () => {
-  it("parses valid Dates", () => {
-    expect(typeof parseDate("1999-01-05")).toEqual("string");
-    expect(typeof parseDate("2012-12-31")).toEqual("string");
-  });
+describe('parseDate', () => {
+  it('parses valid Dates', () => {
+    expect(typeof parseDate('1999-01-05')).toEqual('string')
+    expect(typeof parseDate('2012-12-31')).toEqual('string')
+  })
 
-  it("rejects malformed Dates", () => {
-    expect(typeof parseDate("19999-01-05")).toEqual("undefined");
-    expect(typeof parseDate("0000-01-05")).toEqual("undefined");
-    expect(typeof parseDate("1999-00-05")).toEqual("undefined");
-    expect(typeof parseDate("1999-01-00")).toEqual("undefined");
-    expect(typeof parseDate("1999-13-05")).toEqual("undefined");
-    expect(typeof parseDate("1999-01-52")).toEqual("undefined");
-    expect(typeof parseDate("999-01-52")).toEqual("undefined");
-    expect(typeof parseDate("1999-1-52")).toEqual("undefined");
-    expect(typeof parseDate("1999-01-5")).toEqual("undefined");
-  });
+  it('rejects malformed Dates', () => {
+    expect(typeof parseDate('19999-01-05')).toEqual('undefined')
+    expect(typeof parseDate('0000-01-05')).toEqual('undefined')
+    expect(typeof parseDate('1999-00-05')).toEqual('undefined')
+    expect(typeof parseDate('1999-01-00')).toEqual('undefined')
+    expect(typeof parseDate('1999-13-05')).toEqual('undefined')
+    expect(typeof parseDate('1999-01-52')).toEqual('undefined')
+    expect(typeof parseDate('999-01-52')).toEqual('undefined')
+    expect(typeof parseDate('1999-1-52')).toEqual('undefined')
+    expect(typeof parseDate('1999-01-5')).toEqual('undefined')
+  })
 
   // Dates of this kind are emitted by csvDate() in CSV files.
-  it("parses dates formatted to avoid Excel stupidity", () => {
-    expect(typeof parseDate("'1999-01-05")).toEqual("string");
-    expect(typeof parseDate("'2012-12-31")).toEqual("string");
-  });
-});
+  it('parses dates formatted to avoid Excel stupidity', () => {
+    expect(typeof parseDate("'1999-01-05")).toEqual('string')
+    expect(typeof parseDate("'2012-12-31")).toEqual('string')
+  })
+})

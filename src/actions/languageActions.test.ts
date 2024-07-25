@@ -16,15 +16,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as actions from "./languageActions";
+import * as actions from './languageActions'
 
-describe("actions", () => {
-  it("should create a change language action", () => {
-    const text = "eo";
+describe('actions', () => {
+  it('should create a change language action', () => {
+    const text = 'eo'
     const expectedAction = {
-      type: "CHANGE_LANGUAGE",
-      language: text,
-    };
-    expect(actions.changeLanguage(text)).toEqual(expectedAction);
-  });
-});
+      type: 'CHANGE_LANGUAGE',
+      language: text
+    }
+    expect(actions.changeLanguage(text)).toEqual(expectedAction)
+  })
+})

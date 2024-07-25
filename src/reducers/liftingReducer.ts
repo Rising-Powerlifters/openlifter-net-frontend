@@ -31,18 +31,18 @@ import {
   OverrideAttemptAction,
   OverrideEntryIdAction,
   OverwriteStoreAction,
-  SetTableInfoAction,
-} from "../types/actionTypes";
-import { LiftingState } from "../types/stateTypes";
-import { checkExhausted } from "../types/utils";
+  SetTableInfoAction
+} from '../types/actionTypes'
+import { LiftingState } from '../types/stateTypes'
+import { checkExhausted } from '../types/utils'
 
 const initialState: LiftingState = {
   // Specifies the initial settings for the control widgets on the lifting page.
   // The intention is that the score table sets these manually.
   day: 1,
   platform: 1,
-  flight: "A",
-  lift: "S",
+  flight: 'A',
+  lift: 'S',
 
   // These properties are normally calculated, but exist here as a mechanism
   // for a one-shot override of the normal logic. After being handled,
@@ -51,8 +51,8 @@ const initialState: LiftingState = {
   overrideEntryId: null, // Allows selecting a lifter, even if they've already gone.
 
   // Presentational configuration.
-  columnDivisionWidthPx: 90,
-};
+  columnDivisionWidthPx: 90
+}
 
 type Action =
   | MarkLiftAction
@@ -60,16 +60,19 @@ type Action =
   | OverrideAttemptAction
   | OverrideEntryIdAction
   | OverwriteStoreAction
-  | SetTableInfoAction;
+  | SetTableInfoAction
 
-export default function liftingReducer(state: LiftingState = initialState, action: Action): LiftingState {
+export default function liftingReducer(
+  state: LiftingState = initialState,
+  action: Action
+): LiftingState {
   switch (action.type) {
-    case "MARK_LIFT": {
+    case 'MARK_LIFT': {
       // Unset any overrides, returning to normal lifting flow.
-      return { ...state, overrideAttempt: null, overrideEntryId: null };
+      return { ...state, overrideAttempt: null, overrideEntryId: null }
     }
 
-    case "SET_LIFTING_GROUP":
+    case 'SET_LIFTING_GROUP':
       return {
         // Keep all the UI customization stuff.
         ...state,
@@ -82,27 +85,27 @@ export default function liftingReducer(state: LiftingState = initialState, actio
 
         // If the group changes, unset any overrides.
         overrideAttempt: null,
-        overrideEntryId: null,
-      };
+        overrideEntryId: null
+      }
 
-    case "OVERRIDE_ATTEMPT":
-      return { ...state, overrideAttempt: action.attempt };
+    case 'OVERRIDE_ATTEMPT':
+      return { ...state, overrideAttempt: action.attempt }
 
-    case "OVERRIDE_ENTRY_ID":
-      return { ...state, overrideEntryId: action.entryId };
+    case 'OVERRIDE_ENTRY_ID':
+      return { ...state, overrideEntryId: action.entryId }
 
-    case "OVERWRITE_STORE":
-      return action.store.lifting;
+    case 'OVERWRITE_STORE':
+      return action.store.lifting
 
-    case "SET_TABLE_INFO": {
-      const changes = action.changes;
+    case 'SET_TABLE_INFO': {
+      const changes = action.changes
 
       // As a safeguard, ensure that fields unrelated to customization
       // are not overwritten by this action.
 
       // Make a new object that's state + changes, with changes taking priority.
-      const combined = Object.assign({}, state);
-      Object.assign(combined, changes);
+      const combined = Object.assign({}, state)
+      Object.assign(combined, changes)
 
       // Source from this new combined object, with fields unrelated to customization
       // deferring to the original state.
@@ -120,12 +123,12 @@ export default function liftingReducer(state: LiftingState = initialState, actio
         lift: state.lift,
 
         overrideAttempt: state.overrideAttempt,
-        overrideEntryId: state.overrideEntryId,
-      };
+        overrideEntryId: state.overrideEntryId
+      }
     }
 
     default:
-      checkExhausted(action);
-      return state;
+      checkExhausted(action)
+      return state
   }
 }

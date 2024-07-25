@@ -139,19 +139,19 @@ const AGE_COEFFICIENTS = [
   2.962, // 97
   3.025, // 98
   3.089, // 99
-  3.154, // 100
-];
+  3.154 // 100
+]
 
 // Maps the given age into the table above.
 export const fosterMcCulloch = (age: number): number => {
   if (!Number.isInteger(age) || age <= 0) {
-    return 1.0;
+    return 1.0
   }
 
   // Greater-than is correct here: (age) is used to index into table, not (age-1).
   if (age > AGE_COEFFICIENTS.length) {
-    return 1.0;
+    return 1.0
   }
 
-  return AGE_COEFFICIENTS[age];
-};
+  return AGE_COEFFICIENTS[age]
+}

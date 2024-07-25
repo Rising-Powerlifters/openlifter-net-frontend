@@ -19,8 +19,8 @@
 // Defines the calculation of AH points, used by ParaPL.
 // Taken from https://gitlab.com/openpowerlifting/opl-data/blob/master/modules/coefficients/src/ah.rs
 
-import { Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
 // Calculates the AH coefficient for men.
 //
@@ -33,12 +33,12 @@ import { checkExhausted } from "../../types/utils";
 //  AM1: 3.2695
 //  AM2: 1.95
 function ahMen(bodyweightKg: number): number {
-  const AM1: number = 3.2695;
-  const AM2: number = 1.95;
+  const AM1: number = 3.2695
+  const AM2: number = 1.95
 
-  const adjusted = Math.min(Math.max(bodyweightKg, 32.0), 157.0);
+  const adjusted = Math.min(Math.max(bodyweightKg, 32.0), 157.0)
 
-  return AM1 / Math.pow(Math.log10(adjusted), AM2);
+  return AM1 / Math.pow(Math.log10(adjusted), AM2)
 }
 
 // Calculates the AH coefficient for women.
@@ -52,24 +52,24 @@ function ahMen(bodyweightKg: number): number {
 //  AG1: 2.7566
 //  AG10: 1.8
 function ahWomen(bodyweightKg: number): number {
-  const AG1: number = 2.7566;
-  const AG10: number = 1.8;
+  const AG1: number = 2.7566
+  const AG10: number = 1.8
 
-  const adjusted = Math.min(Math.max(bodyweightKg, 28.0), 112.0);
+  const adjusted = Math.min(Math.max(bodyweightKg, 28.0), 112.0)
 
-  return AG1 / Math.pow(Math.log10(adjusted), AG10);
+  return AG1 / Math.pow(Math.log10(adjusted), AG10)
 }
 
 // Calculates AH (Haleczko) points, used in ParaPL bench-only meets.
 export const ah = (sex: Sex, bodyweightKg: number, totalKg: number): number => {
   switch (sex) {
-    case "M":
-    case "Mx":
-      return ahMen(bodyweightKg) * totalKg;
-    case "F":
-      return ahWomen(bodyweightKg) * totalKg;
+    case 'M':
+    case 'Mx':
+      return ahMen(bodyweightKg) * totalKg
+    case 'F':
+      return ahWomen(bodyweightKg) * totalKg
     default:
-      checkExhausted(sex);
-      return 0;
+      checkExhausted(sex)
+      return 0
   }
-};
+}

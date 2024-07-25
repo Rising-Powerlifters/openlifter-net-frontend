@@ -18,19 +18,27 @@
 
 // Defines the calculation of Wilks 2020 points.
 
-import { Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
-function wilks2020Poly(a: number, b: number, c: number, d: number, e: number, f: number, x: number): number {
-  const x2 = x * x;
-  const x3 = x2 * x;
-  const x4 = x3 * x;
-  const x5 = x4 * x;
-  return 600.0 / (a + b * x + c * x2 + d * x3 + e * x4 + f * x5);
+function wilks2020Poly(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number,
+  x: number
+): number {
+  const x2 = x * x
+  const x3 = x2 * x
+  const x4 = x3 * x
+  const x5 = x4 * x
+  return 600.0 / (a + b * x + c * x2 + d * x3 + e * x4 + f * x5)
 }
 
 export function wilks2020Men(bodyweightKg: number): number {
-  const normalized = Math.min(Math.max(bodyweightKg, 40.0), 200.95);
+  const normalized = Math.min(Math.max(bodyweightKg, 40.0), 200.95)
   return wilks2020Poly(
     47.4617885411949,
     8.47206137941125,
@@ -38,12 +46,12 @@ export function wilks2020Men(bodyweightKg: number): number {
     -0.00139583381094385,
     0.00000707665973070743,
     -0.0000000120804336482315,
-    normalized,
-  );
+    normalized
+  )
 }
 
 export function wilks2020Women(bodyweightKg: number): number {
-  const normalized = Math.min(Math.max(bodyweightKg, 40.0), 150.95);
+  const normalized = Math.min(Math.max(bodyweightKg, 40.0), 150.95)
   return wilks2020Poly(
     -125.425539779509,
     13.7121941940668,
@@ -51,19 +59,19 @@ export function wilks2020Women(bodyweightKg: number): number {
     -0.0010504000506583,
     0.00000938773881462799,
     -0.000000023334613884954,
-    normalized,
-  );
+    normalized
+  )
 }
 
 export const wilks2020 = (sex: Sex, bodyweightKg: number, totalKg: number): number => {
   switch (sex) {
-    case "M":
-    case "Mx":
-      return wilks2020Men(bodyweightKg) * totalKg;
-    case "F":
-      return wilks2020Women(bodyweightKg) * totalKg;
+    case 'M':
+    case 'Mx':
+      return wilks2020Men(bodyweightKg) * totalKg
+    case 'F':
+      return wilks2020Women(bodyweightKg) * totalKg
     default:
-      checkExhausted(sex);
-      return 0;
+      checkExhausted(sex)
+      return 0
   }
-};
+}

@@ -21,31 +21,31 @@
 // strings in UTC time, and React widgets create Dates in local time.
 
 export const iso8601ToLocalDate = (s: string): Date => {
-  const [yearStr, monthStr, dayStr] = s.split("-");
+  const [yearStr, monthStr, dayStr] = s.split('-')
 
-  const year = parseInt(yearStr, 10);
-  const month = parseInt(monthStr, 10);
-  const day = parseInt(dayStr, 10);
+  const year = parseInt(yearStr, 10)
+  const month = parseInt(monthStr, 10)
+  const day = parseInt(dayStr, 10)
 
-  const d = new Date();
-  d.setFullYear(year, month - 1, day);
-  return d;
-};
+  const d = new Date()
+  d.setFullYear(year, month - 1, day)
+  return d
+}
 
 export const localDateToIso8601 = (d: Date): string => {
-  const year: number = d.getFullYear();
-  const month: number = d.getMonth() + 1;
-  const day: number = d.getDate();
+  const year: number = d.getFullYear()
+  const month: number = d.getMonth() + 1
+  const day: number = d.getDate()
 
-  const yearStr = String(year);
-  let monthStr = String(month);
+  const yearStr = String(year)
+  let monthStr = String(month)
   if (monthStr.length === 1) {
-    monthStr = "0" + monthStr;
+    monthStr = '0' + monthStr
   }
-  let dayStr = String(day);
+  let dayStr = String(day)
   if (dayStr.length === 1) {
-    dayStr = "0" + dayStr;
+    dayStr = '0' + dayStr
   }
 
-  return yearStr + "-" + monthStr + "-" + dayStr;
-};
+  return yearStr + '-' + monthStr + '-' + dayStr
+}

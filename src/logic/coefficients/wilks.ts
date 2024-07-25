@@ -19,24 +19,40 @@
 // Defines the calculation of Wilks points.
 // Taken from https://gitlab.com/openpowerlifting/ipf-points-calculator.
 
-import { Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
-function wilksPoly(a: number, b: number, c: number, d: number, e: number, f: number, x: number): number {
-  const x2 = x * x;
-  const x3 = x2 * x;
-  const x4 = x3 * x;
-  const x5 = x4 * x;
-  return 500.0 / (a + b * x + c * x2 + d * x3 + e * x4 + f * x5);
+function wilksPoly(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number,
+  x: number
+): number {
+  const x2 = x * x
+  const x3 = x2 * x
+  const x4 = x3 * x
+  const x5 = x4 * x
+  return 500.0 / (a + b * x + c * x2 + d * x3 + e * x4 + f * x5)
 }
 
 export function wilksMen(bodyweightKg: number): number {
-  const normalized = Math.min(Math.max(bodyweightKg, 40.0), 201.9);
-  return wilksPoly(-216.0475144, 16.2606339, -0.002388645, -0.00113732, 7.01863e-6, -1.291e-8, normalized);
+  const normalized = Math.min(Math.max(bodyweightKg, 40.0), 201.9)
+  return wilksPoly(
+    -216.0475144,
+    16.2606339,
+    -0.002388645,
+    -0.00113732,
+    7.01863e-6,
+    -1.291e-8,
+    normalized
+  )
 }
 
 export function wilksWomen(bodyweightKg: number): number {
-  const normalized = Math.min(Math.max(bodyweightKg, 26.51), 154.53);
+  const normalized = Math.min(Math.max(bodyweightKg, 26.51), 154.53)
   return wilksPoly(
     594.31747775582,
     -27.23842536447,
@@ -44,19 +60,19 @@ export function wilksWomen(bodyweightKg: number): number {
     -0.00930733913,
     0.00004731582,
     -0.00000009054,
-    normalized,
-  );
+    normalized
+  )
 }
 
 export const wilks = (sex: Sex, bodyweightKg: number, totalKg: number): number => {
   switch (sex) {
-    case "M":
-    case "Mx":
-      return wilksMen(bodyweightKg) * totalKg;
-    case "F":
-      return wilksWomen(bodyweightKg) * totalKg;
+    case 'M':
+    case 'Mx':
+      return wilksMen(bodyweightKg) * totalKg
+    case 'F':
+      return wilksWomen(bodyweightKg) * totalKg
     default:
-      checkExhausted(sex);
-      return 0;
+      checkExhausted(sex)
+      return 0
   }
-};
+}

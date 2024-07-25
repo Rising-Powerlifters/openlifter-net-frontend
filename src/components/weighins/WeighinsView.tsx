@@ -19,36 +19,36 @@
 // The parent component of the Weigh-ins page, contained by the WeighinsContainer.
 // The Weigh-ins page updates more information in the Registration state.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Card from "react-bootstrap/Card";
+import Card from 'react-bootstrap/Card'
 
-import { getLiftersOnDay } from "../../logic/entry";
-import LifterTable from "./LifterTable";
-import LifterRow from "./LifterRow";
+import { getLiftersOnDay } from '../../logic/entry'
+import LifterTable from './LifterTable'
+import LifterRow from './LifterRow'
 
-import { Entry } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
+import { Entry } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
 
 // For use when embedded inside the Lifting page.
 interface OwnProps {
-  day?: number;
-  platform?: number;
-  inLiftingPage?: boolean; // The weigh-ins page can be embedded.
+  day?: number
+  platform?: number
+  inLiftingPage?: boolean // The weigh-ins page can be embedded.
 }
 
 interface StateProps {
-  entries: ReadonlyArray<Entry>;
+  entries: ReadonlyArray<Entry>
 }
 
-type Props = Readonly<OwnProps> & Readonly<StateProps>;
+type Props = Readonly<OwnProps> & Readonly<StateProps>
 
 class WeighinsView extends React.Component<Props> {
   constructor(props: Props) {
-    super(props);
-    this.getNumDaysFromEntries = this.getNumDaysFromEntries.bind(this);
+    super(props)
+    this.getNumDaysFromEntries = this.getNumDaysFromEntries.bind(this)
   }
 
   // Figure out how many days there are by looking at the entries themselves.
@@ -59,43 +59,43 @@ class WeighinsView extends React.Component<Props> {
   //
   // This is an attempt to make that error more obvious, so it can be corrected.
   getNumDaysFromEntries = () => {
-    let max_day = 0;
-    const entries = this.props.entries;
+    let max_day = 0
+    const entries = this.props.entries
     for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i];
+      const entry = entries[i]
       if (entry.day > max_day) {
-        max_day = entry.day;
+        max_day = entry.day
       }
     }
-    return max_day;
-  };
+    return max_day
+  }
 
   render() {
     // Determine whether this is being shown embedded in the Lifting page.
-    const inLiftingPage = this.props.inLiftingPage === true;
+    const inLiftingPage = this.props.inLiftingPage === true
 
     // Make a separate panel for each day.
-    const numDays = this.getNumDaysFromEntries();
-    const dayCards = [];
+    const numDays = this.getNumDaysFromEntries()
+    const dayCards = []
     for (let i = 1; i <= numDays; i++) {
-      const lifters = getLiftersOnDay(this.props.entries, i);
+      const lifters = getLiftersOnDay(this.props.entries, i)
 
       // Skip if the OwnProps excluded this selection.
       if (lifters.length === 0) {
-        continue;
+        continue
       }
 
       // Present the lifters in sorted order.
       lifters.sort((a, b) => {
-        if (a.platform !== b.platform) return a.platform - b.platform;
-        if (a.flight !== b.flight) return a.flight < b.flight ? -1 : 1;
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      });
+        if (a.platform !== b.platform) return a.platform - b.platform
+        if (a.flight !== b.flight) return a.flight < b.flight ? -1 : 1
+        if (a.name < b.name) return -1
+        if (a.name > b.name) return 1
+        return 0
+      })
 
       dayCards.push(
-        <Card key={i} style={{ marginBottom: "17px" }}>
+        <Card key={i} style={{ marginBottom: '17px' }}>
           <Card.Header>
             <FormattedMessage
               id="weigh-ins.day-header"
@@ -106,8 +106,8 @@ class WeighinsView extends React.Component<Props> {
           <Card.Body>
             <LifterTable entries={lifters} rowRenderer={LifterRow} inLiftingPage={inLiftingPage} />
           </Card.Body>
-        </Card>,
-      );
+        </Card>
+      )
     }
 
     // If there are no days thus far, show a default warning panel.
@@ -115,7 +115,10 @@ class WeighinsView extends React.Component<Props> {
       dayCards.push(
         <Card key={0}>
           <Card.Header>
-            <FormattedMessage id="weigh-ins.empty-header" defaultMessage="Waiting for Registration" />
+            <FormattedMessage
+              id="weigh-ins.empty-header"
+              defaultMessage="Waiting for Registration"
+            />
           </Card.Header>
           <Card.Body>
             <FormattedMessage
@@ -123,24 +126,24 @@ class WeighinsView extends React.Component<Props> {
               defaultMessage="Add lifters on the Registration page before weighing them in."
             />
           </Card.Body>
-        </Card>,
-      );
+        </Card>
+      )
     }
 
-    return <div>{dayCards}</div>;
+    return <div>{dayCards}</div>
   }
 }
 
 const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => {
-  const { day, platform } = ownProps;
-  let entries = state.registration.entries;
+  const { day, platform } = ownProps
+  let entries = state.registration.entries
 
   // Filter if requested by the OwnProps.
-  if (typeof day === "number" && typeof platform === "number") {
-    entries = entries.filter((e) => e.day === day && e.platform === platform);
+  if (typeof day === 'number' && typeof platform === 'number') {
+    entries = entries.filter((e) => e.day === day && e.platform === platform)
   }
 
-  return { entries };
-};
+  return { entries }
+}
 
-export default connect(mapStateToProps)(WeighinsView);
+export default connect(mapStateToProps)(WeighinsView)

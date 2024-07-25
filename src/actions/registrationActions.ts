@@ -21,17 +21,17 @@ import {
   DeleteRegistrationAction,
   UpdateRegistrationAction,
   MergePlatformAction,
-  AssignLotNumbersAction,
-} from "../types/actionTypes";
-import { Entry } from "../types/dataTypes";
+  AssignLotNumbersAction
+} from '../types/actionTypes'
+import { Entry } from '../types/dataTypes'
 
 // Adds a blank (or default-initalized) row to the registrations table.
 export const newRegistration = (obj: Partial<Entry>): NewRegistrationAction => {
   return {
-    type: "NEW_REGISTRATION",
-    overwriteDefaults: obj,
-  };
-};
+    type: 'NEW_REGISTRATION',
+    overwriteDefaults: obj
+  }
+}
 
 // Deletes an existing entry from the registrations table.
 //
@@ -43,10 +43,10 @@ export const newRegistration = (obj: Partial<Entry>): NewRegistrationAction => {
 // The global ID from the deleted entry is not recycled.
 export const deleteRegistration = (entryId: number): DeleteRegistrationAction => {
   return {
-    type: "DELETE_REGISTRATION",
-    entryId: entryId,
-  };
-};
+    type: 'DELETE_REGISTRATION',
+    entryId: entryId
+  }
+}
 
 // Updates an existing entry in the registrations table.
 //
@@ -54,28 +54,35 @@ export const deleteRegistration = (entryId: number): DeleteRegistrationAction =>
 // simplicity, this is a general method that knows how to update the
 // existing entry object with whatever has changed, as passed
 // through object properties.
-export const updateRegistration = (entryId: number, obj: Partial<Entry>): UpdateRegistrationAction => {
+export const updateRegistration = (
+  entryId: number,
+  obj: Partial<Entry>
+): UpdateRegistrationAction => {
   return {
-    type: "UPDATE_REGISTRATION",
+    type: 'UPDATE_REGISTRATION',
     entryId: entryId,
-    changes: obj,
-  };
-};
+    changes: obj
+  }
+}
 
 // Deletes all entries assigned to a given (day, platform), and then adds entries
 // assigned to that (day, platform) from a foreign save state.
-export const mergePlatform = (day: number, platform: number, platformEntries: Array<Entry>): MergePlatformAction => {
+export const mergePlatform = (
+  day: number,
+  platform: number,
+  platformEntries: Array<Entry>
+): MergePlatformAction => {
   return {
-    type: "MERGE_PLATFORM",
+    type: 'MERGE_PLATFORM',
     day: day,
     platform: platform,
-    platformEntries: platformEntries,
-  };
-};
+    platformEntries: platformEntries
+  }
+}
 
 export const assignLotNumbers = (lotNumbers: number[]): AssignLotNumbersAction => {
   return {
-    type: "ASSIGN_LOT_NUMBERS",
-    lotNumbers,
-  };
-};
+    type: 'ASSIGN_LOT_NUMBERS',
+    lotNumbers
+  }
+}

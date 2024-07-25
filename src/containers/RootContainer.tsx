@@ -29,45 +29,45 @@
 // and the RootContainer inspects the GET parameters and renders the
 // appropriate container.
 
-import React from "react";
+import React from 'react'
 
-import HomeContainer from "./HomeContainer";
-import MeetSetupContainer from "./MeetSetupContainer";
-import RegistrationContainer from "./RegistrationContainer";
-import WeighinsContainer from "./WeighinsContainer";
-import LiftingContainer from "./LiftingContainer";
-import FlightOrderContainer from "./FlightOrderContainer";
-import ResultsContainer from "./ResultsContainer";
-import DebugContainer from "./DebugContainer";
-import AboutContainer from "./AboutContainer";
+import HomeContainer from './HomeContainer'
+import MeetSetupContainer from './MeetSetupContainer'
+import RegistrationContainer from './RegistrationContainer'
+import WeighinsContainer from './WeighinsContainer'
+import LiftingContainer from './LiftingContainer'
+import FlightOrderContainer from './FlightOrderContainer'
+import ResultsContainer from './ResultsContainer'
+import DebugContainer from './DebugContainer'
+import AboutContainer from './AboutContainer'
 
 class RootContainer extends React.Component {
   render() {
-    if (typeof window.location.search !== "string") {
-      return <HomeContainer />;
+    if (typeof window.location.search !== 'string') {
+      return <HomeContainer />
     }
 
     switch (window.location.search) {
-      case "?meet-setup":
-        return <MeetSetupContainer />;
-      case "?registration":
-        return <RegistrationContainer />;
-      case "?weigh-ins":
-        return <WeighinsContainer />;
-      case "?flight-order":
-        return <FlightOrderContainer />;
-      case "?lifting":
-        return <LiftingContainer />;
-      case "?results":
-        return <ResultsContainer />;
-      case "?debug":
-        return <DebugContainer />;
-      case "?about":
-        return <AboutContainer />;
+      case '?meet-setup':
+        return <MeetSetupContainer />
+      case '?registration':
+        return <RegistrationContainer />
+      case '?weigh-ins':
+        return <WeighinsContainer />
+      case '?flight-order':
+        return <FlightOrderContainer />
+      case '?lifting':
+        return <LiftingContainer />
+      case '?results':
+        return <ResultsContainer />
+      case '?debug':
+        return <DebugContainer />
+      case '?about':
+        return <AboutContainer />
       default:
-        return <HomeContainer />;
+        return <HomeContainer />
     }
   }
 }
 
-export default RootContainer;
+export default RootContainer

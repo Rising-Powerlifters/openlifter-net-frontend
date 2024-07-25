@@ -20,190 +20,190 @@
 // This provides a bunch of widgets, each of which correspond to
 // the state of a single entry.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import InputGroup from 'react-bootstrap/InputGroup'
+import Row from 'react-bootstrap/Row'
 
-import Select from "react-select";
+import Select from 'react-select'
 
-import { getString, localizeEvent } from "../../logic/strings";
-import { displayNumber, string2number } from "../../logic/units";
-import LocalizedString from "../translations/LocalizedString";
-import ValidatedInput from "../ValidatedInput";
+import { getString, localizeEvent } from '../../logic/strings'
+import { displayNumber, string2number } from '../../logic/units'
+import LocalizedString from '../translations/LocalizedString'
+import ValidatedInput from '../ValidatedInput'
 
-import { validateIso8601Date } from "../../validation/iso8601Date";
-import { validatePositiveInteger } from "../../validation/positiveInteger";
+import { validateIso8601Date } from '../../validation/iso8601Date'
+import { validatePositiveInteger } from '../../validation/positiveInteger'
 
-import { deleteRegistration, updateRegistration } from "../../actions/registrationActions";
-import { checkExhausted, assertString, assertFlight, assertSex } from "../../types/utils";
-import { Entry, Equipment, Language, Validation } from "../../types/dataTypes";
-import { GlobalState, MeetState } from "../../types/stateTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { deleteRegistration, updateRegistration } from '../../actions/registrationActions'
+import { checkExhausted, assertString, assertFlight, assertSex } from '../../types/utils'
+import { Entry, Equipment, Language, Validation } from '../../types/dataTypes'
+import { GlobalState, MeetState } from '../../types/stateTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface OwnProps {
-  id: number;
+  id: number
 }
 
 interface StateProps {
-  meet: MeetState;
-  entry: Entry;
-  language: Language;
+  meet: MeetState
+  entry: Entry
+  language: Language
 }
 
 interface InternalState {
-  selectedDay: number;
+  selectedDay: number
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 class LifterRow extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
     // Store the Day in state to update the Platform options when the Day changes.
     // Store the Birth Date in state to re-render when a new date is selected
     this.state = {
-      selectedDay: props.entry.day,
-    };
+      selectedDay: props.entry.day
+    }
 
-    this.deleteRegistrationClick = this.deleteRegistrationClick.bind(this);
-    this.updateRegistrationDay = this.updateRegistrationDay.bind(this);
-    this.updateRegistrationPlatform = this.updateRegistrationPlatform.bind(this);
-    this.updateRegistrationFlight = this.updateRegistrationFlight.bind(this);
-    this.updateRegistrationName = this.updateRegistrationName.bind(this);
-    this.updateRegistrationSex = this.updateRegistrationSex.bind(this);
-    this.updateRegistrationLot = this.updateRegistrationLot.bind(this);
-    this.updateRegistrationMemberId = this.updateRegistrationMemberId.bind(this);
-    this.updateRegistrationBirthDate = this.updateRegistrationBirthDate.bind(this);
-    this.updateRegistrationAge = this.updateRegistrationAge.bind(this);
-    this.updateRegistrationCountry = this.updateRegistrationCountry.bind(this);
-    this.updateRegistrationState = this.updateRegistrationState.bind(this);
-    this.updateRegistrationDivisions = this.updateRegistrationDivisions.bind(this);
-    this.updateRegistrationEvents = this.updateRegistrationEvents.bind(this);
-    this.updateRegistrationEquipment = this.updateRegistrationEquipment.bind(this);
-    this.updateRegistrationGuest = this.updateRegistrationGuest.bind(this);
-    this.updateRegistrationTeam = this.updateRegistrationTeam.bind(this);
-    this.updateRegistrationInstagram = this.updateRegistrationInstagram.bind(this);
-    this.updateRegistrationNotes = this.updateRegistrationNotes.bind(this);
+    this.deleteRegistrationClick = this.deleteRegistrationClick.bind(this)
+    this.updateRegistrationDay = this.updateRegistrationDay.bind(this)
+    this.updateRegistrationPlatform = this.updateRegistrationPlatform.bind(this)
+    this.updateRegistrationFlight = this.updateRegistrationFlight.bind(this)
+    this.updateRegistrationName = this.updateRegistrationName.bind(this)
+    this.updateRegistrationSex = this.updateRegistrationSex.bind(this)
+    this.updateRegistrationLot = this.updateRegistrationLot.bind(this)
+    this.updateRegistrationMemberId = this.updateRegistrationMemberId.bind(this)
+    this.updateRegistrationBirthDate = this.updateRegistrationBirthDate.bind(this)
+    this.updateRegistrationAge = this.updateRegistrationAge.bind(this)
+    this.updateRegistrationCountry = this.updateRegistrationCountry.bind(this)
+    this.updateRegistrationState = this.updateRegistrationState.bind(this)
+    this.updateRegistrationDivisions = this.updateRegistrationDivisions.bind(this)
+    this.updateRegistrationEvents = this.updateRegistrationEvents.bind(this)
+    this.updateRegistrationEquipment = this.updateRegistrationEquipment.bind(this)
+    this.updateRegistrationGuest = this.updateRegistrationGuest.bind(this)
+    this.updateRegistrationTeam = this.updateRegistrationTeam.bind(this)
+    this.updateRegistrationInstagram = this.updateRegistrationInstagram.bind(this)
+    this.updateRegistrationNotes = this.updateRegistrationNotes.bind(this)
   }
 
   deleteRegistration = (entryId: number) => {
-    rpcDispatch(deleteRegistration(entryId));
-  };
+    rpcDispatch(deleteRegistration(entryId))
+  }
 
   updateRegistration = (entryId: number, obj: Partial<Entry>) => {
-    rpcDispatch(updateRegistration(entryId, obj));
-  };
+    rpcDispatch(updateRegistration(entryId, obj))
+  }
 
   deleteRegistrationClick() {
-    this.deleteRegistration(this.props.id);
+    this.deleteRegistration(this.props.id)
   }
 
   updateRegistrationDay(event: React.BaseSyntheticEvent) {
-    const day = Number(event.currentTarget.value);
-    const entry = this.props.entry;
+    const day = Number(event.currentTarget.value)
+    const entry = this.props.entry
 
     // Also check whether the platform is now impossible.
-    let platform = entry.platform;
+    let platform = entry.platform
     if (platform > this.props.meet.platformsOnDays[day - 1]) {
-      platform = 1; // This matches the default behavior of the select element.
+      platform = 1 // This matches the default behavior of the select element.
     }
 
     if (entry.day !== day) {
-      this.setState({ selectedDay: day });
-      this.updateRegistration(this.props.id, { day: day, platform: platform });
+      this.setState({ selectedDay: day })
+      this.updateRegistration(this.props.id, { day: day, platform: platform })
     }
   }
 
   updateRegistrationPlatform(event: React.BaseSyntheticEvent) {
-    const platform = Number(event.currentTarget.value);
+    const platform = Number(event.currentTarget.value)
     if (this.props.entry.platform !== platform) {
-      this.updateRegistration(this.props.id, { platform: platform });
+      this.updateRegistration(this.props.id, { platform: platform })
     }
   }
 
   updateRegistrationFlight(event: React.BaseSyntheticEvent) {
-    const value = event.currentTarget.value;
+    const value = event.currentTarget.value
     if (this.props.entry.flight !== value && assertString(value) && assertFlight(value)) {
-      this.updateRegistration(this.props.id, { flight: value });
+      this.updateRegistration(this.props.id, { flight: value })
     }
   }
 
   updateRegistrationName(event: React.BaseSyntheticEvent) {
-    const name = event.currentTarget.value;
+    const name = event.currentTarget.value
     if (this.props.entry.name !== name && assertString(name)) {
-      this.updateRegistration(this.props.id, { name: name });
+      this.updateRegistration(this.props.id, { name: name })
     }
   }
 
   updateRegistrationSex(event: React.BaseSyntheticEvent) {
-    const sex = event.currentTarget.value;
+    const sex = event.currentTarget.value
     if (this.props.entry.sex !== sex && assertString(sex) && assertSex(sex)) {
-      this.updateRegistration(this.props.id, { sex: sex });
+      this.updateRegistration(this.props.id, { sex: sex })
     }
   }
 
   updateRegistrationLot(event: React.BaseSyntheticEvent & { currentTarget: { value: string } }) {
-    const asNumber = string2number(event.currentTarget.value);
+    const asNumber = string2number(event.currentTarget.value)
     if (asNumber >= 0 && asNumber !== this.props.entry.lot) {
-      this.updateRegistration(this.props.id, { lot: asNumber });
+      this.updateRegistration(this.props.id, { lot: asNumber })
     }
   }
 
   updateRegistrationMemberId = (event: React.BaseSyntheticEvent) => {
-    const memberId = event.currentTarget.value;
-    if (this.props.entry.memberId !== memberId && typeof memberId === "string") {
-      this.updateRegistration(this.props.id, { memberId: memberId });
+    const memberId = event.currentTarget.value
+    if (this.props.entry.memberId !== memberId && typeof memberId === 'string') {
+      this.updateRegistration(this.props.id, { memberId: memberId })
     }
-  };
+  }
 
   updateRegistrationBirthDate = (birthDate: string) => {
     if (this.props.entry.birthDate !== birthDate) {
-      this.updateRegistration(this.props.id, { birthDate: birthDate });
+      this.updateRegistration(this.props.id, { birthDate: birthDate })
     }
-  };
+  }
 
   updateRegistrationAge = (age: string) => {
-    const num = string2number(age);
+    const num = string2number(age)
     if (this.props.entry.age !== num) {
-      this.updateRegistration(this.props.id, { age: num });
+      this.updateRegistration(this.props.id, { age: num })
     }
-  };
+  }
 
   updateRegistrationCountry = (country: string) => {
     if (this.props.entry.country !== country) {
-      this.updateRegistration(this.props.id, { country: country });
+      this.updateRegistration(this.props.id, { country: country })
     }
-  };
+  }
 
   updateRegistrationState = (state: string) => {
     if (this.props.entry.state !== state) {
-      this.updateRegistration(this.props.id, { state: state });
+      this.updateRegistration(this.props.id, { state: state })
     }
-  };
+  }
 
   updateRegistrationDivisions(value: any) {
     if (value instanceof Array) {
       // Since updates are synchronous, we can just compare lengths.
       if (value.length !== this.props.entry.divisions.length) {
-        const divisions = [];
+        const divisions = []
         for (let i = 0; i < value.length; i++) {
-          divisions.push(value[i].value);
+          divisions.push(value[i].value)
         }
-        this.updateRegistration(this.props.id, { divisions: divisions });
+        this.updateRegistration(this.props.id, { divisions: divisions })
       }
     } else if (value === null) {
       // Null happens when the list has been cleared fully.
       if (this.props.entry.divisions.length > 0) {
-        this.updateRegistration(this.props.id, { divisions: [] });
+        this.updateRegistration(this.props.id, { divisions: [] })
       }
     }
   }
@@ -212,145 +212,150 @@ class LifterRow extends React.Component<Props, InternalState> {
     if (value instanceof Array) {
       // Since updates are synchronous, we can just compare lengths.
       if (value.length !== this.props.entry.events.length) {
-        const events = [];
+        const events = []
         for (let i = 0; i < value.length; i++) {
-          events.push(value[i].value);
+          events.push(value[i].value)
         }
-        this.updateRegistration(this.props.id, { events: events });
+        this.updateRegistration(this.props.id, { events: events })
       }
     } else if (value === null) {
       // Null happens when the list has been cleared fully.
       if (this.props.entry.events.length > 0) {
-        this.updateRegistration(this.props.id, { events: [] });
+        this.updateRegistration(this.props.id, { events: [] })
       }
     }
   }
 
   updateRegistrationEquipment(event: React.BaseSyntheticEvent) {
-    const equipment = event.currentTarget.value as Equipment;
+    const equipment = event.currentTarget.value as Equipment
     if (this.props.entry.equipment !== equipment) {
       // Ensure value is something we expect & assist the compiler in helping us
       switch (equipment) {
-        case "Bare":
-        case "Sleeves":
-        case "Wraps":
-        case "Single-ply":
-        case "Multi-ply":
-        case "Unlimited":
-          this.updateRegistration(this.props.id, { equipment: equipment });
-          break;
+        case 'Bare':
+        case 'Sleeves':
+        case 'Wraps':
+        case 'Single-ply':
+        case 'Multi-ply':
+        case 'Unlimited':
+          this.updateRegistration(this.props.id, { equipment: equipment })
+          break
         default:
-          checkExhausted(equipment);
-          break;
+          checkExhausted(equipment)
+          break
       }
     }
   }
 
   updateRegistrationGuest = (event: React.BaseSyntheticEvent) => {
-    if (event.currentTarget.value === "true") {
-      this.updateRegistration(this.props.id, { guest: true });
+    if (event.currentTarget.value === 'true') {
+      this.updateRegistration(this.props.id, { guest: true })
     } else {
-      this.updateRegistration(this.props.id, { guest: false });
+      this.updateRegistration(this.props.id, { guest: false })
     }
-  };
+  }
 
   updateRegistrationTeam = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.updateRegistration(this.props.id, { team: event.currentTarget.value });
+      this.updateRegistration(this.props.id, { team: event.currentTarget.value })
     }
-  };
+  }
 
   updateRegistrationInstagram = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.updateRegistration(this.props.id, { instagram: event.currentTarget.value });
+      this.updateRegistration(this.props.id, { instagram: event.currentTarget.value })
     }
-  };
+  }
 
   updateRegistrationNotes = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.updateRegistration(this.props.id, { notes: event.currentTarget.value });
+      this.updateRegistration(this.props.id, { notes: event.currentTarget.value })
     }
-  };
+  }
 
   // FIXME: Could be shared with weighins logic.
   validateAge = (value?: string): Validation => {
-    if (value === "") return null;
+    if (value === '') return null
 
-    const pos: Validation = validatePositiveInteger(value);
-    if (pos === "success") {
+    const pos: Validation = validatePositiveInteger(value)
+    if (pos === 'success') {
       // Complain a little if the age is implausible.
-      const n = Number(value);
-      if (n <= 4 || n > 100) return "warning";
+      const n = Number(value)
+      if (n <= 4 || n > 100) return 'warning'
     }
-    return pos;
-  };
+    return pos
+  }
 
   render() {
-    const entry = this.props.entry;
-    const language = this.props.language;
+    const entry = this.props.entry
+    const language = this.props.language
 
-    const dayOptions = [];
+    const dayOptions = []
     for (let i = 1; i <= this.props.meet.lengthDays; i++) {
       dayOptions.push(
         <option value={i} key={i}>
           {i}
-        </option>,
-      );
+        </option>
+      )
     }
 
-    const platformOptions = [];
+    const platformOptions = []
     for (let i = 1; i <= this.props.meet.platformsOnDays[entry.day - 1]; i++) {
       platformOptions.push(
         <option value={i} key={i}>
           {i}
-        </option>,
-      );
+        </option>
+      )
     }
 
-    const divisionOptions = [];
+    const divisionOptions = []
     for (let i = 0; i < this.props.meet.divisions.length; i++) {
-      const division = this.props.meet.divisions[i];
-      divisionOptions.push({ value: division, label: division });
+      const division = this.props.meet.divisions[i]
+      divisionOptions.push({ value: division, label: division })
     }
 
-    const selectedDivisions = [];
+    const selectedDivisions = []
     for (let i = 0; i < entry.divisions.length; i++) {
-      const division = entry.divisions[i];
-      selectedDivisions.push({ value: division, label: division });
+      const division = entry.divisions[i]
+      selectedDivisions.push({ value: division, label: division })
     }
 
-    const selectedEvents = [];
+    const selectedEvents = []
     for (let i = 0; i < entry.events.length; i++) {
-      const event = entry.events[i];
-      selectedEvents.push({ value: event, label: localizeEvent(event, language) });
+      const event = entry.events[i]
+      selectedEvents.push({ value: event, label: localizeEvent(event, language) })
     }
 
-    const gridStyle = { padding: "0px", margin: "0px" };
+    const gridStyle = { padding: '0px', margin: '0px' }
 
-    const stringCountry = getString("common.country", language);
-    const stringState = getString("registration.state-province", language);
-    const stringBirthDatePlaceholder = getString("registration.birthdate-placeholder", language);
-    const stringMemberIdPlaceholder = getString("registration.member-id-placeholder", language);
-    const stringSelectPlaceholder = getString("common.select-placeholder", language);
+    const stringCountry = getString('common.country', language)
+    const stringState = getString('registration.state-province', language)
+    const stringBirthDatePlaceholder = getString('registration.birthdate-placeholder', language)
+    const stringMemberIdPlaceholder = getString('registration.member-id-placeholder', language)
+    const stringSelectPlaceholder = getString('common.select-placeholder', language)
 
     const eventOptions = [
-      { value: "S", label: getString("event.s", language) },
-      { value: "B", label: getString("event.b", language) },
-      { value: "D", label: getString("event.d", language) },
-      { value: "BD", label: getString("event.bd", language) },
-      { value: "SBD", label: getString("event.sbd", language) },
-      { value: "SB", label: getString("event.sb", language) },
-      { value: "SD", label: getString("event.sd", language) },
-    ];
+      { value: 'S', label: getString('event.s', language) },
+      { value: 'B', label: getString('event.b', language) },
+      { value: 'D', label: getString('event.d', language) },
+      { value: 'BD', label: getString('event.bd', language) },
+      { value: 'SBD', label: getString('event.sbd', language) },
+      { value: 'SB', label: getString('event.sb', language) },
+      { value: 'SD', label: getString('event.sd', language) }
+    ]
 
     return (
-      <Card style={{ overflow: "visible", marginBottom: "17px" }}>
-        <Card.Header style={{ display: "flex" }}>
-          <Form.Control type="text" placeholder="" value={entry.name} onChange={this.updateRegistrationName} />
+      <Card style={{ overflow: 'visible', marginBottom: '17px' }}>
+        <Card.Header style={{ display: 'flex' }}>
+          <Form.Control
+            type="text"
+            placeholder=""
+            value={entry.name}
+            onChange={this.updateRegistrationName}
+          />
           <Button
             onClick={this.deleteRegistrationClick}
             variant="danger"
-            style={{ marginLeft: "15px", minWidth: "100px" }}
+            style={{ marginLeft: '15px', minWidth: '100px' }}
           >
             <LocalizedString id="registration.button-delete" />
           </Button>
@@ -404,22 +409,22 @@ class LifterRow extends React.Component<Props, InternalState> {
                     onChange={this.updateRegistrationFlight}
                     className="custom-select"
                   >
-                    <option value="A">{getString("flight.a", language)}</option>
-                    <option value="B">{getString("flight.b", language)}</option>
-                    <option value="C">{getString("flight.c", language)}</option>
-                    <option value="D">{getString("flight.d", language)}</option>
-                    <option value="E">{getString("flight.e", language)}</option>
-                    <option value="F">{getString("flight.f", language)}</option>
-                    <option value="G">{getString("flight.g", language)}</option>
-                    <option value="H">{getString("flight.h", language)}</option>
-                    <option value="I">{getString("flight.i", language)}</option>
-                    <option value="J">{getString("flight.j", language)}</option>
-                    <option value="K">{getString("flight.k", language)}</option>
-                    <option value="L">{getString("flight.l", language)}</option>
-                    <option value="M">{getString("flight.m", language)}</option>
-                    <option value="N">{getString("flight.n", language)}</option>
-                    <option value="O">{getString("flight.o", language)}</option>
-                    <option value="P">{getString("flight.p", language)}</option>
+                    <option value="A">{getString('flight.a', language)}</option>
+                    <option value="B">{getString('flight.b', language)}</option>
+                    <option value="C">{getString('flight.c', language)}</option>
+                    <option value="D">{getString('flight.d', language)}</option>
+                    <option value="E">{getString('flight.e', language)}</option>
+                    <option value="F">{getString('flight.f', language)}</option>
+                    <option value="G">{getString('flight.g', language)}</option>
+                    <option value="H">{getString('flight.h', language)}</option>
+                    <option value="I">{getString('flight.i', language)}</option>
+                    <option value="J">{getString('flight.j', language)}</option>
+                    <option value="K">{getString('flight.k', language)}</option>
+                    <option value="L">{getString('flight.l', language)}</option>
+                    <option value="M">{getString('flight.m', language)}</option>
+                    <option value="N">{getString('flight.n', language)}</option>
+                    <option value="O">{getString('flight.o', language)}</option>
+                    <option value="P">{getString('flight.p', language)}</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -436,9 +441,9 @@ class LifterRow extends React.Component<Props, InternalState> {
                     onChange={this.updateRegistrationSex}
                     className="custom-select"
                   >
-                    <option value="M">{getString("sex.m", language)}</option>
-                    <option value="F">{getString("sex.f", language)}</option>
-                    <option value="Mx">{getString("sex.mx", language)}</option>
+                    <option value="M">{getString('sex.m', language)}</option>
+                    <option value="F">{getString('sex.f', language)}</option>
+                    <option value="Mx">{getString('sex.mx', language)}</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -447,7 +452,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               <Col md={2}>
                 <Form.Group>
                   <Form.Label>
-                    <FormattedMessage id="registration.equipment-label" defaultMessage="Equipment" />
+                    <FormattedMessage
+                      id="registration.equipment-label"
+                      defaultMessage="Equipment"
+                    />
                   </Form.Label>
                   <Form.Control
                     value={entry.equipment}
@@ -455,12 +463,14 @@ class LifterRow extends React.Component<Props, InternalState> {
                     onChange={this.updateRegistrationEquipment}
                     className="custom-select"
                   >
-                    <option value="Bare">{getString("equipment.bare", language)}</option>
-                    <option value="Sleeves">{getString("equipment.sleeves", language)}</option>
-                    <option value="Wraps">{getString("equipment.wraps", language)}</option>
-                    <option value="Single-ply">{getString("equipment.single-ply", language)}</option>
-                    <option value="Multi-ply">{getString("equipment.multi-ply", language)}</option>
-                    <option value="Unlimited">{getString("equipment.unlimited", language)}</option>
+                    <option value="Bare">{getString('equipment.bare', language)}</option>
+                    <option value="Sleeves">{getString('equipment.sleeves', language)}</option>
+                    <option value="Wraps">{getString('equipment.wraps', language)}</option>
+                    <option value="Single-ply">
+                      {getString('equipment.single-ply', language)}
+                    </option>
+                    <option value="Multi-ply">{getString('equipment.multi-ply', language)}</option>
+                    <option value="Unlimited">{getString('equipment.unlimited', language)}</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -469,7 +479,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               <Col md={4}>
                 <Form.Group>
                   <Form.Label>
-                    <FormattedMessage id="registration.divisions-label" defaultMessage="Divisions" />
+                    <FormattedMessage
+                      id="registration.divisions-label"
+                      defaultMessage="Divisions"
+                    />
                   </Form.Label>
                   <Select
                     menuPlacement="auto"
@@ -509,7 +522,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               <Col md={2}>
                 <Form.Group>
                   <Form.Label>
-                    <FormattedMessage id="registration.birthdate-label" defaultMessage="Date of Birth" />
+                    <FormattedMessage
+                      id="registration.birthdate-label"
+                      defaultMessage="Date of Birth"
+                    />
                   </Form.Label>
                   <ValidatedInput
                     initialValue={entry.birthDate}
@@ -523,10 +539,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               {/* Age */}
               <Col md={1}>
                 <Form.Group>
-                  <Form.Label>{getString("common.age", language)}</Form.Label>
+                  <Form.Label>{getString('common.age', language)}</Form.Label>
                   <ValidatedInput
-                    initialValue={entry.age === 0 ? "" : displayNumber(entry.age, language)}
-                    placeholder={getString("common.age", language)}
+                    initialValue={entry.age === 0 ? '' : displayNumber(entry.age, language)}
+                    placeholder={getString('common.age', language)}
                     validate={this.validateAge}
                     onSuccess={this.updateRegistrationAge}
                   />
@@ -537,7 +553,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               <Col md={2}>
                 <Form.Group>
                   <Form.Label>
-                    <FormattedMessage id="registration.member-id-label" defaultMessage="Member ID" />
+                    <FormattedMessage
+                      id="registration.member-id-label"
+                      defaultMessage="Member ID"
+                    />
                   </Form.Label>
                   <Form.Control
                     type="text"
@@ -555,7 +574,7 @@ class LifterRow extends React.Component<Props, InternalState> {
                   <ValidatedInput
                     initialValue={entry.country}
                     placeholder={stringCountry}
-                    validate={(s) => (s === "" ? null : "success")}
+                    validate={(s) => (s === '' ? null : 'success')}
                     onSuccess={this.updateRegistrationCountry}
                   />
                 </Form.Group>
@@ -568,7 +587,7 @@ class LifterRow extends React.Component<Props, InternalState> {
                   <ValidatedInput
                     initialValue={entry.state}
                     placeholder={stringState}
-                    validate={(s) => (s === "" ? null : "success")}
+                    validate={(s) => (s === '' ? null : 'success')}
                     onSuccess={this.updateRegistrationState}
                   />
                 </Form.Group>
@@ -583,7 +602,7 @@ class LifterRow extends React.Component<Props, InternalState> {
                   <Form.Control
                     type="number"
                     min="0"
-                    value={entry.lot === 0 ? "" : entry.lot.toString()}
+                    value={entry.lot === 0 ? '' : entry.lot.toString()}
                     onChange={this.updateRegistrationLot}
                   />
                 </Form.Group>
@@ -596,13 +615,13 @@ class LifterRow extends React.Component<Props, InternalState> {
                     <FormattedMessage id="registration.guest-label" defaultMessage="Guest" />
                   </Form.Label>
                   <Form.Control
-                    value={entry.guest ? entry.guest.toString() : "false"}
+                    value={entry.guest ? entry.guest.toString() : 'false'}
                     as="select"
                     onChange={this.updateRegistrationGuest}
                     className="custom-select"
                   >
-                    <option value="false">{getString("common.response-no", language)}</option>
-                    <option value="true">{getString("common.response-yes", language)}</option>
+                    <option value="false">{getString('common.response-no', language)}</option>
+                    <option value="true">{getString('common.response-yes', language)}</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -613,7 +632,12 @@ class LifterRow extends React.Component<Props, InternalState> {
                   <Form.Label>
                     <FormattedMessage id="registration.team-label" defaultMessage="Team" />
                   </Form.Label>
-                  <Form.Control type="text" placeholder="" value={entry.team} onChange={this.updateRegistrationTeam} />
+                  <Form.Control
+                    type="text"
+                    placeholder=""
+                    value={entry.team}
+                    onChange={this.updateRegistrationTeam}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -625,7 +649,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               <Col md={2}>
                 <Form.Group>
                   <Form.Label>
-                    <FormattedMessage id="registration.instagram-label" defaultMessage="Instagram" />
+                    <FormattedMessage
+                      id="registration.instagram-label"
+                      defaultMessage="Instagram"
+                    />
                   </Form.Label>
                   <InputGroup>
                     <InputGroup.Prepend>
@@ -645,7 +672,10 @@ class LifterRow extends React.Component<Props, InternalState> {
               <Col md={10}>
                 <Form.Group>
                   <Form.Label>
-                    <FormattedMessage id="registration.notes-label" defaultMessage="Notes (for your personal use)" />
+                    <FormattedMessage
+                      id="registration.notes-label"
+                      defaultMessage="Notes (for your personal use)"
+                    />
                   </Form.Label>
                   <Form.Control
                     type="text"
@@ -659,20 +689,20 @@ class LifterRow extends React.Component<Props, InternalState> {
           </Container>
         </Card.Body>
       </Card>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => {
   // Only have props for the entry corresponding to this one row.
-  const lookup = state.registration.lookup;
-  const entry = state.registration.entries[lookup[ownProps.id]];
+  const lookup = state.registration.lookup
+  const entry = state.registration.entries[lookup[ownProps.id]]
 
   return {
     meet: state.meet,
     entry: entry,
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
-export default connect(mapStateToProps)(LifterRow);
+export default connect(mapStateToProps)(LifterRow)

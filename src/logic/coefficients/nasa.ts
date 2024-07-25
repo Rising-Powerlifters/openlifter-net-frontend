@@ -27,9 +27,9 @@ export const nasapoints = (bodyweightKg: number, totalKg: number): number => {
   // =======================            ==========================
   // m               = 0.00620912       +/- 1.265e-06    (0.02037%)
   // b               = 0.565697         +/- 0.0001322    (0.02337%)
-  const m = 0.00620912;
-  const b = 0.565697;
+  const m = 0.00620912
+  const b = 0.565697
 
-  if (bodyweightKg < 30) return 0; // Arbitrary lower bound.
-  return (totalKg / bodyweightKg) * (m * bodyweightKg + b);
-};
+  if (bodyweightKg < 30) return 0 // Arbitrary lower bound.
+  return (totalKg / bodyweightKg) * (m * bodyweightKg + b)
+}

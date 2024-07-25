@@ -18,121 +18,123 @@
 
 // The parent component of the FlightOrder page, contained by the FlightOrderContainer.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import FormControl from "react-bootstrap/FormControl";
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import FormControl from 'react-bootstrap/FormControl'
 
-import OneFlightOrder from "./OneFlightOrder";
+import OneFlightOrder from './OneFlightOrder'
 
-import { getString } from "../../logic/strings";
-import { displayNumber } from "../../logic/units";
+import { getString } from '../../logic/strings'
+import { displayNumber } from '../../logic/units'
 
-import { Entry, Flight, Language } from "../../types/dataTypes";
-import { GlobalState, MeetState } from "../../types/stateTypes";
+import { Entry, Flight, Language } from '../../types/dataTypes'
+import { GlobalState, MeetState } from '../../types/stateTypes'
 
 interface StateProps {
-  meet: MeetState;
-  entries: ReadonlyArray<Entry>;
-  language: Language;
+  meet: MeetState
+  entries: ReadonlyArray<Entry>
+  language: Language
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 interface InternalState {
-  day: number;
-  platform: number;
+  day: number
+  platform: number
 }
 
 class FlightOrderView extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.updateDay = this.updateDay.bind(this);
-    this.updatePlatform = this.updatePlatform.bind(this);
-    this.handlePrint = this.handlePrint.bind(this);
+    this.updateDay = this.updateDay.bind(this)
+    this.updatePlatform = this.updatePlatform.bind(this)
+    this.handlePrint = this.handlePrint.bind(this)
 
     this.state = {
       day: 1,
-      platform: 1,
-    };
+      platform: 1
+    }
   }
 
   updateDay = (event: React.BaseSyntheticEvent) => {
-    const day = Number(event.currentTarget.value);
+    const day = Number(event.currentTarget.value)
     if (this.state.day !== day) {
       // If the currently-selected platform number becomes invalid, reset it.
       if (this.state.platform > this.props.meet.platformsOnDays[day - 1]) {
-        this.setState({ day: day, platform: 1 });
+        this.setState({ day: day, platform: 1 })
       } else {
-        this.setState({ day: day });
+        this.setState({ day: day })
       }
     }
-  };
+  }
 
   updatePlatform = (event: React.BaseSyntheticEvent) => {
-    const platform = Number(event.currentTarget.value);
+    const platform = Number(event.currentTarget.value)
     if (this.state.platform !== platform) {
-      this.setState({ platform: platform });
+      this.setState({ platform: platform })
     }
-  };
+  }
 
   handlePrint = () => {
-    window.print();
-  };
+    window.print()
+  }
 
   render() {
-    const language = this.props.language;
-    const selectorStyle = { width: "120px", marginRight: "15px" };
+    const language = this.props.language
+    const selectorStyle = { width: '120px', marginRight: '15px' }
 
     // Make options for all of the days.
-    const dayOptions = [];
-    const dayTemplate = getString("lifting.footer-day-template", language);
+    const dayOptions = []
+    const dayTemplate = getString('lifting.footer-day-template', language)
     for (let i = 1; i <= this.props.meet.lengthDays; i++) {
       dayOptions.push(
         <option value={i} key={i}>
-          {dayTemplate.replace("{N}", displayNumber(i, language))}
-        </option>,
-      );
+          {dayTemplate.replace('{N}', displayNumber(i, language))}
+        </option>
+      )
     }
 
     // Make options for all of the available platforms on the current day.
-    const platformOptions = [];
-    const platformTemplate = getString("lifting.footer-platform-template", language);
-    const numPlatforms = this.props.meet.platformsOnDays[this.state.day - 1];
+    const platformOptions = []
+    const platformTemplate = getString('lifting.footer-platform-template', language)
+    const numPlatforms = this.props.meet.platformsOnDays[this.state.day - 1]
     for (let i = 1; i <= numPlatforms; i++) {
       platformOptions.push(
         <option value={i} key={i}>
-          {platformTemplate.replace("{N}", displayNumber(i, language))}
-        </option>,
-      );
+          {platformTemplate.replace('{N}', displayNumber(i, language))}
+        </option>
+      )
     }
 
     // Get all the entries under the current (day, platform) selection.
     const shownEntries = this.props.entries.filter((e) => {
-      return e.day === this.state.day && e.platform === this.state.platform;
-    });
+      return e.day === this.state.day && e.platform === this.state.platform
+    })
 
     // Look through the entries to discover what flights exist.
-    const knownFlights: Flight[] = [];
+    const knownFlights: Flight[] = []
     for (let i = 0; i < shownEntries.length; i++) {
-      const entry = shownEntries[i];
+      const entry = shownEntries[i]
       if (knownFlights.indexOf(entry.flight) === -1) {
-        knownFlights.push(entry.flight);
+        knownFlights.push(entry.flight)
       }
     }
-    knownFlights.sort();
+    knownFlights.sort()
 
     // For each flight, see if there are any lifters, and build a OneFlightOrder.
-    const flightOrders = [];
+    const flightOrders = []
     for (let i = 0; i < knownFlights.length; i++) {
-      const flight = knownFlights[i];
-      const entriesInFlight = shownEntries.filter((e) => e.flight === flight);
-      const id = "" + this.state.day + "-" + this.state.platform + "-" + flight;
-      flightOrders.push(<OneFlightOrder key={id} flight={flight} entriesInFlight={entriesInFlight} />);
+      const flight = knownFlights[i]
+      const entriesInFlight = shownEntries.filter((e) => e.flight === flight)
+      const id = '' + this.state.day + '-' + this.state.platform + '-' + flight
+      flightOrders.push(
+        <OneFlightOrder key={id} flight={flight} entriesInFlight={entriesInFlight} />
+      )
     }
 
     // FIXME: Disable categories for the moment. They seem unhelpful.
@@ -156,8 +158,8 @@ class FlightOrderView extends React.Component<Props, InternalState> {
 
     return (
       <div>
-        <Card style={{ marginBottom: "17px" }}>
-          <Card.Body style={{ display: "flex" }}>
+        <Card style={{ marginBottom: '17px' }}>
+          <Card.Body style={{ display: 'flex' }}>
             <FormControl
               value={this.state.day.toString()}
               as="select"
@@ -186,7 +188,7 @@ class FlightOrderView extends React.Component<Props, InternalState> {
 
         {flightOrders}
       </div>
-    );
+    )
   }
 }
 
@@ -194,8 +196,8 @@ const mapStateToProps = (state: GlobalState): StateProps => {
   return {
     meet: state.meet,
     entries: state.registration.entries,
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
-export default connect(mapStateToProps)(FlightOrderView);
+export default connect(mapStateToProps)(FlightOrderView)

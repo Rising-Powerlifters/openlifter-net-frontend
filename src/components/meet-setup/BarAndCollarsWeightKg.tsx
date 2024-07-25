@@ -16,109 +16,109 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import { setBarAndCollarsWeightKg } from "../../actions/meetSetupActions";
-import { getString } from "../../logic/strings";
-import { kg2lbs, lbs2kg } from "../../logic/units";
+import { setBarAndCollarsWeightKg } from '../../actions/meetSetupActions'
+import { getString } from '../../logic/strings'
+import { kg2lbs, lbs2kg } from '../../logic/units'
 
-import { Language, Lift, Validation } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
-import { checkExhausted } from "../../types/utils";
-import NumberInput from "../common/NumberInput";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Language, Lift, Validation } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
+import { checkExhausted } from '../../types/utils'
+import NumberInput from '../common/NumberInput'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface OwnProps {
-  lift: Lift;
+  lift: Lift
 }
 
 interface StateProps {
-  inKg: boolean;
-  squatBarAndCollarsWeightKg: number;
-  benchBarAndCollarsWeightKg: number;
-  deadliftBarAndCollarsWeightKg: number;
-  language: Language;
+  inKg: boolean
+  squatBarAndCollarsWeightKg: number
+  benchBarAndCollarsWeightKg: number
+  deadliftBarAndCollarsWeightKg: number
+  language: Language
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 interface InternalState {
-  initialValue: number;
+  initialValue: number
 }
 
 class BarAndCollarsWeightKg extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this)
+    this.handleChange = this.handleChange.bind(this)
 
-    const weight = this.getInitialBarAndCollarsWeightKg(this.props.lift);
+    const weight = this.getInitialBarAndCollarsWeightKg(this.props.lift)
 
     this.state = {
-      initialValue: this.props.inKg ? weight : kg2lbs(weight),
-    };
+      initialValue: this.props.inKg ? weight : kg2lbs(weight)
+    }
   }
 
   setBarAndCollarsWeightKg = (lift: Lift, weight: number) => {
-    rpcDispatch(setBarAndCollarsWeightKg(lift, weight));
-  };
+    rpcDispatch(setBarAndCollarsWeightKg(lift, weight))
+  }
 
   getInitialBarAndCollarsWeightKg = (lift: Lift): number => {
     switch (lift) {
-      case "S":
-        return this.props.squatBarAndCollarsWeightKg;
-      case "B":
-        return this.props.benchBarAndCollarsWeightKg;
-      case "D":
-        return this.props.deadliftBarAndCollarsWeightKg;
+      case 'S':
+        return this.props.squatBarAndCollarsWeightKg
+      case 'B':
+        return this.props.benchBarAndCollarsWeightKg
+      case 'D':
+        return this.props.deadliftBarAndCollarsWeightKg
       default:
-        checkExhausted(lift);
-        return 0;
+        checkExhausted(lift)
+        return 0
     }
-  };
+  }
 
   validate = (n: number): Validation => {
     // Don't use isInteger() since decimals are allowed.
     if (isNaN(n) || !isFinite(n) || n < 5 || n > 1000) {
-      return "error";
+      return 'error'
     }
-    return "success";
-  };
+    return 'success'
+  }
 
   handleChange = (n: number) => {
-    if (this.validate(n) === "success") {
-      const weight = this.props.inKg ? n : lbs2kg(n);
-      this.setBarAndCollarsWeightKg(this.props.lift, weight);
+    if (this.validate(n) === 'success') {
+      const weight = this.props.inKg ? n : lbs2kg(n)
+      this.setBarAndCollarsWeightKg(this.props.lift, weight)
     }
-  };
+  }
 
   getLiftLabel = (lift: Lift, inKg: boolean, language: Language): string => {
     switch (lift) {
-      case "S":
+      case 'S':
         if (inKg) {
-          return getString("meet-setup.bar-weight-squat-kg", language);
+          return getString('meet-setup.bar-weight-squat-kg', language)
         } else {
-          return getString("meet-setup.bar-weight-squat-lbs", language);
+          return getString('meet-setup.bar-weight-squat-lbs', language)
         }
-      case "B":
+      case 'B':
         if (inKg) {
-          return getString("meet-setup.bar-weight-bench-kg", language);
+          return getString('meet-setup.bar-weight-bench-kg', language)
         } else {
-          return getString("meet-setup.bar-weight-bench-lbs", language);
+          return getString('meet-setup.bar-weight-bench-lbs', language)
         }
-      case "D":
+      case 'D':
         if (inKg) {
-          return getString("meet-setup.bar-weight-deadlift-kg", language);
+          return getString('meet-setup.bar-weight-deadlift-kg', language)
         } else {
-          return getString("meet-setup.bar-weight-deadlift-lbs", language);
+          return getString('meet-setup.bar-weight-deadlift-lbs', language)
         }
       default:
-        checkExhausted(lift);
-        return "";
+        checkExhausted(lift)
+        return ''
     }
-  };
+  }
 
   render() {
     return (
@@ -129,7 +129,7 @@ class BarAndCollarsWeightKg extends React.Component<Props, InternalState> {
         onChange={this.handleChange}
         label={this.getLiftLabel(this.props.lift, this.props.inKg, this.props.language)}
       />
-    );
+    )
   }
 }
 
@@ -138,7 +138,7 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   squatBarAndCollarsWeightKg: state.meet.squatBarAndCollarsWeightKg,
   benchBarAndCollarsWeightKg: state.meet.benchBarAndCollarsWeightKg,
   deadliftBarAndCollarsWeightKg: state.meet.deadliftBarAndCollarsWeightKg,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(BarAndCollarsWeightKg);
+export default connect(mapStateToProps)(BarAndCollarsWeightKg)

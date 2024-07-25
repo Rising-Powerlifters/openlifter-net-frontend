@@ -18,39 +18,39 @@
 
 // Defines the button that adds a new entry to the registrations table.
 
-import React from "react";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { FormattedMessage } from 'react-intl'
 
-import Button from "react-bootstrap/Button";
+import Button from 'react-bootstrap/Button'
 
-import { newRegistration } from "../../actions/registrationActions";
+import { newRegistration } from '../../actions/registrationActions'
 
-import { Entry } from "../../types/dataTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Entry } from '../../types/dataTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
-type Props = never;
+type Props = never
 
 class NewButton extends React.Component {
   constructor(props: Props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   newRegistration = (obj: Partial<Entry>) => {
-    rpcDispatch(newRegistration(obj));
-  };
+    rpcDispatch(newRegistration(obj))
+  }
 
   handleClick = () => {
-    this.newRegistration({});
-  };
+    this.newRegistration({})
+  }
 
   render() {
     return (
       <Button onClick={this.handleClick} variant="primary" size="lg" block>
         <FormattedMessage id="registration.button-new-lifter" defaultMessage="New Lifter" />
       </Button>
-    );
+    )
   }
 }
 
-export default NewButton;
+export default NewButton

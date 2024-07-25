@@ -16,59 +16,59 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import { setPlatformsOnDays } from "../../actions/meetSetupActions";
+import { setPlatformsOnDays } from '../../actions/meetSetupActions'
 
-import { GlobalState } from "../../types/stateTypes";
-import { Validation } from "../../types/dataTypes";
-import NumberInput from "../common/NumberInput";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { GlobalState } from '../../types/stateTypes'
+import { Validation } from '../../types/dataTypes'
+import NumberInput from '../common/NumberInput'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface OwnProps {
-  day: number;
+  day: number
 }
 
 interface StateProps {
-  platformsOnDays: ReadonlyArray<number>;
+  platformsOnDays: ReadonlyArray<number>
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 interface InternalState {
-  initialValue: number;
+  initialValue: number
 }
 
 class PlatformCount extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this)
+    this.handleChange = this.handleChange.bind(this)
 
     this.state = {
-      initialValue: this.props.platformsOnDays[this.props.day - 1],
-    };
+      initialValue: this.props.platformsOnDays[this.props.day - 1]
+    }
   }
 
   setPlatformsOnDays = (day: number, count: number) => {
-    rpcDispatch(setPlatformsOnDays(day, count));
-  };
+    rpcDispatch(setPlatformsOnDays(day, count))
+  }
 
   validate = (n: number): Validation => {
     if (!Number.isInteger(n) || n <= 0 || n > 20) {
-      return "error";
+      return 'error'
     }
-    return "success";
-  };
+    return 'success'
+  }
 
   handleChange = (n: number): void => {
-    if (this.validate(n) === "success") {
-      this.setPlatformsOnDays(this.props.day, n);
+    if (this.validate(n) === 'success') {
+      this.setPlatformsOnDays(this.props.day, n)
     }
-  };
+  }
 
   render() {
     return (
@@ -82,17 +82,17 @@ class PlatformCount extends React.Component<Props, InternalState> {
             id="meet-setup.platforms-on-day"
             defaultMessage="Platforms on Day {number}"
             values={{
-              number: this.props.day,
+              number: this.props.day
             }}
           />
         }
       />
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  platformsOnDays: state.meet.platformsOnDays,
-});
+  platformsOnDays: state.meet.platformsOnDays
+})
 
-export default connect(mapStateToProps)(PlatformCount);
+export default connect(mapStateToProps)(PlatformCount)

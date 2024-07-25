@@ -18,82 +18,82 @@
 
 // Defines a widget for selecting a plate color.
 
-import React from "react";
-import { ColorResult, TwitterPicker } from "react-color";
+import React from 'react'
+import { ColorResult, TwitterPicker } from 'react-color'
 
-import { PlateColors } from "../../constants/plateColors";
+import { PlateColors } from '../../constants/plateColors'
 
-import styles from "./ColorPicker.module.scss";
-import * as Popper from "react-popper";
+import styles from './ColorPicker.module.scss'
+import * as Popper from 'react-popper'
 
 interface OwnProps {
-  color: string;
-  onChange: (color: string) => void;
+  color: string
+  onChange: (color: string) => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 interface InternalState {
-  displayColorPicker: boolean;
-  color: string;
+  displayColorPicker: boolean
+  color: string
 
   // Handle returned by setTimeout() for the timeout that closes the color
   // selector popup after the mouse leaves and time has elapsed.
-  timeoutId: any;
+  timeoutId: any
 }
 
 class ColorPicker extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
     this.state = {
       displayColorPicker: false,
       color: props.color,
-      timeoutId: null,
-    };
+      timeoutId: null
+    }
 
-    this.handleClick = this.handleClick.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
-    this.handleMouseEnter = this.handleMouseEnter.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this)
+    this.handleMouseLeave = this.handleMouseLeave.bind(this)
+    this.handleMouseEnter = this.handleMouseEnter.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   handleClick = () => {
-    clearTimeout(this.state.timeoutId);
-    this.setState({ displayColorPicker: !this.state.displayColorPicker, timeoutId: null });
-  };
+    clearTimeout(this.state.timeoutId)
+    this.setState({ displayColorPicker: !this.state.displayColorPicker, timeoutId: null })
+  }
 
   handleMouseLeave = () => {
     // Close the popup after a second has elapsed.
     // This gives the user a chance to bring the mouse back into the popup.
     const timeoutId = setTimeout(() => {
-      this.setState({ displayColorPicker: false, timeoutId: null });
-    }, 1000);
-    this.setState({ timeoutId: timeoutId });
-  };
+      this.setState({ displayColorPicker: false, timeoutId: null })
+    }, 1000)
+    this.setState({ timeoutId: timeoutId })
+  }
 
   handleMouseEnter = () => {
     // Prevent any close-popup timeout from executing.
     if (this.state.timeoutId !== null) {
-      clearTimeout(this.state.timeoutId);
-      this.setState({ timeoutId: null });
+      clearTimeout(this.state.timeoutId)
+      this.setState({ timeoutId: null })
     }
-  };
+  }
 
   handleChange = (color: ColorResult, event: any) => {
     // @types/react-color doesn't define an event for onChange but it is published in
     // their documentation: https://casesandberg.github.io/react-color/#api-onChange
     // If the event was a MouseEvent|TouchEvent (i.e they clicked a swatch) we assume
     // that the user wants the panel to close immediately.
-    const displayColorPicker = event.clientX === undefined;
-    const hex = color.hex.toUpperCase();
-    this.setState({ displayColorPicker, color: hex });
-    this.props.onChange(hex);
-  };
+    const displayColorPicker = event.clientX === undefined
+    const hex = color.hex.toUpperCase()
+    this.setState({ displayColorPicker, color: hex })
+    this.props.onChange(hex)
+  }
 
   render() {
-    const colors = Object.values(PlateColors);
-    let picker = null;
+    const colors = Object.values(PlateColors)
+    let picker = null
     if (this.state.displayColorPicker) {
       picker = (
         <Popper.Popper placement="bottom-end">
@@ -108,7 +108,7 @@ class ColorPicker extends React.Component<Props, InternalState> {
             </div>
           )}
         </Popper.Popper>
-      );
+      )
     }
 
     return (
@@ -124,8 +124,8 @@ class ColorPicker extends React.Component<Props, InternalState> {
           {picker}
         </div>
       </Popper.Manager>
-    );
+    )
   }
 }
 
-export default ColorPicker;
+export default ColorPicker

@@ -23,40 +23,40 @@
 // that allowed for maximum code reuse between the Rankings and Lifting pages,
 // which have slightly different needs.
 
-import { getProjectedEventTotalKg, getFinalEventTotalKg, liftToAttemptFieldName } from "./entry";
-import { compareEntriesByAttempt } from "./liftingOrder";
-import { getWeightClassStr } from "../reducers/meetReducer";
+import { getProjectedEventTotalKg, getFinalEventTotalKg, liftToAttemptFieldName } from './entry'
+import { compareEntriesByAttempt } from './liftingOrder'
+import { getWeightClassStr } from '../reducers/meetReducer'
 
-import { Sex, Event, Equipment, Entry, Lift } from "../types/dataTypes";
-import { checkExhausted } from "../types/utils";
+import { Sex, Event, Equipment, Entry, Lift } from '../types/dataTypes'
+import { checkExhausted } from '../types/utils'
 
-export type Place = number | "DQ";
+export type Place = number | 'DQ'
 
 // Determines how the total is calculated.
-type ResultsType = "Projected" | "Final";
+type ResultsType = 'Projected' | 'Final'
 
 // Specifies a competition category under which entries can be ranked together.
 export type Category = {
-  sex: Sex;
-  event: Event;
-  equipment: Equipment;
-  division: string;
-  weightClassStr: string;
-};
+  sex: Sex
+  event: Event
+  equipment: Equipment
+  division: string
+  weightClassStr: string
+}
 
 // Wraps up all the entries in a category with the category's descriptors.
 export type CategoryResults = {
-  category: Category;
-  orderedEntries: Array<Entry>;
-};
+  category: Category
+  orderedEntries: Array<Entry>
+}
 
 // Generates a unique String out of a Category, for purposes of using as a Map key.
 const categoryToKey = (category: Category): string => {
-  return JSON.stringify(category);
-};
+  return JSON.stringify(category)
+}
 const keyToCategory = (key: string): Category => {
-  return JSON.parse(key);
-};
+  return JSON.parse(key)
+}
 
 // Helper function for sortByPlaceInCategory().
 //
@@ -67,29 +67,29 @@ const keyToCategory = (key: string): Category => {
 const getLastSuccessfulLift = (event: Event, entry: Entry): Lift => {
   // Iterate backwards over the Event types.
   for (let i = event.length - 1; i >= 0; --i) {
-    const lift = event[i];
+    const lift = event[i]
     switch (lift) {
-      case "S":
+      case 'S':
         if (entry.squatStatus.includes(1)) {
-          return "S";
+          return 'S'
         }
-        break;
-      case "B":
+        break
+      case 'B':
         if (entry.benchStatus.includes(1)) {
-          return "B";
+          return 'B'
         }
-        break;
-      case "D":
+        break
+      case 'D':
         if (entry.deadliftStatus.includes(1)) {
-          return "D";
+          return 'D'
         }
-        break;
+        break
       default:
-        return "S";
+        return 'S'
     }
   }
-  return "S";
-};
+  return 'S'
+}
 
 // Helper function for sortByPlaceInCategory().
 //
@@ -99,66 +99,70 @@ const getLastSuccessfulLift = (event: Event, entry: Entry): Lift => {
 // The caller already knows that a successful attempt was made, since it
 // passed getLastSuccessfulLift().
 const getLastSuccessfulAttempt = (lift: Lift, entry: Entry): number => {
-  let statuses = null;
+  let statuses = null
   switch (lift) {
-    case "S":
-      statuses = entry.squatStatus;
-      break;
-    case "B":
-      statuses = entry.benchStatus;
-      break;
-    case "D":
-      statuses = entry.deadliftStatus;
-      break;
+    case 'S':
+      statuses = entry.squatStatus
+      break
+    case 'B':
+      statuses = entry.benchStatus
+      break
+    case 'D':
+      statuses = entry.deadliftStatus
+      break
     default:
-      checkExhausted(lift);
-      return 0;
+      checkExhausted(lift)
+      return 0
   }
 
   // Consider only the first three attempts, in reverse.
   for (let i = 2; i >= 0; --i) {
-    if (statuses[i] === 1) return i;
+    if (statuses[i] === 1) return i
   }
-  return 0;
-};
+  return 0
+}
 
 // Returns a copy of the entries array sorted by Place.
 // All entries are assumed to be part of the same category.
-const sortByPlaceInCategory = (entries: ReadonlyArray<Entry>, category: Category, type: ResultsType): Array<Entry> => {
-  const event = category.event;
+const sortByPlaceInCategory = (
+  entries: ReadonlyArray<Entry>,
+  category: Category,
+  type: ResultsType
+): Array<Entry> => {
+  const event = category.event
 
   // Clone the entries array to avoid modifying the original.
-  const clonedEntries = entries.slice();
+  const clonedEntries = entries.slice()
 
   // Sort in the given category, first place having the lowest index.
   clonedEntries.sort((a, b) => {
     // If either of the lifters are guests, sort the guest last
     if (a.guest !== b.guest) {
-      return Number(a.guest) - Number(b.guest);
+      return Number(a.guest) - Number(b.guest)
     }
     // Otherwise, both lifters are non-guests or guests, so sort as per usual
-    let aTotal = 0;
+    let aTotal = 0
 
     // First sort by Total, higher sorting lower.
-    if (type === "Projected") {
-      aTotal = getProjectedEventTotalKg(a, event);
-      const bTotal = getProjectedEventTotalKg(b, event);
-      if (aTotal !== bTotal) return bTotal - aTotal;
-    } else if (type === "Final") {
-      aTotal = getFinalEventTotalKg(a, event);
-      const bTotal = getFinalEventTotalKg(b, event);
-      if (aTotal !== bTotal) return bTotal - aTotal;
+    if (type === 'Projected') {
+      aTotal = getProjectedEventTotalKg(a, event)
+      const bTotal = getProjectedEventTotalKg(b, event)
+      if (aTotal !== bTotal) return bTotal - aTotal
+    } else if (type === 'Final') {
+      aTotal = getFinalEventTotalKg(a, event)
+      const bTotal = getFinalEventTotalKg(b, event)
+      if (aTotal !== bTotal) return bTotal - aTotal
     }
 
     // If totals are equal, sort by Bodyweight, lower sorting lower.
-    if (a.bodyweightKg !== b.bodyweightKg) return a.bodyweightKg - b.bodyweightKg;
+    if (a.bodyweightKg !== b.bodyweightKg) return a.bodyweightKg - b.bodyweightKg
 
     // If totals are zero, neither lifter took a successful attempt,
     // so just sort arbitrarily by name.
     if (aTotal === 0) {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
+      if (a.name < b.name) return -1
+      if (a.name > b.name) return 1
+      return 0
     }
 
     // If totals are equal and bodyweights are equal, the winner is the
@@ -173,114 +177,114 @@ const sortByPlaceInCategory = (entries: ReadonlyArray<Entry>, category: Category
     //
     // Case 1: If the lifters' last successful lifts were for different Lifts,
     //         then the lifter with the earlier lift in SBD order wins.
-    const aLastSuccessfulLift = getLastSuccessfulLift(event, a);
-    const bLastSuccessfulLift = getLastSuccessfulLift(event, b);
-    const aLastSuccessfulLiftIndex = ["S", "B", "D"].indexOf(aLastSuccessfulLift);
-    const bLastSuccessfulLiftIndex = ["S", "B", "D"].indexOf(bLastSuccessfulLift);
+    const aLastSuccessfulLift = getLastSuccessfulLift(event, a)
+    const bLastSuccessfulLift = getLastSuccessfulLift(event, b)
+    const aLastSuccessfulLiftIndex = ['S', 'B', 'D'].indexOf(aLastSuccessfulLift)
+    const bLastSuccessfulLiftIndex = ['S', 'B', 'D'].indexOf(bLastSuccessfulLift)
     if (aLastSuccessfulLiftIndex !== bLastSuccessfulLiftIndex) {
-      return aLastSuccessfulLiftIndex - bLastSuccessfulLiftIndex;
+      return aLastSuccessfulLiftIndex - bLastSuccessfulLiftIndex
     }
 
     // Case 2: If the lifters reached the total on the same lift but on different
     //         attempts, the lifter with the earlier attempt wins.
-    const lift: Lift = aLastSuccessfulLift;
-    const aLastSuccessfulAttempt: number = getLastSuccessfulAttempt(lift, a);
-    const bLastSuccessfulAttempt: number = getLastSuccessfulAttempt(lift, b);
+    const lift: Lift = aLastSuccessfulLift
+    const aLastSuccessfulAttempt: number = getLastSuccessfulAttempt(lift, a)
+    const bLastSuccessfulAttempt: number = getLastSuccessfulAttempt(lift, b)
     if (aLastSuccessfulAttempt !== bLastSuccessfulAttempt) {
-      return aLastSuccessfulAttempt - bLastSuccessfulAttempt;
+      return aLastSuccessfulAttempt - bLastSuccessfulAttempt
     }
 
     // Case 3: If the lifters reached the total on the same lift and on the same
     //         attempt, defer to the lifting order to determine who lifted first.
-    const attempt = aLastSuccessfulAttempt;
-    return compareEntriesByAttempt(a, b, liftToAttemptFieldName(lift), attempt);
-  });
+    const attempt = aLastSuccessfulAttempt
+    return compareEntriesByAttempt(a, b, liftToAttemptFieldName(lift), attempt)
+  })
 
-  return clonedEntries;
-};
+  return clonedEntries
+}
 
 // Determines the sort order by Event.
 const getEventSortOrder = (ev: Event): number => {
-  return ["SBD", "BD", "SB", "SD", "S", "B", "D"].indexOf(ev);
-};
+  return ['SBD', 'BD', 'SB', 'SD', 'S', 'B', 'D'].indexOf(ev)
+}
 
 // Determines the sort order by Equipment.
 const getEquipmentSortOrder = (eq: Equipment): number => {
-  return ["Bare", "Sleeves", "Wraps", "Single-ply", "Multi-ply", "Unlimited"].indexOf(eq);
-};
+  return ['Bare', 'Sleeves', 'Wraps', 'Single-ply', 'Multi-ply', 'Unlimited'].indexOf(eq)
+}
 
 // Determines the sort order by Sex.
 const getSexSortOrder = (sex: Sex): number => {
   switch (sex) {
-    case "F":
-      return 0;
-    case "M":
-      return 1;
-    case "Mx":
-      return 2;
+    case 'F':
+      return 0
+    case 'M':
+      return 1
+    case 'Mx':
+      return 2
     default:
-      checkExhausted(sex);
-      return 3;
+      checkExhausted(sex)
+      return 3
   }
-};
+}
 
 // Determines the sort (and therefore presentation) order for the Category Results.
 // The input array is sorted in-place; nothing is returned.
 export const sortCategoryResults = (results: Array<CategoryResults>): void => {
   results.sort((a, b) => {
-    const catA = a.category;
-    const catB = b.category;
+    const catA = a.category
+    const catB = b.category
 
     // First, sort by Sex.
-    const aSex = getSexSortOrder(catA.sex);
-    const bSex = getSexSortOrder(catB.sex);
-    if (aSex !== bSex) return aSex - bSex;
+    const aSex = getSexSortOrder(catA.sex)
+    const bSex = getSexSortOrder(catB.sex)
+    if (aSex !== bSex) return aSex - bSex
 
     // Next, sort by Event.
-    const aEvent = getEventSortOrder(catA.event);
-    const bEvent = getEventSortOrder(catB.event);
-    if (aEvent !== bEvent) return aEvent - bEvent;
+    const aEvent = getEventSortOrder(catA.event)
+    const bEvent = getEventSortOrder(catB.event)
+    if (aEvent !== bEvent) return aEvent - bEvent
 
     // Next, sort by Equipment.
-    const aEquipment = getEquipmentSortOrder(catA.equipment);
-    const bEquipment = getEquipmentSortOrder(catB.equipment);
-    if (aEquipment !== bEquipment) return aEquipment - bEquipment;
+    const aEquipment = getEquipmentSortOrder(catA.equipment)
+    const bEquipment = getEquipmentSortOrder(catB.equipment)
+    if (aEquipment !== bEquipment) return aEquipment - bEquipment
 
     // Next, sort by Division as string.
-    if (catA.division < catB.division) return -1;
-    if (catA.division > catB.division) return 1;
+    if (catA.division < catB.division) return -1
+    if (catA.division > catB.division) return 1
 
     // Finally, sort by WeightClass.
     // Any SHW class should be placed at the end.
-    const aIsSHW: boolean = catA.weightClassStr.includes("+");
-    const bIsSHW: boolean = catB.weightClassStr.includes("+");
-    if (aIsSHW && !bIsSHW) return 1;
-    if (!aIsSHW && bIsSHW) return -1;
+    const aIsSHW: boolean = catA.weightClassStr.includes('+')
+    const bIsSHW: boolean = catB.weightClassStr.includes('+')
+    if (aIsSHW && !bIsSHW) return 1
+    if (!aIsSHW && bIsSHW) return -1
     // parseInt() ignores the "+" at the end of SHW class strings.
-    const aWeightClass = catA.weightClassStr === "" ? 0 : parseInt(catA.weightClassStr);
-    const bWeightClass = catB.weightClassStr === "" ? 0 : parseInt(catB.weightClassStr);
-    return aWeightClass - bWeightClass;
-  });
-};
+    const aWeightClass = catA.weightClassStr === '' ? 0 : parseInt(catA.weightClassStr)
+    const bWeightClass = catB.weightClassStr === '' ? 0 : parseInt(catB.weightClassStr)
+    return aWeightClass - bWeightClass
+  })
+}
 
 const mapSexToClasses = (
   sex: Sex,
   men: ReadonlyArray<number>,
   women: ReadonlyArray<number>,
-  mx: ReadonlyArray<number>,
+  mx: ReadonlyArray<number>
 ): ReadonlyArray<number> => {
   switch (sex) {
-    case "M":
-      return men;
-    case "F":
-      return women;
-    case "Mx":
-      return mx;
+    case 'M':
+      return men
+    case 'F':
+      return women
+    case 'Mx':
+      return mx
     default:
-      checkExhausted(sex);
-      return men;
+      checkExhausted(sex)
+      return men
   }
-};
+}
 
 // Generates objects representing every present category of competition,
 // with each entry given a Place designation.
@@ -293,26 +297,31 @@ const getAllResults = (
   weightClassesKgMx: ReadonlyArray<number>,
   combineSleevesAndWraps: boolean,
   combineSingleAndMulti: boolean,
-  type: ResultsType,
+  type: ResultsType
 ): Array<CategoryResults> => {
   // Generate a map from category to the entries within that category.
   // The map is populated by iterating over each entry and having the entry
   // append itself to per-category lists.
-  const categoryMap = new Map<string, Entry[]>();
+  const categoryMap = new Map<string, Entry[]>()
   for (let i = 0; i < entries.length; i++) {
-    const e = entries[i];
+    const e = entries[i]
 
     // Remember consistent properties.
-    const sex = e.sex;
-    const classesForSex = mapSexToClasses(sex, weightClassesKgMen, weightClassesKgWomen, weightClassesKgMx);
-    const weightClassStr = getWeightClassStr(classesForSex, e.bodyweightKg);
+    const sex = e.sex
+    const classesForSex = mapSexToClasses(
+      sex,
+      weightClassesKgMen,
+      weightClassesKgWomen,
+      weightClassesKgMx
+    )
+    const weightClassStr = getWeightClassStr(classesForSex, e.bodyweightKg)
 
     // If the results combine Sleeves and Wraps, promote Sleeves to Wraps.
-    let equipment = e.equipment;
-    if (combineSleevesAndWraps && equipment === "Sleeves") {
-      equipment = "Wraps";
-    } else if (combineSingleAndMulti && equipment === "Single-ply") {
-      equipment = "Multi-ply";
+    let equipment = e.equipment
+    if (combineSleevesAndWraps && equipment === 'Sleeves') {
+      equipment = 'Wraps'
+    } else if (combineSingleAndMulti && equipment === 'Single-ply') {
+      equipment = 'Multi-ply'
     }
 
     // Iterate over every combination of division and event, adding to the map.
@@ -323,33 +332,33 @@ const getAllResults = (
     // on the registration page, believing that to be unneeded.
     //
     // If that special case were not handled, the lifter would disappear from results.
-    const numDivisions = e.divisions.length;
-    let dividx: number = 0;
+    const numDivisions = e.divisions.length
+    let dividx: number = 0
     do {
-      const division = numDivisions > 0 ? e.divisions[dividx] : "";
+      const division = numDivisions > 0 ? e.divisions[dividx] : ''
 
       for (let evidx = 0; evidx < e.events.length; evidx++) {
-        const event = e.events[evidx];
-        const category = { sex, event, equipment, division, weightClassStr };
-        const key = categoryToKey(category);
+        const event = e.events[evidx]
+        const category = { sex, event, equipment, division, weightClassStr }
+        const key = categoryToKey(category)
 
-        const catEntries = categoryMap.get(key);
-        catEntries === undefined ? categoryMap.set(key, [e]) : catEntries.push(e);
+        const catEntries = categoryMap.get(key)
+        catEntries === undefined ? categoryMap.set(key, [e]) : catEntries.push(e)
       }
-    } while (++dividx < numDivisions);
+    } while (++dividx < numDivisions)
   }
 
   // Iterate over each category and assign a Place to the entries therein.
-  const results = [];
+  const results = []
   for (const [key, catEntries] of categoryMap) {
-    const category = keyToCategory(key);
-    const orderedEntries = sortByPlaceInCategory(catEntries, category, type);
-    results.push({ category, orderedEntries });
+    const category = keyToCategory(key)
+    const orderedEntries = sortByPlaceInCategory(catEntries, category, type)
+    results.push({ category, orderedEntries })
   }
 
-  sortCategoryResults(results);
-  return results;
-};
+  sortCategoryResults(results)
+  return results
+}
 
 export const getProjectedResults = (
   entries: ReadonlyArray<Entry>,
@@ -357,7 +366,7 @@ export const getProjectedResults = (
   weightClassesKgWomen: ReadonlyArray<number>,
   weightClassesKgMx: ReadonlyArray<number>,
   combineSleevesAndWraps: boolean,
-  combineSingleAndMulti: boolean,
+  combineSingleAndMulti: boolean
 ): Array<CategoryResults> => {
   return getAllResults(
     entries,
@@ -366,9 +375,9 @@ export const getProjectedResults = (
     weightClassesKgMx,
     combineSleevesAndWraps,
     combineSingleAndMulti,
-    "Projected",
-  );
-};
+    'Projected'
+  )
+}
 
 export const getFinalResults = (
   entries: ReadonlyArray<Entry>,
@@ -376,7 +385,7 @@ export const getFinalResults = (
   weightClassesKgWomen: ReadonlyArray<number>,
   weightClassesKgMx: ReadonlyArray<number>,
   combineSleevesAndWraps: boolean,
-  combineSingleAndMulti: boolean,
+  combineSingleAndMulti: boolean
 ): Array<CategoryResults> => {
   return getAllResults(
     entries,
@@ -385,6 +394,6 @@ export const getFinalResults = (
     weightClassesKgMx,
     combineSleevesAndWraps,
     combineSingleAndMulti,
-    "Final",
-  );
-};
+    'Final'
+  )
+}

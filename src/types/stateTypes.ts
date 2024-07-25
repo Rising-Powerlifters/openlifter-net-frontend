@@ -21,66 +21,66 @@
 // Because the Redux store is immutable, all types are internally prefixed
 // with the "readonly " covariant type, which makes them immutable.
 
-import { Entry, Flight, Formula, Language, Lift, Plate, AgeCoefficients } from "./dataTypes";
+import { Entry, Flight, Formula, Language, Lift, Plate, AgeCoefficients } from './dataTypes'
 
 export type VersionsState = {
-  readonly stateVersion: string;
-  readonly releaseVersion: string;
-};
+  readonly stateVersion: string
+  readonly releaseVersion: string
+}
 
 export type MeetState = {
   // Sanction Information.
-  readonly name: string;
-  readonly country: string;
-  readonly state: string;
-  readonly city: string;
-  readonly federation: string;
-  readonly date: string;
-  readonly lengthDays: number;
-  readonly platformsOnDays: ReadonlyArray<number>;
-  readonly ageCoefficients: AgeCoefficients;
+  readonly name: string
+  readonly country: string
+  readonly state: string
+  readonly city: string
+  readonly federation: string
+  readonly date: string
+  readonly lengthDays: number
+  readonly platformsOnDays: ReadonlyArray<number>
+  readonly ageCoefficients: AgeCoefficients
 
   // Competition Rules.
-  readonly divisions: ReadonlyArray<string>;
-  readonly weightClassesKgMen: ReadonlyArray<number>;
-  readonly weightClassesKgWomen: ReadonlyArray<number>;
-  readonly weightClassesKgMx: ReadonlyArray<number>;
-  readonly formula: Formula;
-  readonly combineSleevesAndWraps: boolean;
-  readonly combineSingleAndMulti: boolean;
-  readonly allow4thAttempts: boolean;
+  readonly divisions: ReadonlyArray<string>
+  readonly weightClassesKgMen: ReadonlyArray<number>
+  readonly weightClassesKgWomen: ReadonlyArray<number>
+  readonly weightClassesKgMx: ReadonlyArray<number>
+  readonly formula: Formula
+  readonly combineSleevesAndWraps: boolean
+  readonly combineSingleAndMulti: boolean
+  readonly allow4thAttempts: boolean
 
   // Weights and Loading Setup.
-  readonly inKg: boolean;
-  readonly squatBarAndCollarsWeightKg: number;
-  readonly benchBarAndCollarsWeightKg: number;
-  readonly deadliftBarAndCollarsWeightKg: number;
-  readonly plates: ReadonlyArray<Readonly<Plate>>;
-  readonly showAlternateUnits: boolean;
-};
+  readonly inKg: boolean
+  readonly squatBarAndCollarsWeightKg: number
+  readonly benchBarAndCollarsWeightKg: number
+  readonly deadliftBarAndCollarsWeightKg: number
+  readonly plates: ReadonlyArray<Readonly<Plate>>
+  readonly showAlternateUnits: boolean
+}
 
 export type RegistrationState = {
-  readonly nextEntryId: number;
-  readonly entries: ReadonlyArray<Readonly<Entry>>;
+  readonly nextEntryId: number
+  readonly entries: ReadonlyArray<Readonly<Entry>>
   readonly lookup: {
-    readonly [id: number]: number;
-  };
-};
+    readonly [id: number]: number
+  }
+}
 
 export type LiftingState = {
-  readonly day: number;
-  readonly platform: number;
-  readonly flight: Flight;
-  readonly lift: Lift;
-  readonly overrideAttempt: number | null;
-  readonly overrideEntryId: number | null;
-  readonly columnDivisionWidthPx: number;
-};
+  readonly day: number
+  readonly platform: number
+  readonly flight: Flight
+  readonly lift: Lift
+  readonly overrideAttempt: number | null
+  readonly overrideEntryId: number | null
+  readonly columnDivisionWidthPx: number
+}
 
 export type GlobalState = {
-  readonly versions: VersionsState;
-  readonly language: Language;
-  readonly meet: MeetState;
-  readonly registration: RegistrationState;
-  readonly lifting: LiftingState;
-};
+  readonly versions: VersionsState
+  readonly language: Language
+  readonly meet: MeetState
+  readonly registration: RegistrationState
+  readonly lifting: LiftingState
+}

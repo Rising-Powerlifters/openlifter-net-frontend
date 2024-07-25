@@ -29,38 +29,38 @@
 // From http://www.irondawg.com/reshel_formula.htm
 // Errors corrected. See http://tsampa.org/training/scripts/relative_strength/
 
-import { Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
 export const reshel = (sex: Sex, bodyweightKg: number, totalKg: number): number => {
   switch (sex) {
-    case "M":
-    case "Mx":
-      return coefficient(bodyweightKg, reshelTableMen) * totalKg;
-    case "F":
-      return coefficient(bodyweightKg, reshelTableWomen) * totalKg;
+    case 'M':
+    case 'Mx':
+      return coefficient(bodyweightKg, reshelTableMen) * totalKg
+    case 'F':
+      return coefficient(bodyweightKg, reshelTableWomen) * totalKg
     default:
-      checkExhausted(sex);
-      return 0;
+      checkExhausted(sex)
+      return 0
   }
-};
+}
 
-type CoefficientTable = [bodyweightKg: number, coefficient: number][];
+type CoefficientTable = [bodyweightKg: number, coefficient: number][]
 
 // Calculates the coefficient by doing an O(1) table lookup.
 //
 // This depends on the tables having increments of exactly 0.25 and not having holes.
 function coefficient(bodyweightKg: number, table: CoefficientTable): number {
   // Round up to the table's minimum bodyweight, and round down to the maximum.
-  const bw_min = table[0][0];
-  const bw_max = table[table.length - 1][0];
-  const clamped = Math.min(Math.max(bodyweightKg, bw_min), bw_max);
+  const bw_min = table[0][0]
+  const bw_max = table[table.length - 1][0]
+  const clamped = Math.min(Math.max(bodyweightKg, bw_min), bw_max)
 
   // All floating-point bodyweights in the Reshel tables are exactly representable.
-  const steps_per_kg = 4; // Steps are exactly 0.25 in both tables, so 4 steps per kg.
-  const as_index = Math.round((clamped - bw_min) * steps_per_kg);
+  const steps_per_kg = 4 // Steps are exactly 0.25 in both tables, so 4 steps per kg.
+  const as_index = Math.round((clamped - bw_min) * steps_per_kg)
 
-  return table[as_index][1];
+  return table[as_index][1]
 }
 
 const reshelTableMen: CoefficientTable = [
@@ -566,8 +566,8 @@ const reshelTableMen: CoefficientTable = [
   [174.75, 0.816],
   [175.0, 0.816],
   [175.25, 0.816],
-  [175.5, 0.816],
-];
+  [175.5, 0.816]
+]
 
 const reshelTableWomen: CoefficientTable = [
   [40.0, 3.145],
@@ -1054,5 +1054,5 @@ const reshelTableWomen: CoefficientTable = [
   [159.75, 0.902],
   [160, 0.901],
   [160.25, 0.9],
-  [160.5, 0.899],
-];
+  [160.5, 0.899]
+]

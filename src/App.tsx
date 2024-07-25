@@ -16,24 +16,24 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React from 'react'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import OpenLifterIntlProvider from "./components/translations/OpenLifterIntlProvider";
+import OpenLifterIntlProvider from './components/translations/OpenLifterIntlProvider'
 
-import RootContainer from "./containers/RootContainer";
-import MeetSetupContainer from "./containers/MeetSetupContainer";
-import RegistrationContainer from "./containers/RegistrationContainer";
-import WeighinsContainer from "./containers/WeighinsContainer";
-import LiftingContainer from "./containers/LiftingContainer";
-import FlightOrderContainer from "./containers/FlightOrderContainer";
-import ResultsContainer from "./containers/ResultsContainer";
-import DebugContainer from "./containers/DebugContainer";
-import AboutContainer from "./containers/AboutContainer";
-import Navigation from "./components/Navigation";
-import { persistor, store } from "./store";
+import RootContainer from './containers/RootContainer'
+import MeetSetupContainer from './containers/MeetSetupContainer'
+import RegistrationContainer from './containers/RegistrationContainer'
+import WeighinsContainer from './containers/WeighinsContainer'
+import LiftingContainer from './containers/LiftingContainer'
+import FlightOrderContainer from './containers/FlightOrderContainer'
+import ResultsContainer from './containers/ResultsContainer'
+import DebugContainer from './containers/DebugContainer'
+import AboutContainer from './containers/AboutContainer'
+import Navigation from './components/Navigation'
+import { persistor, store } from './store'
 
 class App extends React.Component {
   render() {
@@ -67,8 +67,8 @@ class App extends React.Component {
           </OpenLifterIntlProvider>
         </PersistGate>
       </Provider>
-    );
+    )
   }
 }
 
-export default App;
+export default App

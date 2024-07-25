@@ -16,36 +16,36 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import translations from "./index";
+import translations from './index'
 
-describe("translations", () => {
+describe('translations', () => {
   // Variables are written like "{day} {platform}" in a string.
   // This test asserts that the variables are still present in the translations.
-  it("preserves in-string variables", () => {
-    const en = translations.en;
+  it('preserves in-string variables', () => {
+    const en = translations.en
     for (const id in en) {
-      const english: string = (en as any)[id];
+      const english: string = (en as any)[id]
 
-      let searchStart = 0;
-      while (english.indexOf("{", searchStart) >= 0) {
-        const start = english.indexOf("{", searchStart);
-        expect(start).toBeGreaterThanOrEqual(searchStart);
+      let searchStart = 0
+      while (english.indexOf('{', searchStart) >= 0) {
+        const start = english.indexOf('{', searchStart)
+        expect(start).toBeGreaterThanOrEqual(searchStart)
 
-        const end = english.indexOf("}", start);
-        expect(end).toBeGreaterThan(start);
+        const end = english.indexOf('}', start)
+        expect(end).toBeGreaterThan(start)
 
-        const variable = english.substring(start, end + 1);
-        expect(variable).toEqual(expect.stringContaining("{"));
-        expect(variable).toEqual(expect.stringContaining("}"));
+        const variable = english.substring(start, end + 1)
+        expect(variable).toEqual(expect.stringContaining('{'))
+        expect(variable).toEqual(expect.stringContaining('}'))
 
         // Ensure that the variable appears in each translation.
         for (const language in translations) {
-          const str = (translations as any)[language][id];
-          expect(str).toEqual(expect.stringContaining(variable));
+          const str = (translations as any)[language][id]
+          expect(str).toEqual(expect.stringContaining(variable))
         }
 
-        searchStart = start + 1;
+        searchStart = start + 1
       }
     }
-  });
-});
+  })
+})

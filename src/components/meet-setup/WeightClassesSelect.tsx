@@ -16,155 +16,156 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Form from "react-bootstrap/Form";
+import Form from 'react-bootstrap/Form'
 
-import CreatableSelect from "react-select/creatable";
+import CreatableSelect from 'react-select/creatable'
 
-import { getString } from "../../logic/strings";
-import { string2number, displayWeight } from "../../logic/units";
+import { getString } from '../../logic/strings'
+import { string2number, displayWeight } from '../../logic/units'
 
-import { setWeightClasses } from "../../actions/meetSetupActions";
+import { setWeightClasses } from '../../actions/meetSetupActions'
 
-import { Language, Sex } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
-import { checkExhausted } from "../../types/utils";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Language, Sex } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
+import { checkExhausted } from '../../types/utils'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 const components = {
-  DropdownIndicator: null,
-};
+  DropdownIndicator: null
+}
 
 type OptionType = {
-  label: string;
-  value: string;
-};
+  label: string
+  value: string
+}
 
 const createOption = (label: string): OptionType => ({
   label,
-  value: label.replace(",", "."),
-});
+  value: label.replace(',', '.')
+})
 
 interface OwnProps {
-  label: string;
-  sex: Sex;
+  label: string
+  sex: Sex
 }
 
 interface StateProps {
-  classes: ReadonlyArray<number>;
-  language: Language;
+  classes: ReadonlyArray<number>
+  language: Language
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 interface InternalState {
-  inputValue: string;
-  value: Array<OptionType>;
+  inputValue: string
+  value: Array<OptionType>
 }
 
 class WeightClassesSelect extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    const objarray: Array<OptionType> = [];
+    const objarray: Array<OptionType> = []
     for (let i = 0; i < props.classes.length; i++) {
-      const c = displayWeight(props.classes[i], props.language);
-      objarray.push(createOption(c));
+      const c = displayWeight(props.classes[i], props.language)
+      objarray.push(createOption(c))
     }
 
     this.state = {
-      inputValue: "",
-      value: objarray,
-    };
+      inputValue: '',
+      value: objarray
+    }
 
-    this.maybeUpdateRedux = this.maybeUpdateRedux.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.maybeUpdateRedux = this.maybeUpdateRedux.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
-  setWeightClasses = (sex: Sex, classesKg: ReadonlyArray<number>) => rpcDispatch(setWeightClasses(sex, classesKg));
+  setWeightClasses = (sex: Sex, classesKg: ReadonlyArray<number>) =>
+    rpcDispatch(setWeightClasses(sex, classesKg))
 
   // Updates the Redux store if a weightclass was added or removed.
   // Since updates are synchronous, we can simply check length.
   maybeUpdateRedux = (objarray: Array<OptionType>): void => {
     if (objarray.length === this.props.classes.length) {
-      return;
+      return
     }
 
     // The classes changed: save to Redux.
-    const classes = [];
+    const classes = []
     for (let i = 0; i < objarray.length; i++) {
-      classes.push(Number(objarray[i].value));
+      classes.push(Number(objarray[i].value))
     }
-    this.setWeightClasses(this.props.sex, classes);
-  };
+    this.setWeightClasses(this.props.sex, classes)
+  }
 
   handleChange = (value: any): void => {
     if (value instanceof Array) {
-      this.setState({ value: value });
-      this.maybeUpdateRedux(value);
+      this.setState({ value: value })
+      this.maybeUpdateRedux(value)
     } else if (value === null) {
-      this.setState({ value: [] });
-      this.maybeUpdateRedux([]);
+      this.setState({ value: [] })
+      this.maybeUpdateRedux([])
     }
-  };
+  }
 
   // Reflects the current typing status in the state.
   handleInputChange = (inputValue: string): void => {
-    this.setState({ inputValue: inputValue });
-  };
+    this.setState({ inputValue: inputValue })
+  }
 
   // Handles the case of creating a new weightclass.
   handleKeyDown = (event: React.KeyboardEvent<HTMLElement>): void => {
-    const { inputValue, value } = this.state;
-    if (!inputValue) return;
-    if (event.key === "Enter" || event.key === "Tab") {
-      const asNumber = string2number(inputValue);
+    const { inputValue, value } = this.state
+    if (!inputValue) return
+    if (event.key === 'Enter' || event.key === 'Tab') {
+      const asNumber = string2number(inputValue)
 
       // Disallow creating non-numeric inputs.
       if (isNaN(asNumber) || !isFinite(asNumber)) {
-        this.setState({ inputValue: "" });
-        event.preventDefault();
-        return;
+        this.setState({ inputValue: '' })
+        event.preventDefault()
+        return
       }
 
       // Disallow negative inputs.
       // The string check is for negative zero.
-      if (asNumber < 0 || inputValue.includes("-")) {
-        this.setState({ inputValue: "" });
-        event.preventDefault();
-        return;
+      if (asNumber < 0 || inputValue.includes('-')) {
+        this.setState({ inputValue: '' })
+        event.preventDefault()
+        return
       }
 
       // Disallow creating redundant classes.
       for (let i = 0; i < value.length; i++) {
         if (string2number(value[i].label) === asNumber) {
           // Silently drop the redundant weightclass.
-          this.setState({ inputValue: "" });
-          event.preventDefault();
-          return;
+          this.setState({ inputValue: '' })
+          event.preventDefault()
+          return
         }
       }
 
       // Sort the new value into the array.
-      let newValue = [...value, createOption(inputValue)];
-      newValue = newValue.sort((a, b) => Number(a.value) - Number(b.value));
+      let newValue = [...value, createOption(inputValue)]
+      newValue = newValue.sort((a, b) => Number(a.value) - Number(b.value))
 
       this.setState({
-        inputValue: "",
-        value: newValue,
-      });
-      this.maybeUpdateRedux(newValue);
-      event.preventDefault();
+        inputValue: '',
+        value: newValue
+      })
+      this.maybeUpdateRedux(newValue)
+      event.preventDefault()
     }
-  };
+  }
 
   render() {
-    const { inputValue, value } = this.state;
-    const placeholder = getString("meet-setup.placeholder-classes", this.props.language);
+    const { inputValue, value } = this.state
+    const placeholder = getString('meet-setup.placeholder-classes', this.props.language)
 
     return (
       <Form.Group>
@@ -181,29 +182,29 @@ class WeightClassesSelect extends React.Component<Props, InternalState> {
           value={value}
         />
       </Form.Group>
-    );
+    )
   }
 }
 
 const selectClassesBySex = (sex: Sex, state: GlobalState): ReadonlyArray<number> => {
   switch (sex) {
-    case "M":
-      return state.meet.weightClassesKgMen;
-    case "F":
-      return state.meet.weightClassesKgWomen;
-    case "Mx":
-      return state.meet.weightClassesKgMx;
+    case 'M':
+      return state.meet.weightClassesKgMen
+    case 'F':
+      return state.meet.weightClassesKgWomen
+    case 'Mx':
+      return state.meet.weightClassesKgMx
     default:
-      checkExhausted(sex);
-      return state.meet.weightClassesKgMen;
+      checkExhausted(sex)
+      return state.meet.weightClassesKgMen
   }
-};
+}
 
 const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => {
   return {
     classes: selectClassesBySex(ownProps.sex, state),
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
-export default connect(mapStateToProps)(WeightClassesSelect);
+export default connect(mapStateToProps)(WeightClassesSelect)

@@ -18,10 +18,10 @@
 
 // Container for the Registration page.
 
-import React from "react";
+import React from 'react'
 
-import RegistrationView from "../components/registration/RegistrationView";
-import styles from "../components/common/ContentArea.module.scss";
+import RegistrationView from '../components/registration/RegistrationView'
+import styles from '../components/common/ContentArea.module.scss'
 
 class RegistrationContainer extends React.Component<{}> {
   render() {
@@ -29,8 +29,8 @@ class RegistrationContainer extends React.Component<{}> {
       <div className={styles.contentArea}>
         <RegistrationView />
       </div>
-    );
+    )
   }
 }
 
-export default RegistrationContainer;
+export default RegistrationContainer

@@ -18,10 +18,10 @@
 
 // Container for the FlightOrder page.
 
-import React from "react";
+import React from 'react'
 
-import FlightOrderView from "../components/flight-order/FlightOrderView";
-import styles from "../components/common/ContentArea.module.scss";
+import FlightOrderView from '../components/flight-order/FlightOrderView'
+import styles from '../components/common/ContentArea.module.scss'
 
 class FlightOrderContainer extends React.Component<{}> {
   render() {
@@ -29,8 +29,8 @@ class FlightOrderContainer extends React.Component<{}> {
       <div className={styles.contentArea}>
         <FlightOrderView />
       </div>
-    );
+    )
   }
 }
 
-export default FlightOrderContainer;
+export default FlightOrderContainer

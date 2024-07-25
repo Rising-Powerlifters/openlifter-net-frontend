@@ -22,26 +22,26 @@ import {
   SetLiftingGroupAction,
   OverrideAttemptAction,
   OverrideEntryIdAction,
-  SetTableInfoAction,
-} from "../types/actionTypes";
-import { Flight, Lift } from "../types/dataTypes";
-import { LiftingState } from "../types/stateTypes";
+  SetTableInfoAction
+} from '../types/actionTypes'
+import { Flight, Lift } from '../types/dataTypes'
+import { LiftingState } from '../types/stateTypes'
 
 // Sets a weightKg that doesn't have a good/failed value, for entering in attempts.
 export const enterAttempt = (
   entryId: number,
   lift: Lift,
   attemptOneIndexed: number,
-  weightKg: number,
+  weightKg: number
 ): EnterAttemptAction => {
   return {
-    type: "ENTER_ATTEMPT",
+    type: 'ENTER_ATTEMPT',
     entryId: entryId,
     lift: lift,
     attemptOneIndexed: attemptOneIndexed,
-    weightKg: weightKg,
-  };
-};
+    weightKg: weightKg
+  }
+}
 
 // Marks a lift "good" or "failed".
 //
@@ -49,45 +49,55 @@ export const enterAttempt = (
 // lift is "S", "B", or "D".
 // attempt is 1,2,3, etc., up to MAX_ATTEMPTS.
 // success is a bool for whether to mark the lift as a success or as a failure.
-export const markLift = (entryId: number, lift: Lift, attemptOneIndexed: number, success: boolean): MarkLiftAction => {
+export const markLift = (
+  entryId: number,
+  lift: Lift,
+  attemptOneIndexed: number,
+  success: boolean
+): MarkLiftAction => {
   return {
-    type: "MARK_LIFT",
+    type: 'MARK_LIFT',
     entryId: entryId,
     lift: lift,
     attemptOneIndexed: attemptOneIndexed,
-    success: success,
-  };
-};
+    success: success
+  }
+}
 
 // Sets the current group of lifters.
 // This is always manually set by the score table.
-export const setLiftingGroup = (day: number, platform: number, flight: Flight, lift: Lift): SetLiftingGroupAction => {
+export const setLiftingGroup = (
+  day: number,
+  platform: number,
+  flight: Flight,
+  lift: Lift
+): SetLiftingGroupAction => {
   return {
-    type: "SET_LIFTING_GROUP",
+    type: 'SET_LIFTING_GROUP',
     day: day,
     platform: platform,
     flight: flight,
-    lift: lift,
-  };
-};
+    lift: lift
+  }
+}
 
 // Overrides the calculated meet progress logic by forcing display of an attempt,
 // even if it has already been marked "good lift" or "no lift".
 export const overrideAttempt = (attempt: number): OverrideAttemptAction => {
   return {
-    type: "OVERRIDE_ATTEMPT",
-    attempt: attempt,
-  };
-};
+    type: 'OVERRIDE_ATTEMPT',
+    attempt: attempt
+  }
+}
 
 // Overrides the calculated meet progress logic by forcing display of a specific lifter,
 // even if they have already had their attempt entered.
 export const overrideEntryId = (entryId: number): OverrideEntryIdAction => {
   return {
-    type: "OVERRIDE_ENTRY_ID",
-    entryId: entryId,
-  };
-};
+    type: 'OVERRIDE_ENTRY_ID',
+    entryId: entryId
+  }
+}
 
 // Updates arbitrary fields in the LiftingState.
 //
@@ -98,7 +108,7 @@ export const overrideEntryId = (entryId: number): OverrideEntryIdAction => {
 // actions for each kind of modification is not really useful.
 export const setTableInfo = (obj: Partial<LiftingState>): SetTableInfoAction => {
   return {
-    type: "SET_TABLE_INFO",
-    changes: obj,
-  };
-};
+    type: 'SET_TABLE_INFO',
+    changes: obj
+  }
+}

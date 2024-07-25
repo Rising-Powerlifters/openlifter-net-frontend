@@ -17,39 +17,39 @@
 
 // The confirmation modal that pops up when the "New Meet" button is clicked.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
 
-import { LinkContainer } from "react-router-bootstrap";
+import { LinkContainer } from 'react-router-bootstrap'
 
-import { getString } from "../../logic/strings";
+import { getString } from '../../logic/strings'
 
-import { overwriteStore } from "../../actions/globalActions";
-import rootReducer from "../../reducers/rootReducer";
+import { overwriteStore } from '../../actions/globalActions'
+import rootReducer from '../../reducers/rootReducer'
 
-import { Language } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
-import { Dispatch } from "redux";
+import { Language } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
+import { Dispatch } from 'redux'
 
 interface OwnProps {
-  show: boolean;
-  close: () => void;
+  show: boolean
+  close: () => void
 }
 
 interface StateProps {
-  name: string;
-  language: Language;
+  name: string
+  language: Language
 }
 
 interface DispatchProps {
-  overwriteStore: (language: Language) => void;
+  overwriteStore: (language: Language) => void
 }
 
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps & DispatchProps
 
 class NewMeetModal extends React.Component<Props> {
   render() {
@@ -81,25 +81,28 @@ class NewMeetModal extends React.Component<Props> {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.close} variant="light">
-            {getString("common.button-close", this.props.language)}
+            {getString('common.button-close', this.props.language)}
           </Button>
           <LinkContainer to="/meet-setup">
-            <Button onClick={() => this.props.overwriteStore(this.props.language)} variant="primary">
-              {getString("common.button-continue", this.props.language)}
+            <Button
+              onClick={() => this.props.overwriteStore(this.props.language)}
+              variant="primary"
+            >
+              {getString('common.button-continue', this.props.language)}
             </Button>
           </LinkContainer>
         </Modal.Footer>
       </Modal>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => {
   return {
     name: state.meet.name,
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
@@ -107,10 +110,13 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       // Calling the combined root reducer with an empty object results in the child reducers
       // being invoked with no argument, so they return their default states.
       // We cast here since this is not how the reducer is really intended to work
-      const defaultStore = rootReducer({ language: language } as GlobalState, "OVERWRITE_STORE" as any);
-      dispatch(overwriteStore(defaultStore));
-    },
-  };
-};
+      const defaultStore = rootReducer(
+        { language: language } as GlobalState,
+        'OVERWRITE_STORE' as any
+      )
+      dispatch(overwriteStore(defaultStore))
+    }
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewMeetModal);
+export default connect(mapStateToProps, mapDispatchToProps)(NewMeetModal)

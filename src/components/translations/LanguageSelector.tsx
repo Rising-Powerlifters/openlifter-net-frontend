@@ -15,26 +15,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import FormControl from "react-bootstrap/FormControl";
+import FormControl from 'react-bootstrap/FormControl'
 
-import { changeLanguage } from "../../actions/languageActions";
-import { Language } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
+import { changeLanguage } from '../../actions/languageActions'
+import { Language } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
 
-import { Dispatch } from "redux";
+import { Dispatch } from 'redux'
 
 interface StateProps {
-  language: Language;
+  language: Language
 }
 
 interface DispatchProps {
-  changeLanguage: (event: React.BaseSyntheticEvent) => any;
+  changeLanguage: (event: React.BaseSyntheticEvent) => any
 }
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps
 
 // TODO: Can we get these from the i18n lib somehow?
 const languageOptions = [
@@ -85,8 +85,8 @@ const languageOptions = [
   </option>,
   <option key="zh-Hans" value="zh-Hans">
     简体中文 (zh-Hans)
-  </option>,
-];
+  </option>
+]
 
 class LanguageSelector extends React.Component<Props> {
   render() {
@@ -99,21 +99,21 @@ class LanguageSelector extends React.Component<Props> {
       >
         {languageOptions}
       </FormControl>
-    );
+    )
   }
 }
 
 // Allows react component to subscribe to redux state updates
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  language: state.language,
-});
+  language: state.language
+})
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     // TODO: Can we make this more type safe and avoid the cast?
     changeLanguage: (event: React.BaseSyntheticEvent) =>
-      dispatch(changeLanguage(event.currentTarget.value as Language)),
-  };
-};
+      dispatch(changeLanguage(event.currentTarget.value as Language))
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(LanguageSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(LanguageSelector)

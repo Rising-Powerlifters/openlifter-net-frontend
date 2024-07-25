@@ -18,130 +18,132 @@
 
 // Randomizes the Registration page, for debugging.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Button from "react-bootstrap/Button";
+import Button from 'react-bootstrap/Button'
 
-import LocalizedString from "../translations/LocalizedString";
+import LocalizedString from '../translations/LocalizedString'
 
-import { randomAttempt, randomInt, randomFixedPoint } from "./RandomizeHelpers";
-import { lbs2kg } from "../../logic/units";
+import { randomAttempt, randomInt, randomFixedPoint } from './RandomizeHelpers'
+import { lbs2kg } from '../../logic/units'
 
-import { updateRegistration } from "../../actions/registrationActions";
-import { enterAttempt } from "../../actions/liftingActions";
+import { updateRegistration } from '../../actions/registrationActions'
+import { enterAttempt } from '../../actions/liftingActions'
 
-import { GlobalState, MeetState, RegistrationState } from "../../types/stateTypes";
-import { Entry, Lift } from "../../types/dataTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { GlobalState, MeetState, RegistrationState } from '../../types/stateTypes'
+import { Entry, Lift } from '../../types/dataTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  meet: MeetState;
-  registration: RegistrationState;
+  meet: MeetState
+  registration: RegistrationState
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 class RandomizeWeighinsButton extends React.Component<Props> {
   constructor(props: Props) {
-    super(props);
-    this.randomizeWeighins = this.randomizeWeighins.bind(this);
+    super(props)
+    this.randomizeWeighins = this.randomizeWeighins.bind(this)
   }
 
   updateRegistration = (entryId: number, obj: Partial<Entry>) => {
-    rpcDispatch(updateRegistration(entryId, obj));
-  };
+    rpcDispatch(updateRegistration(entryId, obj))
+  }
 
   enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
-    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
-  };
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg))
+  }
 
   randomAttempt = () => {
-    return randomAttempt(this.props.meet.inKg);
-  };
+    return randomAttempt(this.props.meet.inKg)
+  }
 
   randomizeWeighins = () => {
-    const entries = this.props.registration.entries;
-    const inKg: boolean = this.props.meet.inKg;
+    const entries = this.props.registration.entries
+    const inKg: boolean = this.props.meet.inKg
 
     for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i];
+      const entry = entries[i]
 
       // Get a random bodyweight.
       // ==========================================
-      const bodyweightKg = inKg ? randomFixedPoint(20, 150, 1) : lbs2kg(randomFixedPoint(40, 320, 1));
+      const bodyweightKg = inKg
+        ? randomFixedPoint(20, 150, 1)
+        : lbs2kg(randomFixedPoint(40, 320, 1))
       this.updateRegistration(entry.id, {
-        bodyweightKg: bodyweightKg,
-      });
+        bodyweightKg: bodyweightKg
+      })
 
       // Get a random age.
-      const age = randomInt(5, 79);
+      const age = randomInt(5, 79)
       this.updateRegistration(entry.id, {
-        age: age,
-      });
+        age: age
+      })
 
       // Figure out which events we're generating information for.
       // ==========================================
-      let hasSquat = false;
-      let hasBench = false;
-      let hasDeadlift = false;
+      let hasSquat = false
+      let hasBench = false
+      let hasDeadlift = false
       for (let j = 0; j < entry.events.length; j++) {
-        const e = entry.events[j];
-        if (e.includes("S")) {
-          hasSquat = true;
+        const e = entry.events[j]
+        if (e.includes('S')) {
+          hasSquat = true
         }
-        if (e.includes("B")) {
-          hasBench = true;
+        if (e.includes('B')) {
+          hasBench = true
         }
-        if (e.includes("D")) {
-          hasDeadlift = true;
+        if (e.includes('D')) {
+          hasDeadlift = true
         }
       }
 
       // Set attempts.
       // ==========================================
       if (hasSquat) {
-        this.enterAttempt(entry.id, "S", 1, this.randomAttempt());
+        this.enterAttempt(entry.id, 'S', 1, this.randomAttempt())
       }
       if (hasBench) {
-        this.enterAttempt(entry.id, "B", 1, this.randomAttempt());
+        this.enterAttempt(entry.id, 'B', 1, this.randomAttempt())
       }
       if (hasDeadlift) {
-        this.enterAttempt(entry.id, "D", 1, this.randomAttempt());
+        this.enterAttempt(entry.id, 'D', 1, this.randomAttempt())
       }
 
       // Set rack info.
       // ==========================================
       if (hasSquat) {
-        const height = String(randomInt(2, 18));
-        const pos = Math.random() < 0.9 ? "out" : "in";
+        const height = String(randomInt(2, 18))
+        const pos = Math.random() < 0.9 ? 'out' : 'in'
         this.updateRegistration(entry.id, {
-          squatRackInfo: height + pos,
-        });
+          squatRackInfo: height + pos
+        })
       }
 
       if (hasBench) {
-        const height = String(randomInt(0, 12));
-        const safety = String(randomInt(0, 4));
+        const height = String(randomInt(0, 12))
+        const safety = String(randomInt(0, 4))
         this.updateRegistration(entry.id, {
-          benchRackInfo: height + "/" + safety,
-        });
+          benchRackInfo: height + '/' + safety
+        })
       }
     }
-  };
+  }
 
   render() {
     return (
       <Button onClick={this.randomizeWeighins}>
         <LocalizedString id="nav.weigh-ins" />
       </Button>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   meet: state.meet,
-  registration: state.registration,
-});
+  registration: state.registration
+})
 
-export default connect(mapStateToProps)(RandomizeWeighinsButton);
+export default connect(mapStateToProps)(RandomizeWeighinsButton)

@@ -19,80 +19,85 @@
 // Displays the selector for determining how many plates are available
 // to loaders on one side.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Table from "react-bootstrap/Table";
+import Table from 'react-bootstrap/Table'
 
-import { setPlateConfig } from "../../actions/meetSetupActions";
+import { setPlateConfig } from '../../actions/meetSetupActions'
 
-import { getString } from "../../logic/strings";
-import { displayWeight, kg2lbs } from "../../logic/units";
+import { getString } from '../../logic/strings'
+import { displayWeight, kg2lbs } from '../../logic/units'
 
-import { Language, Plate } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
-import { isNumber, isString } from "../../types/utils";
-import PlateInput from "./PlateInput";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Language, Plate } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
+import { isNumber, isString } from '../../types/utils'
+import PlateInput from './PlateInput'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  inKg: boolean;
-  plates: ReadonlyArray<Plate>;
-  language: Language;
+  inKg: boolean
+  plates: ReadonlyArray<Plate>
+  language: Language
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 class Plates extends React.Component<Props> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validateAmountInput = this.validateAmountInput.bind(this);
-    this.updateHandler = this.updateHandler.bind(this);
+    this.validateAmountInput = this.validateAmountInput.bind(this)
+    this.updateHandler = this.updateHandler.bind(this)
   }
 
   setPlateConfig = (weight: number, amount: number, color: string) => {
-    rpcDispatch(setPlateConfig(weight, amount, color));
-  };
+    rpcDispatch(setPlateConfig(weight, amount, color))
+  }
 
-  validateAmountInput: (id: string) => "error" | null | undefined = (id) => {
-    const widget: any = document.getElementById(id);
+  validateAmountInput: (id: string) => 'error' | null | undefined = (id) => {
+    const widget: any = document.getElementById(id)
 
     // This can happen because the FormGroup is created before the widget exists.
-    if (widget === null) return;
-    const value = widget.value;
+    if (widget === null) return
+    const value = widget.value
 
-    if (value === undefined) return "error";
+    if (value === undefined) return 'error'
 
     // Ensure that the value is an integer in a reasonable range.
-    const asNum = Number(value);
-    if (Math.floor(asNum) !== asNum) return "error";
-    if (asNum < 0 || asNum > 20) return "error";
-    if (String(asNum) !== value) return "error";
+    const asNum = Number(value)
+    if (Math.floor(asNum) !== asNum) return 'error'
+    if (asNum < 0 || asNum > 20) return 'error'
+    if (String(asNum) !== value) return 'error'
 
-    return null;
-  };
+    return null
+  }
 
-  updateHandler = (weightKg: number, id: string, amount: string | number | string[] | undefined, color: string) => {
+  updateHandler = (
+    weightKg: number,
+    id: string,
+    amount: string | number | string[] | undefined,
+    color: string
+  ) => {
     if (!isString(amount) && !isNumber(amount)) {
-      throw new Error(`Expected either a string or a number, but got ${amount}`);
+      throw new Error(`Expected either a string or a number, but got ${amount}`)
     }
 
-    if (this.validateAmountInput(id) === "error") {
+    if (this.validateAmountInput(id) === 'error') {
       // Although no state is set, this is used to trigger the FormGroup
       // to re-query the validationState on change.
-      return this.setState({});
+      return this.setState({})
     }
 
-    this.setPlateConfig(weightKg, Number(amount), color);
-  };
+    this.setPlateConfig(weightKg, Number(amount), color)
+  }
 
   renderWeightRow = (weightKg: number, amount: number, color: string) => {
     // The input event value isn't passed by the event, so we assign a unique ID
     // and then just search the whole document for it.
-    const id = "weight" + String(weightKg);
-    const weight = this.props.inKg ? weightKg : kg2lbs(weightKg);
+    const id = 'weight' + String(weightKg)
+    const weight = this.props.inKg ? weightKg : kg2lbs(weightKg)
 
     return (
       <PlateInput
@@ -104,24 +109,27 @@ class Plates extends React.Component<Props> {
         color={color}
         onChange={this.updateHandler}
       />
-    );
-  };
+    )
+  }
 
   render() {
     const plateRows = this.props.plates.map((obj: Plate) =>
-      this.renderWeightRow(obj.weightKg, obj.pairCount, obj.color),
-    );
-    const unitId = this.props.inKg ? "meet-setup.plates-kg" : "meet-setup.plates-lbs";
-    const stringPlate = getString(unitId, this.props.language);
+      this.renderWeightRow(obj.weightKg, obj.pairCount, obj.color)
+    )
+    const unitId = this.props.inKg ? 'meet-setup.plates-kg' : 'meet-setup.plates-lbs'
+    const stringPlate = getString(unitId, this.props.language)
 
     return (
       <div>
-        <Table striped size="sm" hover style={{ margin: "0px" }}>
+        <Table striped size="sm" hover style={{ margin: '0px' }}>
           <thead>
             <tr>
               <th>{stringPlate}</th>
               <th>
-                <FormattedMessage id="meet-setup.plates-num-pairs" defaultMessage="Pairs of Plates" />
+                <FormattedMessage
+                  id="meet-setup.plates-num-pairs"
+                  defaultMessage="Pairs of Plates"
+                />
               </th>
               <th>
                 <FormattedMessage id="meet-setup.plates-color" defaultMessage="Color" />
@@ -131,14 +139,14 @@ class Plates extends React.Component<Props> {
           <tbody>{plateRows}</tbody>
         </Table>
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   inKg: state.meet.inKg,
   plates: state.meet.plates,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(Plates);
+export default connect(mapStateToProps)(Plates)

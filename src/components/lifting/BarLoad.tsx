@@ -19,17 +19,17 @@
 // This is the widget that gives a visual display of the weights on the bar,
 // used by the loading crew.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import { displayWeight } from "../../logic/units";
-import { PlateColors } from "../../constants/plateColors";
+import { displayWeight } from '../../logic/units'
+import { PlateColors } from '../../constants/plateColors'
 
-import { Language, Lift, LoadedPlate } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
+import { Language, Lift, LoadedPlate } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
 
-import styles from "./BarLoad.module.scss";
+import styles from './BarLoad.module.scss'
 
 const kgToStyleMap = new Map<number, string>([
   [50, styles.kg50],
@@ -43,10 +43,10 @@ const kgToStyleMap = new Map<number, string>([
   [1, styles.kg1],
   [0.75, styles.kg0p75],
   [0.5, styles.kg0p5],
-  [0.25, styles.kg0p25],
-]);
+  [0.25, styles.kg0p25]
+])
 
-const weightKgToStyle = (weightKg: number): string => kgToStyleMap.get(weightKg) || styles.error;
+const weightKgToStyle = (weightKg: number): string => kgToStyleMap.get(weightKg) || styles.error
 
 const lbsToStyleMap = new Map<number, string>([
   [100, styles.lbs100],
@@ -58,98 +58,99 @@ const lbsToStyleMap = new Map<number, string>([
   [5, styles.lbs5],
   [2.5, styles.lbs2p5],
   [1.25, styles.lbs1p25],
-  [0.5, styles.lbs0p5],
-]);
+  [0.5, styles.lbs0p5]
+])
 
-const weightLbsToStyle = (weightLbs: number): string => lbsToStyleMap.get(weightLbs) || styles.error;
+const weightLbsToStyle = (weightLbs: number): string => lbsToStyleMap.get(weightLbs) || styles.error
 
 const weightTextMap = new Map<number, string>([
-  [1.25, "1¼"],
-  [0.75, "¾"],
-  [0.5, "½"],
-  [0.25, "¼"],
-]);
+  [1.25, '1¼'],
+  [0.75, '¾'],
+  [0.5, '½'],
+  [0.25, '¼']
+])
 
 const weightAnyToText = (weightAny: number, language: Language): string =>
-  weightTextMap.get(weightAny) || displayWeight(weightAny, language);
+  weightTextMap.get(weightAny) || displayWeight(weightAny, language)
 
 interface PlateInfoProps {
-  loading: LoadedPlate[];
-  inKg: boolean;
-  language: Language;
+  loading: LoadedPlate[]
+  inKg: boolean
+  language: Language
 }
 
 // Turns the selectPlates() array into divs.
 const PlatesDiv: React.FC<PlateInfoProps> = ({ loading, inKg, language }) => {
-  const divs = [];
-  let i = 0;
+  const divs = []
+  let i = 0
 
   // Iterate on a group of plates of the same weight at a time.
   while (i < loading.length) {
-    const weightAny = loading[i].weightAny;
+    const weightAny = loading[i].weightAny
 
     // If the weight is negative, it's an error report.
     if (weightAny < 0) {
       divs.push(
-        <div key={"error"} className={styles.error}>
+        <div key={'error'} className={styles.error}>
           ?{displayWeight(-1 * weightAny, language)}
-        </div>,
-      );
-      break;
+        </div>
+      )
+      break
     }
 
     // Count how many times this same plate kind appears consecutively.
-    let plateCount = 1;
+    let plateCount = 1
     for (let j = i + 1; j < loading.length && loading[j].weightAny === weightAny; j++) {
-      plateCount++;
+      plateCount++
     }
 
     // If that plate is large and occurs a bunch, show a counter.
-    const showCounter = plateCount >= 3;
+    const showCounter = plateCount >= 3
 
     // Push each of the plates individually.
     for (let j = 0; j < plateCount; j++) {
-      const plate = loading[i + j];
-      const counter = String(j + 1);
+      const plate = loading[i + j]
+      const counter = String(j + 1)
 
       // Light backgrounds need dark text.
       const is_light =
-        plate.color === PlateColors.PLATE_DEFAULT_WHITE || plate.color === PlateColors.PLATE_DEFAULT_YELLOW;
+        plate.color === PlateColors.PLATE_DEFAULT_WHITE ||
+        plate.color === PlateColors.PLATE_DEFAULT_YELLOW
 
       const style = {
         backgroundColor: plate.color,
         opacity: plate.isAlreadyLoaded ? 0.25 : undefined,
-        color: is_light ? "#232323" : "#FFFFFF",
+        color: is_light ? '#232323' : '#FFFFFF',
         // White plates need a border.
-        border: plate.color === PlateColors.PLATE_DEFAULT_WHITE ? "1.5px solid #232323" : undefined,
-      };
+        border: plate.color === PlateColors.PLATE_DEFAULT_WHITE ? '1.5px solid #232323' : undefined
+      }
 
       divs.push(
         <div
-          key={weightAny + "-" + counter}
+          key={weightAny + '-' + counter}
           className={inKg ? weightKgToStyle(weightAny) : weightLbsToStyle(weightAny)}
           style={style}
         >
           <div>{weightAnyToText(weightAny, language)}</div>
           {showCounter ? <div>{counter}</div> : null}
-        </div>,
-      );
+        </div>
+      )
     }
 
-    i += plateCount;
+    i += plateCount
   }
 
-  return <>{divs}</>;
-};
+  return <>{divs}</>
+}
 
 interface RackInfoProps {
-  lift: Lift;
-  rackInfo: string;
+  lift: Lift
+  rackInfo: string
 }
 
 const RackInfoDiv: React.FC<RackInfoProps> = ({ lift, rackInfo }) => {
   // Only show rack info for lifts that use a rack.
-  if (lift === "D") return null;
+  if (lift === 'D') return null
 
   return (
     <div key={rackInfo} className={styles.rackInfo}>
@@ -157,25 +158,25 @@ const RackInfoDiv: React.FC<RackInfoProps> = ({ lift, rackInfo }) => {
         id="lifting.rack-info"
         defaultMessage="Rack {rackInfo}"
         values={{
-          rackInfo: rackInfo,
+          rackInfo: rackInfo
         }}
       />
     </div>
-  );
-};
+  )
+}
 
 interface OwnProps {
-  loading: Array<LoadedPlate>;
-  rackInfo: string;
-  inKg: boolean;
+  loading: Array<LoadedPlate>
+  rackInfo: string
+  inKg: boolean
 }
 
 interface StateProps {
-  lift: Lift;
-  language: Language;
+  lift: Lift
+  language: Language
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 const BarLoad: React.FC<Props> = ({ lift, loading, inKg, language, rackInfo }) => (
   <div className={styles.container}>
@@ -185,11 +186,11 @@ const BarLoad: React.FC<Props> = ({ lift, loading, inKg, language, rackInfo }) =
     <div className={styles.bar} />
     <RackInfoDiv lift={lift} rackInfo={rackInfo} />
   </div>
-);
+)
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   lift: state.lifting.lift,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(BarLoad);
+export default connect(mapStateToProps)(BarLoad)

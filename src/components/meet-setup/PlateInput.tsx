@@ -19,35 +19,35 @@
 // Displays the selector for determining how many plates are available
 // to loaders on one side, and what color it is, for a single plate weight.
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent } from 'react'
 
-import NumberInput from "../common/NumberInput";
-import ColorPicker from "./ColorPicker";
+import NumberInput from '../common/NumberInput'
+import ColorPicker from './ColorPicker'
 
-import { Validation } from "../../types/dataTypes";
+import { Validation } from '../../types/dataTypes'
 
 interface Props {
-  id: string;
-  weightKg: number;
-  displayWeight: string; // What kind of a plate this is.
-  pairCount: number;
-  color: string;
-  onChange: (weightKg: number, id: string, amount: number, color: string) => void;
+  id: string
+  weightKg: number
+  displayWeight: string // What kind of a plate this is.
+  pairCount: number
+  color: string
+  onChange: (weightKg: number, id: string, amount: number, color: string) => void
 }
 
 const validate = (n: number): Validation => {
   if (!Number.isInteger(n) || n < 0 || n > 50) {
-    return "error";
+    return 'error'
   }
-  return "success";
-};
+  return 'success'
+}
 
 const PlateInput: FunctionComponent<Props> = (props) => {
   return (
     <tr key={props.id}>
       <td>{props.displayWeight}</td>
       <td>
-        <div style={{ maxWidth: "130px" }}>
+        <div style={{ maxWidth: '130px' }}>
           <NumberInput
             initialValue={props.pairCount}
             step={1}
@@ -64,7 +64,7 @@ const PlateInput: FunctionComponent<Props> = (props) => {
         />
       </td>
     </tr>
-  );
-};
+  )
+}
 
-export default PlateInput;
+export default PlateInput

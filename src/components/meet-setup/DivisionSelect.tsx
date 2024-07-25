@@ -16,137 +16,140 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Form from "react-bootstrap/Form";
+import Form from 'react-bootstrap/Form'
 
-import CreatableSelect from "react-select/creatable";
+import CreatableSelect from 'react-select/creatable'
 
-import { getString } from "../../logic/strings";
+import { getString } from '../../logic/strings'
 
-import { setDivisions } from "../../actions/meetSetupActions";
+import { setDivisions } from '../../actions/meetSetupActions'
 
-import { GlobalState } from "../../types/stateTypes";
-import { Language } from "../../types/dataTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { GlobalState } from '../../types/stateTypes'
+import { Language } from '../../types/dataTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 const components = {
-  DropdownIndicator: null,
-};
+  DropdownIndicator: null
+}
 
 interface OptionType {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }
 
 const createOption = (label: string): OptionType => ({
   label,
-  value: label,
-});
+  value: label
+})
 
 interface StateProps {
-  divisions: ReadonlyArray<string>;
-  language: Language;
+  divisions: ReadonlyArray<string>
+  language: Language
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 interface InternalState {
-  inputValue: string;
-  value: Array<OptionType>;
+  inputValue: string
+  value: Array<OptionType>
 }
 
 class DivisionSelect extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    const objarray = [];
+    const objarray = []
     for (let i = 0; i < props.divisions.length; i++) {
-      const division = props.divisions[i];
-      objarray.push({ value: division, label: division });
+      const division = props.divisions[i]
+      objarray.push({ value: division, label: division })
     }
 
     this.state = {
-      inputValue: "",
-      value: objarray,
-    };
+      inputValue: '',
+      value: objarray
+    }
 
-    this.maybeUpdateRedux = this.maybeUpdateRedux.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.maybeUpdateRedux = this.maybeUpdateRedux.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
   setDivisions = (divisions: ReadonlyArray<string>) => {
-    rpcDispatch(setDivisions(divisions));
-  };
+    rpcDispatch(setDivisions(divisions))
+  }
 
   // Updates the Redux store if a division was added or removed.
   // Since updates are synchronous, we can simply check length.
   maybeUpdateRedux = (objarray: Array<OptionType>): void => {
     // objarray is a list of {value: "foo", label: "foo"} objects.
     if (objarray.length === this.props.divisions.length) {
-      return;
+      return
     }
 
     // The divisions changed: save to Redux.
-    const divisions = [];
+    const divisions = []
     for (let i = 0; i < objarray.length; i++) {
-      divisions.push(objarray[i].label);
+      divisions.push(objarray[i].label)
     }
-    this.setDivisions(divisions);
-  };
+    this.setDivisions(divisions)
+  }
 
   // Handles the case of deleting an existing division.
   handleChange = (value: any): void => {
     if (value instanceof Array) {
-      this.setState({ value: value });
-      this.maybeUpdateRedux(value);
+      this.setState({ value: value })
+      this.maybeUpdateRedux(value)
     } else if (value === null) {
-      this.setState({ value: [] });
-      this.maybeUpdateRedux([]);
+      this.setState({ value: [] })
+      this.maybeUpdateRedux([])
     }
-  };
+  }
 
   // Reflects the current typing status in the state.
   handleInputChange = (inputValue: string): void => {
-    this.setState({ inputValue: inputValue });
-  };
+    this.setState({ inputValue: inputValue })
+  }
 
   // Handles the case of creating a new division.
   handleKeyDown = (event: React.KeyboardEvent<HTMLElement>): void => {
-    const { inputValue, value } = this.state;
-    if (!inputValue) return;
-    if (event.key === "Enter" || event.key === "Tab") {
+    const { inputValue, value } = this.state
+    if (!inputValue) return
+    if (event.key === 'Enter' || event.key === 'Tab') {
       // Disallow creating redundant divisions.
       for (let i = 0; i < value.length; i++) {
         if (value[i].label === inputValue) {
           // Silently drop the redundant division.
-          this.setState({ inputValue: "" });
-          event.preventDefault();
-          return;
+          this.setState({ inputValue: '' })
+          event.preventDefault()
+          return
         }
       }
 
-      const newValue = [...value, createOption(inputValue)];
+      const newValue = [...value, createOption(inputValue)]
       this.setState({
-        inputValue: "",
-        value: newValue,
-      });
-      this.maybeUpdateRedux(newValue);
-      event.preventDefault();
+        inputValue: '',
+        value: newValue
+      })
+      this.maybeUpdateRedux(newValue)
+      event.preventDefault()
     }
-  };
+  }
 
   render() {
-    const { inputValue, value } = this.state;
-    const placeholder = getString("meet-setup.divisions-placeholder", this.props.language);
+    const { inputValue, value } = this.state
+    const placeholder = getString('meet-setup.divisions-placeholder', this.props.language)
     return (
       <Form.Group>
         <Form.Label>
-          <FormattedMessage id="meet-setup.divisions-label" defaultMessage="Divisions (prefer short codes!)" />
+          <FormattedMessage
+            id="meet-setup.divisions-label"
+            defaultMessage="Divisions (prefer short codes!)"
+          />
         </Form.Label>
         <CreatableSelect
           components={components}
@@ -160,13 +163,13 @@ class DivisionSelect extends React.Component<Props, InternalState> {
           value={value}
         />
       </Form.Group>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   divisions: state.meet.divisions,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(DivisionSelect);
+export default connect(mapStateToProps)(DivisionSelect)

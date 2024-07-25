@@ -23,83 +23,83 @@
 // here as (pixels / 9) to make it look nicer. 9 is used because most columns
 // are set to 72px, which is divisible by 9.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Form from "react-bootstrap/Form";
+import Form from 'react-bootstrap/Form'
 
-import { setTableInfo } from "../../actions/liftingActions";
+import { setTableInfo } from '../../actions/liftingActions'
 
-import { Validation } from "../../types/dataTypes";
-import { GlobalState, LiftingState } from "../../types/stateTypes";
-import { isNumber, isString } from "../../types/utils";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Validation } from '../../types/dataTypes'
+import { GlobalState, LiftingState } from '../../types/stateTypes'
+import { isNumber, isString } from '../../types/utils'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
-type WidthFields = "columnDivisionWidthPx";
+type WidthFields = 'columnDivisionWidthPx'
 
 interface OwnProps {
-  label: string; // The label to display.
-  fieldName: WidthFields; // Field on the LiftingState to change.
+  label: string // The label to display.
+  fieldName: WidthFields // Field on the LiftingState to change.
 }
 
 interface StateProps {
-  lifting: LiftingState;
+  lifting: LiftingState
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps
 
 interface InternalState {
-  value: number | string;
+  value: number | string
 }
 
 // To show smaller numbers, the actual pixel count is divided by this.
-const MULTIPLE: number = 9;
+const MULTIPLE: number = 9
 
 class ColumnWidth extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this)
+    this.handleChange = this.handleChange.bind(this)
 
     this.state = {
-      value: Math.ceil(this.props.lifting[this.props.fieldName] / MULTIPLE),
-    };
+      value: Math.ceil(this.props.lifting[this.props.fieldName] / MULTIPLE)
+    }
   }
 
   setTableInfo = (changes: Partial<LiftingState>) => {
-    rpcDispatch(setTableInfo(changes));
-  };
+    rpcDispatch(setTableInfo(changes))
+  }
 
   validate = (): Validation => {
-    const { value } = this.state;
-    const asNumber = Number(value);
+    const { value } = this.state
+    const asNumber = Number(value)
 
     if (isNaN(asNumber) || asNumber < 0 || asNumber > 1000) {
-      return "error";
+      return 'error'
     }
-    return "success";
-  };
+    return 'success'
+  }
 
   handleChange = (event: React.BaseSyntheticEvent) => {
-    const value = event.currentTarget.value;
+    const value = event.currentTarget.value
     if (!isNumber(value) && !isString(value)) {
-      throw new Error(`Expected either a number or a string, but got "${value}"`);
+      throw new Error(`Expected either a number or a string, but got "${value}"`)
     }
 
     this.setState({ value: value }, () => {
       // As callback, save successful value into Redux store.
-      if (this.validate() !== "error") {
+      if (this.validate() !== 'error') {
         // TODO: figure out how to type this nicely. For now, use any
-        const changes: any = {};
-        changes[this.props.fieldName] = Math.floor(Number(value) * MULTIPLE);
-        this.setTableInfo(changes);
+        const changes: any = {}
+        changes[this.props.fieldName] = Math.floor(Number(value) * MULTIPLE)
+        this.setTableInfo(changes)
       }
-    });
-  };
+    })
+  }
 
   render() {
-    const validation: Validation = this.validate();
+    const validation: Validation = this.validate()
 
     return (
       <Form.Group>
@@ -111,17 +111,17 @@ class ColumnWidth extends React.Component<Props, InternalState> {
           step="1"
           value={this.state.value.toString()}
           onChange={this.handleChange}
-          isValid={validation === "success"}
-          isInvalid={validation === "error"}
-          className={validation === "warning" ? "is-warning" : undefined}
+          isValid={validation === 'success'}
+          isInvalid={validation === 'error'}
+          className={validation === 'warning' ? 'is-warning' : undefined}
         />
       </Form.Group>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  lifting: state.lifting,
-});
+  lifting: state.lifting
+})
 
-export default connect(mapStateToProps)(ColumnWidth);
+export default connect(mapStateToProps)(ColumnWidth)

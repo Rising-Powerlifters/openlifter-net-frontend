@@ -16,27 +16,27 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { FormattedMessage } from 'react-intl'
 
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
 
-import styles from "../components/common/ContentArea.module.scss";
+import styles from '../components/common/ContentArea.module.scss'
 
 // Extracted out so that <pre> renders linebreaks properly.
 const licenseText =
-  "This program is free software: you can redistribute it and/or modify\n" +
-  "it under the terms of the GNU Affero General Public License as\n" +
-  "published by the Free Software Foundation, either version 3 of the\n" +
-  "License, or (at your option) any later version.\n" +
-  "\n" +
-  "This program is distributed in the hope that it will be useful,\n" +
-  "but WITHOUT ANY WARRANTY; without even the implied warranty of\n" +
-  "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n" +
-  "GNU Affero General Public License for more details.";
+  'This program is free software: you can redistribute it and/or modify\n' +
+  'it under the terms of the GNU Affero General Public License as\n' +
+  'published by the Free Software Foundation, either version 3 of the\n' +
+  'License, or (at your option) any later version.\n' +
+  '\n' +
+  'This program is distributed in the hope that it will be useful,\n' +
+  'but WITHOUT ANY WARRANTY; without even the implied warranty of\n' +
+  'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n' +
+  'GNU Affero General Public License for more details.'
 
 class AboutContainer extends React.Component<{}> {
   render() {
@@ -56,7 +56,11 @@ class AboutContainer extends React.Component<{}> {
                   />
                 </p>
                 <p>
-                  <a href="https://www.openpowerlifting.org" rel="noopener noreferrer" target="_blank">
+                  <a
+                    href="https://www.openpowerlifting.org"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
                     OpenPowerlifting.org
                   </a>
                 </p>
@@ -161,23 +165,34 @@ class AboutContainer extends React.Component<{}> {
                   />
                 </p>
                 <pre>{licenseText}</pre>
-                <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" rel="noopener noreferrer" target="_blank">
+                <a
+                  href="https://www.gnu.org/licenses/agpl-3.0.en.html"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   <FormattedMessage
                     id="about.link-full-agpl-license"
                     defaultMessage="Full Text of the GNU Affero General Public License, Version 3"
                   />
                 </a>
                 <br />
-                <a href="https://www.gnu.org/licenses/gpl-faq.html" rel="noopener noreferrer" target="_blank">
-                  <FormattedMessage id="about.link-gnu-faq" defaultMessage="FAQ about GNU Licenses" />
+                <a
+                  href="https://www.gnu.org/licenses/gpl-faq.html"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <FormattedMessage
+                    id="about.link-gnu-faq"
+                    defaultMessage="FAQ about GNU Licenses"
+                  />
                 </a>
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
-    );
+    )
   }
 }
 
-export default AboutContainer;
+export default AboutContainer

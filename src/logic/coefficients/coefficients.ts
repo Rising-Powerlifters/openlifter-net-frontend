@@ -18,61 +18,67 @@
 
 // Wraps all the points functions into a common interface.
 
-import { ah } from "./ah";
-import { bodyweight_multiple } from "./bodyweight-multiple";
-import { dots } from "./dots";
-import { fosterMcCulloch } from "./foster-mcculloch";
-import { glossbrenner } from "./glossbrenner";
-import { goodlift } from "./goodlift";
-import { ipfpoints } from "./ipf";
-import { nasapoints } from "./nasa";
-import { reshel } from "./reshel";
-import { schwartzmalone } from "./schwartzmalone";
-import { wilks } from "./wilks";
-import { wilks2020 } from "./wilks2020";
+import { ah } from './ah'
+import { bodyweight_multiple } from './bodyweight-multiple'
+import { dots } from './dots'
+import { fosterMcCulloch } from './foster-mcculloch'
+import { glossbrenner } from './glossbrenner'
+import { goodlift } from './goodlift'
+import { ipfpoints } from './ipf'
+import { nasapoints } from './nasa'
+import { reshel } from './reshel'
+import { schwartzmalone } from './schwartzmalone'
+import { wilks } from './wilks'
+import { wilks2020 } from './wilks2020'
 
-import { getAge } from "../entry";
-import { kg2lbs } from "../units";
+import { getAge } from '../entry'
+import { kg2lbs } from '../units'
 
-import { AgeCoefficients, Entry, Event, Equipment, Formula, Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { AgeCoefficients, Entry, Event, Equipment, Formula, Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
-export const getPoints = (formula: Formula, entry: Entry, event: Event, totalKg: number, inKg: boolean): number => {
+export const getPoints = (
+  formula: Formula,
+  entry: Entry,
+  event: Event,
+  totalKg: number,
+  inKg: boolean
+): number => {
   // Some of the data are singular properties of the entry.
-  const sex: Sex = entry.sex;
-  const equipment: Equipment = entry.equipment;
-  const bodyweightKg: number = entry.bodyweightKg;
+  const sex: Sex = entry.sex
+  const equipment: Equipment = entry.equipment
+  const bodyweightKg: number = entry.bodyweightKg
 
   switch (formula) {
-    case "AH":
-      return ah(sex, bodyweightKg, totalKg);
-    case "Bodyweight Multiple":
-      return bodyweight_multiple(bodyweightKg, totalKg);
-    case "Dots":
-      return dots(sex, bodyweightKg, totalKg);
-    case "Glossbrenner":
-      return glossbrenner(sex, bodyweightKg, totalKg);
-    case "IPF GL Points":
-      return goodlift(totalKg, bodyweightKg, sex, equipment, event);
-    case "IPF Points":
-      return ipfpoints(totalKg, bodyweightKg, sex, equipment, event);
-    case "NASA Points":
-      return nasapoints(bodyweightKg, totalKg);
-    case "Reshel":
-      return reshel(sex, bodyweightKg, totalKg);
-    case "Schwartz/Malone":
-      return schwartzmalone(sex, bodyweightKg, totalKg);
-    case "Total":
-      return inKg ? totalKg : kg2lbs(totalKg);
-    case "Wilks":
-      return wilks(sex, bodyweightKg, totalKg);
-    case "Wilks2020":
-      return wilks2020(sex, bodyweightKg, totalKg);
+    case 'AH':
+      return ah(sex, bodyweightKg, totalKg)
+    case 'Bodyweight Multiple':
+      return bodyweight_multiple(bodyweightKg, totalKg)
+    case 'Dots':
+      return dots(sex, bodyweightKg, totalKg)
+    case 'Glossbrenner':
+      return glossbrenner(sex, bodyweightKg, totalKg)
+    case 'IPF GL Points':
+      return goodlift(totalKg, bodyweightKg, sex, equipment, event)
+    case 'IPF Points':
+      return ipfpoints(totalKg, bodyweightKg, sex, equipment, event)
+    case 'NASA Points':
+      return nasapoints(bodyweightKg, totalKg)
+    case 'Reshel':
+      return reshel(sex, bodyweightKg, totalKg)
+    case 'Schwartz/Malone':
+      return schwartzmalone(sex, bodyweightKg, totalKg)
+    case 'Total':
+      return inKg ? totalKg : kg2lbs(totalKg)
+    case 'Wilks':
+      return wilks(sex, bodyweightKg, totalKg)
+    case 'Wilks2020':
+      return wilks2020(sex, bodyweightKg, totalKg)
     default:
-      checkExhausted(formula);
-      return 0;
+      checkExhausted(formula)
+      return 0
   }
-};
+}
 
 export const getAgeAdjustedPoints = (
   ageCoefficients: AgeCoefficients,
@@ -81,17 +87,17 @@ export const getAgeAdjustedPoints = (
   entry: Entry,
   event: Event,
   totalKg: number,
-  inKg: boolean,
+  inKg: boolean
 ): number => {
-  const points = getPoints(formula, entry, event, totalKg, inKg);
+  const points = getPoints(formula, entry, event, totalKg, inKg)
 
   switch (ageCoefficients) {
-    case "None":
-      return points;
-    case "FosterMcCulloch":
-      return fosterMcCulloch(getAge(entry, meetDate)) * points;
+    case 'None':
+      return points
+    case 'FosterMcCulloch':
+      return fosterMcCulloch(getAge(entry, meetDate)) * points
     default:
-      checkExhausted(ageCoefficients);
-      return 0;
+      checkExhausted(ageCoefficients)
+      return 0
   }
-};
+}

@@ -18,319 +18,330 @@
 
 // The parent component of the Results page, contained by the ResultsContainer.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import CardDeck from "react-bootstrap/CardDeck";
-import FormControl from "react-bootstrap/FormControl";
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import CardDeck from 'react-bootstrap/CardDeck'
+import FormControl from 'react-bootstrap/FormControl'
 
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver'
 
-import ByDivision from "./ByDivision";
-import ByPoints from "./ByPoints";
-import ErrorModal from "../ErrorModal";
+import ByDivision from './ByDivision'
+import ByPoints from './ByPoints'
+import ErrorModal from '../ErrorModal'
 
-import { mergePlatform } from "../../actions/registrationActions";
+import { mergePlatform } from '../../actions/registrationActions'
 
-import { liftingPresentOnPlatform, getWhetherPlatformsHaveLifted } from "../../logic/entry";
-import { getString } from "../../logic/strings";
-import { exportAsOplCsv } from "../../logic/export/oplcsv";
-import { exportAsUSAPLCsv } from "../../logic/export/usapl";
+import { liftingPresentOnPlatform, getWhetherPlatformsHaveLifted } from '../../logic/entry'
+import { getString } from '../../logic/strings'
+import { exportAsOplCsv } from '../../logic/export/oplcsv'
+import { exportAsUSAPLCsv } from '../../logic/export/usapl'
 
-import { Entry, Language } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
+import { Entry, Language } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
 
-import styles from "./ResultsView.module.scss";
-import { checkExhausted, assertString } from "../../types/utils";
-import { Dispatch } from "redux";
+import styles from './ResultsView.module.scss'
+import { checkExhausted, assertString } from '../../types/utils'
+import { Dispatch } from 'redux'
 
-type ResultsBy = "Division" | "Points" | "BestMastersLifter" | "BestJuniorsLifter";
+type ResultsBy = 'Division' | 'Points' | 'BestMastersLifter' | 'BestJuniorsLifter'
 
 const assertValidResultsBy = (value: string): value is ResultsBy => {
-  const resultsBy = value as ResultsBy;
+  const resultsBy = value as ResultsBy
   switch (resultsBy) {
-    case "BestJuniorsLifter":
-    case "BestMastersLifter":
-    case "Division":
-    case "Points":
-      return true;
+    case 'BestJuniorsLifter':
+    case 'BestMastersLifter':
+    case 'Division':
+    case 'Points':
+      return true
     default:
-      checkExhausted(resultsBy);
-      throw new Error(`Expected a valid value for ResultsBy. Got "${value}"`);
+      checkExhausted(resultsBy)
+      throw new Error(`Expected a valid value for ResultsBy. Got "${value}"`)
   }
-};
+}
 
 interface StateProps {
-  global: GlobalState;
-  language: Language;
+  global: GlobalState
+  language: Language
 }
 
 interface DispatchProps {
-  mergePlatform: (day: number, platform: number, platformEntries: Array<Entry>) => void;
+  mergePlatform: (day: number, platform: number, platformEntries: Array<Entry>) => void
 }
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps
 
 interface InternalState {
-  day: number;
-  by: ResultsBy;
+  day: number
+  by: ResultsBy
   // Controls the ErrorModal popup. Shown when error !== "".
-  error: string;
+  error: string
 }
 
 // FIXME: Unfortunate use of globals :/ I don't have a better idea.
 // This is to pass information from the merge button click handler to the
 // file loader click handler.
-let globalMergeDay: number = 0;
-let globalMergePlatform: number = 0;
+let globalMergeDay: number = 0
+let globalMergePlatform: number = 0
 
 class ResultsView extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.handleDayChange = this.handleDayChange.bind(this);
-    this.handleByChange = this.handleByChange.bind(this);
-    this.handleExportAsOplCsvClick = this.handleExportAsOplCsvClick.bind(this);
-    this.handleExportAsUSAPLCsvClick = this.handleExportAsUSAPLCsvClick.bind(this);
-    this.handleExportPlatformClick = this.handleExportPlatformClick.bind(this);
-    this.handleMergePlatformClick = this.handleMergePlatformClick.bind(this);
-    this.handleLoadFileInput = this.handleLoadFileInput.bind(this);
-    this.closeErrorModal = this.closeErrorModal.bind(this);
-    this.makePlatformMergeButtons = this.makePlatformMergeButtons.bind(this);
+    this.handleDayChange = this.handleDayChange.bind(this)
+    this.handleByChange = this.handleByChange.bind(this)
+    this.handleExportAsOplCsvClick = this.handleExportAsOplCsvClick.bind(this)
+    this.handleExportAsUSAPLCsvClick = this.handleExportAsUSAPLCsvClick.bind(this)
+    this.handleExportPlatformClick = this.handleExportPlatformClick.bind(this)
+    this.handleMergePlatformClick = this.handleMergePlatformClick.bind(this)
+    this.handleLoadFileInput = this.handleLoadFileInput.bind(this)
+    this.closeErrorModal = this.closeErrorModal.bind(this)
+    this.makePlatformMergeButtons = this.makePlatformMergeButtons.bind(this)
 
     this.state = {
       day: 0, // Meaning "all". Flow complained about mixing numbers and strings.
-      by: "Division",
-      error: "",
-    };
+      by: 'Division',
+      error: ''
+    }
   }
 
   makeDayOptions = () => {
-    const language = this.props.language;
+    const language = this.props.language
     const options = [
-      <option key={"all"} value={0}>
-        {getString("results.all-days-together", language)}
-      </option>,
-    ];
+      <option key={'all'} value={0}>
+        {getString('results.all-days-together', language)}
+      </option>
+    ]
 
-    const justDayTemplate = getString("results.just-day-n", language);
+    const justDayTemplate = getString('results.just-day-n', language)
     for (let day = 1; day <= this.props.global.meet.lengthDays; day++) {
       options.push(
         <option key={day} value={day}>
-          {justDayTemplate.replace("{N}", String(day))}
-        </option>,
-      );
+          {justDayTemplate.replace('{N}', String(day))}
+        </option>
+      )
     }
-    return options;
-  };
+    return options
+  }
 
   handleDayChange = (event: React.BaseSyntheticEvent) => {
-    const day = Number(event.currentTarget.value);
+    const day = Number(event.currentTarget.value)
     if (this.state.day !== day) {
-      this.setState({ day: day });
+      this.setState({ day: day })
     }
-  };
+  }
 
   handleByChange = (event: React.BaseSyntheticEvent) => {
-    const by = event.currentTarget.value;
+    const by = event.currentTarget.value
     if (this.state.by !== by && assertString(by) && assertValidResultsBy(by)) {
-      this.setState({ by: by });
+      this.setState({ by: by })
     }
-  };
+  }
 
   handleExportAsOplCsvClick = () => {
     // TODO: Share this logic with HomeContainer.
-    let meetname = this.props.global.meet.name;
-    if (meetname === "") {
-      meetname = getString("common.unnamed-filename", this.props.language);
+    let meetname = this.props.global.meet.name
+    if (meetname === '') {
+      meetname = getString('common.unnamed-filename', this.props.language)
     }
-    meetname = meetname.replace(/ /g, "-");
+    meetname = meetname.replace(/ /g, '-')
 
-    const csv: string = exportAsOplCsv(this.props.global);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    saveAs(blob, meetname + ".opl.csv");
-  };
+    const csv: string = exportAsOplCsv(this.props.global)
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    saveAs(blob, meetname + '.opl.csv')
+  }
 
   handleExportAsUSAPLCsvClick = () => {
     // TODO: Share this logic with handleExportAsOplCsvClick.
-    let meetname = this.props.global.meet.name;
-    if (meetname === "") {
-      meetname = getString("common.unnamed-filename", this.props.language);
+    let meetname = this.props.global.meet.name
+    if (meetname === '') {
+      meetname = getString('common.unnamed-filename', this.props.language)
     }
-    meetname = meetname.replace(/ /g, "-");
+    meetname = meetname.replace(/ /g, '-')
 
-    const csv: string = exportAsUSAPLCsv(this.props.global);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    saveAs(blob, meetname + ".USAPL.csv");
-  };
+    const csv: string = exportAsUSAPLCsv(this.props.global)
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    saveAs(blob, meetname + '.USAPL.csv')
+  }
 
   handleExportPlatformClick = (day: number, platform: number) => {
     // TODO: Share this logic with handleExportAsOplCsvClick.
-    const language = this.props.language;
-    let meetname = this.props.global.meet.name;
-    if (meetname === "") {
-      meetname = getString("common.unnamed-filename", language);
+    const language = this.props.language
+    let meetname = this.props.global.meet.name
+    if (meetname === '') {
+      meetname = getString('common.unnamed-filename', language)
     }
-    meetname = meetname.replace(/ /g, "-");
+    meetname = meetname.replace(/ /g, '-')
 
-    const template = getString("results.platform-export-filename", language);
+    const template = getString('results.platform-export-filename', language)
     const exportname = template
-      .replace("{day}", String(day))
-      .replace("{platform}", String(platform))
-      .replace("{meetName}", meetname);
+      .replace('{day}', String(day))
+      .replace('{platform}', String(platform))
+      .replace('{meetName}', meetname)
 
-    const state = JSON.stringify(this.props.global);
-    const blob = new Blob([state], { type: "application/json;charset=utf-8" });
-    saveAs(blob, exportname + ".export.openlifter");
-  };
+    const state = JSON.stringify(this.props.global)
+    const blob = new Blob([state], { type: 'application/json;charset=utf-8' })
+    saveAs(blob, exportname + '.export.openlifter')
+  }
 
   // The file input is hidden, and we want to use a button to activate it.
   // This event handler makes a proxy call to the *real* event handler.
   handleMergePlatformClick = (day: number, platform: number) => {
-    const loadHelper = document.getElementById("loadhelper");
+    const loadHelper = document.getElementById('loadhelper')
     if (loadHelper !== null) {
-      globalMergeDay = day;
-      globalMergePlatform = platform;
-      loadHelper.click();
+      globalMergeDay = day
+      globalMergePlatform = platform
+      loadHelper.click()
     }
-  };
+  }
 
   // Called when a file is selected for merging platform data.
   handleLoadFileInput = () => {
-    const loadHelper = document.getElementById("loadhelper");
-    if (loadHelper === null || !(loadHelper instanceof HTMLInputElement) || loadHelper.files === null) {
-      return;
+    const loadHelper = document.getElementById('loadhelper')
+    if (
+      loadHelper === null ||
+      !(loadHelper instanceof HTMLInputElement) ||
+      loadHelper.files === null
+    ) {
+      return
     }
 
     // Get the (day, platform) from global state.
-    const day: number = globalMergeDay;
-    const platform: number = globalMergePlatform;
+    const day: number = globalMergeDay
+    const platform: number = globalMergePlatform
 
     // Remember the props in the onload() closure.
-    const props = this.props;
-    const language = props.language;
+    const props = this.props
+    const language = props.language
 
-    const rememberThis = this;
-    const selectedFile = loadHelper.files[0];
-    const reader = new FileReader();
+    const rememberThis = this
+    const selectedFile = loadHelper.files[0]
+    const reader = new FileReader()
     reader.onload = () => {
-      let error: string | null = null;
+      let error: string | null = null
 
       // If this occurs, we've introduced a bug when initiating the file reader, or the read failed.
       // Add this check as a guard so the typing is narrowed
-      if (typeof reader.result !== "string") {
-        window.alert(getString("error.internal-error", language));
-        return;
+      if (typeof reader.result !== 'string') {
+        window.alert(getString('error.internal-error', language))
+        return
       }
 
       try {
-        const obj: GlobalState = JSON.parse(reader.result);
+        const obj: GlobalState = JSON.parse(reader.result)
 
         // stateVersion must match.
         if (obj.versions.stateVersion !== props.global.versions.stateVersion) {
-          const e = getString("error.version-mismatch", language);
+          const e = getString('error.version-mismatch', language)
           error = e
-            .replace("{thisVersion}", props.global.versions.stateVersion)
-            .replace("{otherVersion}", obj.versions.stateVersion);
+            .replace('{thisVersion}', props.global.versions.stateVersion)
+            .replace('{otherVersion}', obj.versions.stateVersion)
         } else if (obj.meet.name !== props.global.meet.name) {
           // The meet name must match, for sanity checking.
-          const e = getString("error.meetname-mismatch", language);
-          error = e.replace("{thisName}", props.global.meet.name).replace("{otherName}", obj.meet.name);
+          const e = getString('error.meetname-mismatch', language)
+          error = e
+            .replace('{thisName}', props.global.meet.name)
+            .replace('{otherName}', obj.meet.name)
         } else if (!liftingPresentOnPlatform(obj.registration.entries, day, platform)) {
           // The meet must actually contain data from the given (day, platform).
-          const e = getString("error.no-platform-data", language);
-          error = e.replace("{day}", String(day)).replace("{platform}", String(platform));
+          const e = getString('error.no-platform-data', language)
+          error = e.replace('{day}', String(day)).replace('{platform}', String(platform))
         } else {
           // Sanity checks passed: fire off a mergePlatform action!
           const platformEntries = obj.registration.entries.filter((e) => {
-            return e.day === day && e.platform === platform;
-          });
-          props.mergePlatform(day, platform, platformEntries);
+            return e.day === day && e.platform === platform
+          })
+          props.mergePlatform(day, platform, platformEntries)
         }
       } catch (err) {
-        error = getString("error.not-json", language);
+        error = getString('error.not-json', language)
       }
 
-      if (typeof error === "string") {
-        rememberThis.setState({ error: error });
+      if (typeof error === 'string') {
+        rememberThis.setState({ error: error })
       }
-    };
-    reader.readAsText(selectedFile);
-  };
+    }
+    reader.readAsText(selectedFile)
+  }
 
   closeErrorModal = () => {
-    this.setState({ error: "" });
-  };
+    this.setState({ error: '' })
+  }
 
   makePlatformMergeButtons = () => {
     // Array accessed by platformsHaveLifted[day-1][platform-1].
     const platformsHaveLifted: Array<Array<boolean>> = getWhetherPlatformsHaveLifted(
       this.props.global.meet.platformsOnDays,
-      this.props.global.registration.entries,
-    );
+      this.props.global.registration.entries
+    )
 
-    const language = this.props.language;
-    const combineTemplate = getString("results.combine-platforms-header", language);
-    const mergeTemplate = getString("results.merge-platform", language);
-    const exportTemplate = getString("results.export-platform", language);
+    const language = this.props.language
+    const combineTemplate = getString('results.combine-platforms-header', language)
+    const mergeTemplate = getString('results.merge-platform', language)
+    const exportTemplate = getString('results.export-platform', language)
 
-    const forms = [];
-    const numDays = Math.min(this.props.global.meet.lengthDays, platformsHaveLifted.length);
+    const forms = []
+    const numDays = Math.min(this.props.global.meet.lengthDays, platformsHaveLifted.length)
 
     for (let i = 0; i < numDays; i++) {
-      const liftedOnDay = platformsHaveLifted[i];
+      const liftedOnDay = platformsHaveLifted[i]
 
-      const buttons = [];
+      const buttons = []
       for (let j = 0; j < liftedOnDay.length; j++) {
-        const lifted = liftedOnDay[j];
-        const variant = lifted === true ? "success" : "warning";
-        const marginStyle = j > 0 ? { marginLeft: "14px" } : undefined;
+        const lifted = liftedOnDay[j]
+        const variant = lifted === true ? 'success' : 'warning'
+        const marginStyle = j > 0 ? { marginLeft: '14px' } : undefined
 
-        const actionTemplate = lifted === true ? exportTemplate : mergeTemplate;
+        const actionTemplate = lifted === true ? exportTemplate : mergeTemplate
         buttons.push(
           <Button
-            key={i + "-" + j}
+            key={i + '-' + j}
             variant={variant}
             style={marginStyle}
             onClick={() => {
               lifted === true
                 ? this.handleExportPlatformClick(i + 1, j + 1)
-                : this.handleMergePlatformClick(i + 1, j + 1);
+                : this.handleMergePlatformClick(i + 1, j + 1)
             }}
           >
-            {actionTemplate.replace("{day}", String(i + 1)).replace("{platform}", String(j + 1))}
-          </Button>,
-        );
+            {actionTemplate.replace('{day}', String(i + 1)).replace('{platform}', String(j + 1))}
+          </Button>
+        )
       }
 
       forms.push(
         <div key={i}>
-          <div>{combineTemplate.replace("{N}", String(i + 1))}</div>
+          <div>{combineTemplate.replace('{N}', String(i + 1))}</div>
           <div>{buttons}</div>
           {i < platformsHaveLifted.length - 1 ? <br /> : null}
-        </div>,
-      );
+        </div>
+      )
     }
 
-    return forms;
-  };
+    return forms
+  }
 
   render() {
-    const language = this.props.language;
-    let results = null;
+    const language = this.props.language
+    let results = null
     switch (this.state.by) {
-      case "Division":
-        results = <ByDivision key={this.state.day} day={this.state.day} />;
-        break;
-      case "Points":
+      case 'Division':
+        results = <ByDivision key={this.state.day} day={this.state.day} />
+        break
+      case 'Points':
         results = (
-          <ByPoints key={this.state.day} day={this.state.day} ageCoefficients="None" agePointsCategory="BestLifter" />
-        );
-        break;
-      case "BestMastersLifter":
+          <ByPoints
+            key={this.state.day}
+            day={this.state.day}
+            ageCoefficients="None"
+            agePointsCategory="BestLifter"
+          />
+        )
+        break
+      case 'BestMastersLifter':
         results = (
           <ByPoints
             key={this.state.day}
@@ -338,9 +349,9 @@ class ResultsView extends React.Component<Props, InternalState> {
             ageCoefficients={this.props.global.meet.ageCoefficients}
             agePointsCategory="BestMastersLifter"
           />
-        );
-        break;
-      case "BestJuniorsLifter":
+        )
+        break
+      case 'BestJuniorsLifter':
         results = (
           <ByPoints
             key={this.state.day}
@@ -348,13 +359,13 @@ class ResultsView extends React.Component<Props, InternalState> {
             ageCoefficients={this.props.global.meet.ageCoefficients}
             agePointsCategory="BestJuniorsLifter"
           />
-        );
-        break;
+        )
+        break
       default:
-        break;
+        break
     }
 
-    let daySelector = null;
+    let daySelector = null
     if (this.props.global.meet.lengthDays > 1) {
       daySelector = (
         <FormControl
@@ -362,29 +373,32 @@ class ResultsView extends React.Component<Props, InternalState> {
           as="select"
           onChange={this.handleDayChange}
           className={`custom-select ${styles.dropdown}`}
-          style={{ marginRight: "15px" }}
+          style={{ marginRight: '15px' }}
         >
           {this.makeDayOptions()}
         </FormControl>
-      );
+      )
     }
 
     return (
       <div>
         <ErrorModal
           error={this.state.error}
-          title={getString("results.merge-error-title", language)}
-          show={this.state.error !== ""}
+          title={getString('results.merge-error-title', language)}
+          show={this.state.error !== ''}
           close={this.closeErrorModal}
         />
 
         <CardDeck>
-          <Card style={{ marginBottom: "17px" }}>
+          <Card style={{ marginBottom: '17px' }}>
             <Card.Header>
-              <FormattedMessage id="results.merge-platforms-card-header" defaultMessage="Merge Platforms" />
+              <FormattedMessage
+                id="results.merge-platforms-card-header"
+                defaultMessage="Merge Platforms"
+              />
             </Card.Header>
             <Card.Body>
-              <div style={{ fontWeight: "bold" }}>
+              <div style={{ fontWeight: 'bold' }}>
                 <FormattedMessage
                   id="results.merge-platforms-warning"
                   defaultMessage="Merging platforms will overwrite data. Please save before merging."
@@ -395,9 +409,12 @@ class ResultsView extends React.Component<Props, InternalState> {
             </Card.Body>
           </Card>
 
-          <Card style={{ marginBottom: "17px" }}>
+          <Card style={{ marginBottom: '17px' }}>
             <Card.Header>
-              <FormattedMessage id="results.export-results-card-header" defaultMessage="Export Official Results" />
+              <FormattedMessage
+                id="results.export-results-card-header"
+                defaultMessage="Export Official Results"
+              />
             </Card.Header>
             <Card.Body>
               <Button onClick={this.handleExportAsOplCsvClick}>
@@ -407,8 +424,11 @@ class ResultsView extends React.Component<Props, InternalState> {
                 />
               </Button>
 
-              <Button onClick={this.handleExportAsUSAPLCsvClick} style={{ marginLeft: "14px" }}>
-                <FormattedMessage id="results.export-usapl-button" defaultMessage="Export for USAPL" />
+              <Button onClick={this.handleExportAsUSAPLCsvClick} style={{ marginLeft: '14px' }}>
+                <FormattedMessage
+                  id="results.export-usapl-button"
+                  defaultMessage="Export for USAPL"
+                />
               </Button>
             </Card.Body>
           </Card>
@@ -427,14 +447,18 @@ class ResultsView extends React.Component<Props, InternalState> {
               onChange={this.handleByChange}
               className={`custom-select ${styles.dropdown}`}
             >
-              <option value="Division">{getString("results.by-division", language)}</option>
-              {this.props.global.meet.ageCoefficients !== "None" ? (
-                <option value="BestJuniorsLifter">{getString("results.best-juniors-lifter", language)}</option>
+              <option value="Division">{getString('results.by-division', language)}</option>
+              {this.props.global.meet.ageCoefficients !== 'None' ? (
+                <option value="BestJuniorsLifter">
+                  {getString('results.best-juniors-lifter', language)}
+                </option>
               ) : null}
-              {this.props.global.meet.ageCoefficients !== "None" ? (
-                <option value="BestMastersLifter">{getString("results.best-masters-lifter", language)}</option>
+              {this.props.global.meet.ageCoefficients !== 'None' ? (
+                <option value="BestMastersLifter">
+                  {getString('results.best-masters-lifter', language)}
+                </option>
               ) : null}
-              <option value="Points">{getString("results.best-lifter", language)}</option>
+              <option value="Points">{getString('results.best-lifter', language)}</option>
             </FormControl>
           </Card.Body>
         </Card>
@@ -445,25 +469,26 @@ class ResultsView extends React.Component<Props, InternalState> {
           id="loadhelper"
           type="file"
           accept=".openlifter,.openlifter.txt"
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={this.handleLoadFileInput}
         />
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => {
   return {
     global: state,
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    mergePlatform: (day, platform, platformEntries) => dispatch(mergePlatform(day, platform, platformEntries)),
-  };
-};
+    mergePlatform: (day, platform, platformEntries) =>
+      dispatch(mergePlatform(day, platform, platformEntries))
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResultsView);
+export default connect(mapStateToProps, mapDispatchToProps)(ResultsView)

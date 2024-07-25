@@ -26,20 +26,20 @@
 // Regular old errors in widgets should be reported by setting their
 // validationState.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 
 interface OwnProps {
-  error: string;
-  title: string;
-  show: boolean;
-  close: () => void;
+  error: string
+  title: string
+  show: boolean
+  close: () => void
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 class ErrorModal extends React.Component<Props> {
   render() {
@@ -57,8 +57,8 @@ class ErrorModal extends React.Component<Props> {
           </Button>
         </Modal.Footer>
       </Modal>
-    );
+    )
   }
 }
 
-export default connect(null, null)(ErrorModal);
+export default connect(null, null)(ErrorModal)

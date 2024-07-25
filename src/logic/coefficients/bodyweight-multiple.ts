@@ -23,7 +23,7 @@
 
 export const bodyweight_multiple = (bodyweightKg: number, totalKg: number): number => {
   if (bodyweightKg <= 0 || totalKg <= 0) {
-    return 0;
+    return 0
   }
-  return totalKg / bodyweightKg;
-};
+  return totalKg / bodyweightKg
+}

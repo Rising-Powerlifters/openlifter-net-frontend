@@ -20,96 +20,96 @@
 // function passed in OwnProps. On blur, an onSuccess() callback is called
 // if validation passes; otherwise, the text input reverts to the initial state.
 
-import React from "react";
+import React from 'react'
 
-import Form from "react-bootstrap/Form";
+import Form from 'react-bootstrap/Form'
 
-import { Validation } from "../types/dataTypes";
-import { assertString } from "../types/utils";
+import { Validation } from '../types/dataTypes'
+import { assertString } from '../types/utils'
 
 interface OwnProps {
-  type?: string; // The type of input, such as "text" or "number". Defaults to "text".
-  label?: string; // Form label text, shown above the input.
-  initialValue: string;
-  placeholder?: string;
-  disabled?: boolean;
-  validate: (value?: string) => Validation;
-  onSuccess: (value: string) => void;
+  type?: string // The type of input, such as "text" or "number". Defaults to "text".
+  label?: string // Form label text, shown above the input.
+  initialValue: string
+  placeholder?: string
+  disabled?: boolean
+  validate: (value?: string) => Validation
+  onSuccess: (value: string) => void
 
   // By default, the bottom margin is removed so that this can be used in tables.
   // Setting this to true adds the margin back. Defaults to false.
-  keepMargin?: boolean;
+  keepMargin?: boolean
 }
 
-type Props = Readonly<OwnProps>;
+type Props = Readonly<OwnProps>
 
 interface InternalState {
-  value: string;
+  value: string
 }
 
 class BirthDateInput extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validate = this.validate.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    this.validate = this.validate.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleBlur = this.handleBlur.bind(this)
 
     this.state = {
-      value: props.initialValue,
-    };
+      value: props.initialValue
+    }
   }
 
   validate = (): Validation => {
-    return this.props.validate(this.state.value);
-  };
+    return this.props.validate(this.state.value)
+  }
 
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.currentTarget.blur();
+    if (event.key === 'Enter') {
+      event.currentTarget.blur()
     }
-  };
+  }
 
   handleChange = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.setState({ value: event.currentTarget.value });
+      this.setState({ value: event.currentTarget.value })
     }
-  };
+  }
 
   handleBlur = () => {
-    if (this.validate() === "error") {
-      this.setState({ value: this.props.initialValue });
-      return;
+    if (this.validate() === 'error') {
+      this.setState({ value: this.props.initialValue })
+      return
     }
 
     if (this.props.initialValue !== this.state.value) {
-      this.props.onSuccess(this.state.value);
+      this.props.onSuccess(this.state.value)
     }
-  };
+  }
 
   render() {
-    const validation: Validation = this.validate();
-    const maybeLabel = this.props.label ? <Form.Label>{this.props.label}</Form.Label> : undefined;
+    const validation: Validation = this.validate()
+    const maybeLabel = this.props.label ? <Form.Label>{this.props.label}</Form.Label> : undefined
 
     return (
       <Form.Group style={this.props.keepMargin === true ? undefined : { marginBottom: 0 }}>
         {maybeLabel}
         <Form.Control
-          type={this.props.type ? this.props.type : "text"}
+          type={this.props.type ? this.props.type : 'text'}
           placeholder={this.props.placeholder}
           disabled={this.props.disabled === true ? true : undefined}
           value={this.state.value}
           onKeyDown={this.handleKeyDown}
           onChange={this.handleChange}
           onBlur={this.handleBlur}
-          isValid={validation === "success"}
-          isInvalid={validation === "error"}
-          className={validation === "warning" ? "is-warning" : undefined}
+          isValid={validation === 'success'}
+          isInvalid={validation === 'error'}
+          className={validation === 'warning' ? 'is-warning' : undefined}
         />
       </Form.Group>
-    );
+    )
   }
 }
 
-export default BirthDateInput;
+export default BirthDateInput

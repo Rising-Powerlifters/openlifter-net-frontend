@@ -18,37 +18,44 @@
 
 // Tools for manipulating state information to aid debugging.
 
-import React from "react";
-import { FormattedMessage } from "react-intl";
-import { connect } from "react-redux";
+import React from 'react'
+import { FormattedMessage } from 'react-intl'
+import { connect } from 'react-redux'
 
-import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Card from "react-bootstrap/Card";
+import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Card from 'react-bootstrap/Card'
 
-import RandomizeMeetSetupButton from "./RandomizeMeetSetup";
-import RandomizeRegistrationButton from "./RandomizeRegistration";
-import RandomizeWeighinsButton from "./RandomizeWeighins";
-import RandomizeLiftingButton from "./RandomizeLifting";
+import RandomizeMeetSetupButton from './RandomizeMeetSetup'
+import RandomizeRegistrationButton from './RandomizeRegistration'
+import RandomizeWeighinsButton from './RandomizeWeighins'
+import RandomizeLiftingButton from './RandomizeLifting'
 
-import { GlobalState } from "../../types/stateTypes";
+import { GlobalState } from '../../types/stateTypes'
 
 class StateTools extends React.Component<GlobalState> {
   // The simplest possible way to implement a Reset button.
   reInitializeRedux = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
+    localStorage.clear()
+    window.location.reload()
+  }
 
   render() {
     return (
       <div>
-        <Card style={{ marginBottom: "17px" }}>
+        <Card style={{ marginBottom: '17px' }}>
           <Card.Header>
-            <FormattedMessage id="debug.generator-card-header" defaultMessage="Generate Random Valid Data" />
+            <FormattedMessage
+              id="debug.generator-card-header"
+              defaultMessage="Generate Random Valid Data"
+            />
           </Card.Header>
           <Card.Body>
-            <Button style={{ marginRight: "15px" }} variant="danger" onClick={this.reInitializeRedux}>
+            <Button
+              style={{ marginRight: '15px' }}
+              variant="danger"
+              onClick={this.reInitializeRedux}
+            >
               <FormattedMessage id="debug.button-reset" defaultMessage="Reset" />
             </Button>
             <ButtonGroup>
@@ -69,12 +76,12 @@ class StateTools extends React.Component<GlobalState> {
           </Card.Body>
         </Card>
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): GlobalState => ({
-  ...state,
-});
+  ...state
+})
 
-export default connect(mapStateToProps)(StateTools);
+export default connect(mapStateToProps)(StateTools)

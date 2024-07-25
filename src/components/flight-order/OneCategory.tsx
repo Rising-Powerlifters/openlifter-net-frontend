@@ -18,56 +18,56 @@
 
 // Shows all the lifters who are competing in the same Category.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Card from "react-bootstrap/Card";
+import Card from 'react-bootstrap/Card'
 
-import { CategoryResults } from "../../logic/divisionPlace";
-import { Sex } from "../../types/dataTypes";
-import { checkExhausted } from "../../types/utils";
+import { CategoryResults } from '../../logic/divisionPlace'
+import { Sex } from '../../types/dataTypes'
+import { checkExhausted } from '../../types/utils'
 
 const sexToLabel = (sex: Sex): string => {
   switch (sex) {
-    case "M":
-      return "Men's";
-    case "F":
-      return "Women's";
-    case "Mx":
-      return "Mx";
+    case 'M':
+      return "Men's"
+    case 'F':
+      return "Women's"
+    case 'Mx':
+      return 'Mx'
     default:
-      checkExhausted(sex);
-      return "";
+      checkExhausted(sex)
+      return ''
   }
-};
+}
 
 type Props = {
-  platform: number;
-  categoryResults: CategoryResults;
-};
+  platform: number
+  categoryResults: CategoryResults
+}
 
 class OneCategory extends React.Component<Props> {
   render() {
-    const category = this.props.categoryResults.category;
-    const entries = this.props.categoryResults.orderedEntries;
+    const category = this.props.categoryResults.category
+    const entries = this.props.categoryResults.orderedEntries
 
-    const sex = sexToLabel(category.sex);
+    const sex = sexToLabel(category.sex)
 
-    const namelist = [];
+    const namelist = []
     for (let i = 0; i < entries.length; i++) {
-      namelist.push(entries[i].name);
+      namelist.push(entries[i].name)
     }
 
     return (
       <Card>
         <Card.Header>
-          Platform {this.props.platform} Lifters in {sex} {category.weightClassStr}kg {category.equipment}{" "}
-          {category.division} {category.event}
+          Platform {this.props.platform} Lifters in {sex} {category.weightClassStr}kg{' '}
+          {category.equipment} {category.division} {category.event}
         </Card.Header>
-        <Card.Body>{namelist.join(", ")}</Card.Body>
+        <Card.Body>{namelist.join(', ')}</Card.Body>
       </Card>
-    );
+    )
   }
 }
 
-export default connect(null, null)(OneCategory);
+export default connect(null, null)(OneCategory)

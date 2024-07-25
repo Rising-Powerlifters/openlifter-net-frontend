@@ -16,54 +16,54 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { validatePositiveInteger } from "./positiveInteger";
+import { validatePositiveInteger } from './positiveInteger'
 
-describe("validatePositiveInteger", () => {
+describe('validatePositiveInteger', () => {
   it("doesn't accept undefined or null", () => {
-    expect(validatePositiveInteger(undefined)).toEqual("error");
-    expect(validatePositiveInteger(null as any)).toEqual("error");
-  });
+    expect(validatePositiveInteger(undefined)).toEqual('error')
+    expect(validatePositiveInteger(null as any)).toEqual('error')
+  })
 
-  it("allows the empty string", () => {
-    expect(validatePositiveInteger("")).toEqual(null);
-  });
+  it('allows the empty string', () => {
+    expect(validatePositiveInteger('')).toEqual(null)
+  })
 
-  it("disallows non-integers", () => {
-    expect(validatePositiveInteger("20.5")).toEqual("error");
-    expect(validatePositiveInteger("NaN")).toEqual("error");
-    expect(validatePositiveInteger("Infinity")).toEqual("error");
-    expect(validatePositiveInteger("abc")).toEqual("error");
-    expect(validatePositiveInteger("200b")).toEqual("error");
-    expect(validatePositiveInteger("   200")).toEqual("error");
-    expect(validatePositiveInteger("200 ")).toEqual("error");
-  });
+  it('disallows non-integers', () => {
+    expect(validatePositiveInteger('20.5')).toEqual('error')
+    expect(validatePositiveInteger('NaN')).toEqual('error')
+    expect(validatePositiveInteger('Infinity')).toEqual('error')
+    expect(validatePositiveInteger('abc')).toEqual('error')
+    expect(validatePositiveInteger('200b')).toEqual('error')
+    expect(validatePositiveInteger('   200')).toEqual('error')
+    expect(validatePositiveInteger('200 ')).toEqual('error')
+  })
 
-  it("disallows non-positive integers", () => {
-    expect(validatePositiveInteger("0")).toEqual("error");
-    expect(validatePositiveInteger("0000000")).toEqual("error");
-    expect(validatePositiveInteger("-5")).toEqual("error");
-    expect(validatePositiveInteger("-500")).toEqual("error");
-  });
+  it('disallows non-positive integers', () => {
+    expect(validatePositiveInteger('0')).toEqual('error')
+    expect(validatePositiveInteger('0000000')).toEqual('error')
+    expect(validatePositiveInteger('-5')).toEqual('error')
+    expect(validatePositiveInteger('-500')).toEqual('error')
+  })
 
-  it("disallows unnecessary decimal notation", () => {
-    expect(validatePositiveInteger("200.0")).toEqual("error");
-    expect(validatePositiveInteger("200.")).toEqual("error");
-  });
+  it('disallows unnecessary decimal notation', () => {
+    expect(validatePositiveInteger('200.0')).toEqual('error')
+    expect(validatePositiveInteger('200.')).toEqual('error')
+  })
 
-  it("disallows integers prefixed by unnecessary zeros", () => {
-    expect(validatePositiveInteger("02")).toEqual("error");
-    expect(validatePositiveInteger("002")).toEqual("error");
-  });
+  it('disallows integers prefixed by unnecessary zeros', () => {
+    expect(validatePositiveInteger('02')).toEqual('error')
+    expect(validatePositiveInteger('002')).toEqual('error')
+  })
 
-  it("allows integers", () => {
-    expect(validatePositiveInteger("1")).toEqual("success");
-    expect(validatePositiveInteger("20")).toEqual("success");
-    expect(validatePositiveInteger("2000")).toEqual("success");
-  });
+  it('allows integers', () => {
+    expect(validatePositiveInteger('1')).toEqual('success')
+    expect(validatePositiveInteger('20')).toEqual('success')
+    expect(validatePositiveInteger('2000')).toEqual('success')
+  })
 
-  it("respects the inclusiveMax", () => {
-    expect(validatePositiveInteger("2", 1)).toEqual("error");
-    expect(validatePositiveInteger("2", 2)).toEqual("success");
-    expect(validatePositiveInteger("2", 3)).toEqual("success");
-  });
-});
+  it('respects the inclusiveMax', () => {
+    expect(validatePositiveInteger('2', 1)).toEqual('error')
+    expect(validatePositiveInteger('2', 2)).toEqual('success')
+    expect(validatePositiveInteger('2', 3)).toEqual('success')
+  })
+})

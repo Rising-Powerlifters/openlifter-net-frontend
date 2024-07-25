@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
 
-import versionsReducer from "./versionsReducer";
-import languageReducer from "./languageReducer";
-import meetReducer from "./meetReducer";
-import registrationReducer from "./registrationReducer";
-import liftingReducer from "./liftingReducer";
+import versionsReducer from './versionsReducer'
+import languageReducer from './languageReducer'
+import meetReducer from './meetReducer'
+import registrationReducer from './registrationReducer'
+import liftingReducer from './liftingReducer'
 
 // Using combineReducers() guarantees that each part of the state object
 // fully bears the responsibility of managing itself by only sending a
@@ -37,5 +37,5 @@ export default combineReducers({
   language: languageReducer,
   meet: meetReducer,
   registration: registrationReducer,
-  lifting: liftingReducer,
-});
+  lifting: liftingReducer
+})

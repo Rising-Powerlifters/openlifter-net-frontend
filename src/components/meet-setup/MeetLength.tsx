@@ -16,56 +16,56 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import NumberInput from "../common/NumberInput";
+import NumberInput from '../common/NumberInput'
 
-import { setLengthDays } from "../../actions/meetSetupActions";
+import { setLengthDays } from '../../actions/meetSetupActions'
 
-import { Validation } from "../../types/dataTypes";
-import { GlobalState } from "../../types/stateTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { Validation } from '../../types/dataTypes'
+import { GlobalState } from '../../types/stateTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  lengthDays: number;
+  lengthDays: number
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 interface InternalState {
-  initialValue: number;
+  initialValue: number
 }
 
 class MeetLength extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this)
+    this.handleChange = this.handleChange.bind(this)
 
     this.state = {
-      initialValue: this.props.lengthDays,
-    };
+      initialValue: this.props.lengthDays
+    }
   }
 
   setLengthDays = (days: number) => {
-    rpcDispatch(setLengthDays(days));
-  };
+    rpcDispatch(setLengthDays(days))
+  }
 
   validate = (n: number): Validation => {
     if (!Number.isInteger(n) || n <= 0 || n > 14) {
-      return "error";
+      return 'error'
     }
-    return "success";
-  };
+    return 'success'
+  }
 
   handleChange = (n: number): void => {
     if (this.validate(n)) {
-      this.setLengthDays(n);
+      this.setLengthDays(n)
     }
-  };
+  }
 
   render() {
     return (
@@ -76,12 +76,12 @@ class MeetLength extends React.Component<Props, InternalState> {
         onChange={this.handleChange}
         label={<FormattedMessage id="meet-setup.length-days" defaultMessage="Days of Lifting" />}
       />
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  lengthDays: state.meet.lengthDays,
-});
+  lengthDays: state.meet.lengthDays
+})
 
-export default connect(mapStateToProps)(MeetLength);
+export default connect(mapStateToProps)(MeetLength)

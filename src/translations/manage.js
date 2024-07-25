@@ -19,52 +19,68 @@
 // This helper script is executed manually via "yarn manage:translations".
 // It was copied from here: https://github.com/bang88/typescript-react-intl/issues/19
 
-const DEFAULT_LANGUAGE = "en";
-const LANGUAGES = ["de", "el", "eo", "es", "et", "fr", "hr", "it", "lt", "nl", "pt", "ru", "tr", "uk", "zh-Hans"];
-const TARGET_DIRECTORY = "src/translations";
-const EXTRACT_MESSAGE_FILE_PATTERN = "src/**/*.@(tsx|ts)";
+const DEFAULT_LANGUAGE = 'en'
+const LANGUAGES = [
+  'de',
+  'el',
+  'eo',
+  'es',
+  'et',
+  'fr',
+  'hr',
+  'it',
+  'lt',
+  'nl',
+  'pt',
+  'ru',
+  'tr',
+  'uk',
+  'zh-Hans'
+]
+const TARGET_DIRECTORY = 'src/translations'
+const EXTRACT_MESSAGE_FILE_PATTERN = 'src/**/*.@(tsx|ts)'
 
-const TEMP_DIR = "./temp";
-const TEMP_MESSAGE_FILENAME = "allMessages.json";
+const TEMP_DIR = './temp'
+const TEMP_MESSAGE_FILENAME = 'allMessages.json'
 
-const { strings } = require("./strings.js");
+const { strings } = require('./strings.js')
 
-const fs = require("fs");
-const path = require("path");
-const glob = require("glob");
-const { rimrafSync } = require("rimraf");
-const parser = require("typescript-react-intl").default;
-const manageTranslations = require("react-intl-translations-manager").default;
-const { readMessageFiles, getDefaultMessages } = require("react-intl-translations-manager");
+const fs = require('fs')
+const path = require('path')
+const glob = require('glob')
+const { rimrafSync } = require('rimraf')
+const parser = require('typescript-react-intl').default
+const manageTranslations = require('react-intl-translations-manager').default
+const { readMessageFiles, getDefaultMessages } = require('react-intl-translations-manager')
 
 function extractTranslations(pattern, cb) {
   // Array of { id: string, defaultMessage: string } objects.
   // It's initialized with manually-defined objects from 'strings.js'.
-  let results = strings;
+  let results = strings
 
-  pattern = pattern || "src/**/*.@(tsx|ts)";
+  pattern = pattern || 'src/**/*.@(tsx|ts)'
   glob(pattern, function (err, files) {
     if (err) {
-      throw new Error(err);
+      throw new Error(err)
     }
     files.forEach(function (f) {
-      const contents = fs.readFileSync(f).toString();
-      const res = parser(contents);
-      results = results.concat(res);
-    });
+      const contents = fs.readFileSync(f).toString()
+      const res = parser(contents)
+      results = results.concat(res)
+    })
 
-    cb && cb(results);
-  });
+    cb && cb(results)
+  })
 }
 
 if (!fs.existsSync(TEMP_DIR)) {
-  fs.mkdirSync(TEMP_DIR);
+  fs.mkdirSync(TEMP_DIR)
 }
 
-const tempMessageFilePath = path.join(TEMP_DIR, TEMP_MESSAGE_FILENAME);
+const tempMessageFilePath = path.join(TEMP_DIR, TEMP_MESSAGE_FILENAME)
 
 extractTranslations(EXTRACT_MESSAGE_FILE_PATTERN, function (messages) {
-  fs.writeFileSync(tempMessageFilePath, JSON.stringify(messages, null, 2));
+  fs.writeFileSync(tempMessageFilePath, JSON.stringify(messages, null, 2))
 
   manageTranslations({
     messagesDirectory: TEMP_DIR,
@@ -75,18 +91,18 @@ extractTranslations(EXTRACT_MESSAGE_FILE_PATTERN, function (messages) {
       provideWhitelistFile: (language) => {
         // Avoid reporting untranslated stuff in defaultLanguage
         if (language.lang === DEFAULT_LANGUAGE) {
-          const messageFiles = readMessageFiles(TEMP_DIR);
-          const messages = getDefaultMessages(messageFiles).messages;
-          return Object.keys(messages);
+          const messageFiles = readMessageFiles(TEMP_DIR)
+          const messages = getDefaultMessages(messageFiles).messages
+          return Object.keys(messages)
         } else {
           if (!fs.existsSync(language.whitelistFilepath)) {
-            return [];
+            return []
           }
-          return JSON.parse(fs.readFileSync(language.whitelistFilepath, "utf-8"));
+          return JSON.parse(fs.readFileSync(language.whitelistFilepath, 'utf-8'))
         }
-      },
-    },
-  });
+      }
+    }
+  })
 
-  rimrafSync(TEMP_DIR);
-});
+  rimrafSync(TEMP_DIR)
+})

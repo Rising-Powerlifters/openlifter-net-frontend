@@ -18,132 +18,132 @@
 
 // Fills the Lifting page with random valid lift data for debugging purposes.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Button from "react-bootstrap/Button";
+import Button from 'react-bootstrap/Button'
 
-import LocalizedString from "../translations/LocalizedString";
+import LocalizedString from '../translations/LocalizedString'
 
-import { randomAttempt, randomAttemptWithMin } from "./RandomizeHelpers";
+import { randomAttempt, randomAttemptWithMin } from './RandomizeHelpers'
 
-import { markLift, enterAttempt } from "../../actions/liftingActions";
+import { markLift, enterAttempt } from '../../actions/liftingActions'
 
-import { GlobalState, MeetState, RegistrationState } from "../../types/stateTypes";
-import { Lift } from "../../types/dataTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { GlobalState, MeetState, RegistrationState } from '../../types/stateTypes'
+import { Lift } from '../../types/dataTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  meet: MeetState;
-  registration: RegistrationState;
+  meet: MeetState
+  registration: RegistrationState
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 class RandomizeLiftingButton extends React.Component<Props> {
   constructor(props: Props) {
-    super(props);
-    this.randomizeLifting = this.randomizeLifting.bind(this);
+    super(props)
+    this.randomizeLifting = this.randomizeLifting.bind(this)
   }
 
   enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
-    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
-  };
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg))
+  }
 
   markLift = (entryId: number, lift: Lift, attempt: number, success: boolean) => {
-    rpcDispatch(markLift(entryId, lift, attempt, success));
-  };
+    rpcDispatch(markLift(entryId, lift, attempt, success))
+  }
 
   setLiftsForLift(entryId: number, lift: Lift, inKg: boolean) {
     // enter opener
-    const firstAttempt = randomAttempt(inKg);
-    this.enterAttempt(entryId, lift, 1, firstAttempt);
+    const firstAttempt = randomAttempt(inKg)
+    this.enterAttempt(entryId, lift, 1, firstAttempt)
 
     // set random chance of failing attempt
-    let success = Math.random() > 0.15;
+    let success = Math.random() > 0.15
 
     // mark opener as success or failure
-    this.markLift(entryId, lift, 1, success);
+    this.markLift(entryId, lift, 1, success)
 
     // enter 2nd attempt
     // re-take first attempt if it failed
-    let secondAttempt = firstAttempt;
+    let secondAttempt = firstAttempt
 
     if (success) {
       // increase attempt if opener was successful
-      secondAttempt = randomAttemptWithMin(inKg, firstAttempt + 1);
+      secondAttempt = randomAttemptWithMin(inKg, firstAttempt + 1)
     }
-    this.enterAttempt(entryId, lift, 2, secondAttempt);
+    this.enterAttempt(entryId, lift, 2, secondAttempt)
 
     // set slightly higher chance of failing 2nd
-    success = Math.random() > 0.25;
+    success = Math.random() > 0.25
 
     // mark 2nd lift success or failure
-    this.markLift(entryId, lift, 2, success);
+    this.markLift(entryId, lift, 2, success)
 
     // record 3rd attempt
-    let thirdAttempt = secondAttempt;
+    let thirdAttempt = secondAttempt
     if (success) {
       // increment weight for 3rd
-      thirdAttempt = randomAttemptWithMin(inKg, secondAttempt + 1);
+      thirdAttempt = randomAttemptWithMin(inKg, secondAttempt + 1)
     }
-    this.enterAttempt(entryId, lift, 3, thirdAttempt);
+    this.enterAttempt(entryId, lift, 3, thirdAttempt)
 
     // set slightly higher chance of failing 3rd
-    success = Math.random() > 0.3;
+    success = Math.random() > 0.3
     // record success or failure
-    this.markLift(entryId, lift, 3, success);
+    this.markLift(entryId, lift, 3, success)
   }
 
   randomizeLifting = () => {
-    const entries = this.props.registration.entries;
-    const inKg: boolean = this.props.meet.inKg;
+    const entries = this.props.registration.entries
+    const inKg: boolean = this.props.meet.inKg
 
     for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i];
+      const entry = entries[i]
 
       // Figure out which events we're generating lift data for.
-      let hasSquat = false;
-      let hasBench = false;
-      let hasDeadlift = false;
+      let hasSquat = false
+      let hasBench = false
+      let hasDeadlift = false
 
       for (let j = 0; j < entry.events.length; j++) {
-        const e = entry.events[j];
-        if (e.includes("S")) {
-          hasSquat = true;
+        const e = entry.events[j]
+        if (e.includes('S')) {
+          hasSquat = true
         }
-        if (e.includes("B")) {
-          hasBench = true;
+        if (e.includes('B')) {
+          hasBench = true
         }
-        if (e.includes("D")) {
-          hasDeadlift = true;
+        if (e.includes('D')) {
+          hasDeadlift = true
         }
       }
 
       // Set 1st, 2nd, and 3rd for each lift.
       if (hasSquat) {
-        this.setLiftsForLift(entry.id, "S", inKg);
+        this.setLiftsForLift(entry.id, 'S', inKg)
       }
       if (hasBench) {
-        this.setLiftsForLift(entry.id, "B", inKg);
+        this.setLiftsForLift(entry.id, 'B', inKg)
       }
       if (hasDeadlift) {
-        this.setLiftsForLift(entry.id, "D", inKg);
+        this.setLiftsForLift(entry.id, 'D', inKg)
       }
     }
-  };
+  }
   render() {
     return (
       <Button onClick={this.randomizeLifting}>
         <LocalizedString id="nav.lifting" />
       </Button>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   meet: state.meet,
-  registration: state.registration,
-});
+  registration: state.registration
+})
 
-export default connect(mapStateToProps)(RandomizeLiftingButton);
+export default connect(mapStateToProps)(RandomizeLiftingButton)

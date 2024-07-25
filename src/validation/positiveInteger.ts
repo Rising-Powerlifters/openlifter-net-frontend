@@ -16,33 +16,33 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Validation } from "../types/dataTypes";
+import { Validation } from '../types/dataTypes'
 
 // Validates a simple positive integer.
 export const validatePositiveInteger = (s?: string, inclusiveMax?: number): Validation => {
-  if (typeof s !== "string") return "error";
+  if (typeof s !== 'string') return 'error'
 
-  if (s === "") return null;
+  if (s === '') return null
 
   // Ensure that the string only contains numbers, because the Number() constructor
   // will ignore whitespace.
-  const onlyNumbers = /^[0-9]+$/;
-  if (!s.match(onlyNumbers)) return "error";
+  const onlyNumbers = /^[0-9]+$/
+  if (!s.match(onlyNumbers)) return 'error'
 
   // The number shouldn't start with an unnecessary zero.
-  if (s.startsWith("0")) return "error";
+  if (s.startsWith('0')) return 'error'
 
-  const n = Number(s);
+  const n = Number(s)
 
   // Ensure the number is a positive integer.
-  if (isNaN(n)) return "error";
-  if (!Number.isInteger(n)) return "error";
-  if (n <= 0) return "error";
+  if (isNaN(n)) return 'error'
+  if (!Number.isInteger(n)) return 'error'
+  if (n <= 0) return 'error'
 
   // Allow an optional inclusive upper bound check.
-  if (typeof inclusiveMax === "number") {
-    if (n > inclusiveMax) return "error";
+  if (typeof inclusiveMax === 'number') {
+    if (n > inclusiveMax) return 'error'
   }
 
-  return "success";
-};
+  return 'success'
+}

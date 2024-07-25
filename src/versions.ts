@@ -25,7 +25,7 @@
 //
 // This string is stored on the GlobalState as the property "versions.stateVersion".
 // Each save file thereby reports its own version.
-export const stateVersion: string = "0";
+export const stateVersion: string = '0'
 
 // Versioning for the OpenLifter project as a whole.
 //
@@ -41,9 +41,11 @@ export const stateVersion: string = "0";
 // It's defined by the '.env' file in the project root, which references
 // the package.json variable 'version'.
 export const releaseVersion: string =
-  typeof process.env.REACT_APP_VERSION === "string" ? process.env.REACT_APP_VERSION : "[undefined REACT_APP_VERSION]";
+  typeof process.env.REACT_APP_VERSION === 'string'
+    ? process.env.REACT_APP_VERSION
+    : '[undefined REACT_APP_VERSION]'
 
 // Strictly-presentational representation of when the releaseVersion was changed.
 // Update this concurrently with modifying the releaseVersion.
 // This value is not stored in the state: it's purely informational.
-export const releaseDate: string = "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧";
+export const releaseDate: string = '(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧'

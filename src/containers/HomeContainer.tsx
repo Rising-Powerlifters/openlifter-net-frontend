@@ -16,111 +16,115 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import { LinkContainer } from "react-router-bootstrap";
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import { LinkContainer } from 'react-router-bootstrap'
 
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver'
 
-import { FormattedMessage } from "react-intl";
-import LanguageSelector from "../components/translations/LanguageSelector";
-import { overwriteStore } from "../actions/globalActions";
+import { FormattedMessage } from 'react-intl'
+import LanguageSelector from '../components/translations/LanguageSelector'
+import { overwriteStore } from '../actions/globalActions'
 
-import NewMeetModal from "../components/home/NewMeetModal";
-import ErrorModal from "../components/ErrorModal";
+import NewMeetModal from '../components/home/NewMeetModal'
+import ErrorModal from '../components/ErrorModal'
 
-import { getString } from "../logic/strings";
+import { getString } from '../logic/strings'
 
-import { stateVersion, releaseVersion, releaseDate } from "../versions";
+import { stateVersion, releaseVersion, releaseDate } from '../versions'
 
-import styles from "../components/common/ContentArea.module.scss";
+import styles from '../components/common/ContentArea.module.scss'
 
-import { GlobalState } from "../types/stateTypes";
-import { Dispatch } from "redux";
+import { GlobalState } from '../types/stateTypes'
+import { Dispatch } from 'redux'
 
 // Temporary CSS, just for prototyping.
-const centerConsole = { maxWidth: 700, marginRight: "auto", marginLeft: "auto" };
+const centerConsole = { maxWidth: 700, marginRight: 'auto', marginLeft: 'auto' }
 
 interface StateProps {
-  redux: GlobalState;
+  redux: GlobalState
 }
 
 interface DispatchProps {
-  overwriteStore: (store: GlobalState) => void;
+  overwriteStore: (store: GlobalState) => void
 }
 
 interface InternalState {
-  showNewMeetModal: boolean;
+  showNewMeetModal: boolean
   // Controls the ErrorModal popup. Shown when error !== "".
-  error: string;
+  error: string
 }
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps
 
 // Gets links and buttons to have the same vertical spacing.
-const buttonMargin = { marginBottom: "8px" };
+const buttonMargin = { marginBottom: '8px' }
 
 class HomeContainer extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
-    this.handleLoadClick = this.handleLoadClick.bind(this);
-    this.handleNewClick = this.handleNewClick.bind(this);
-    this.closeConfirmModal = this.closeConfirmModal.bind(this);
-    this.closeErrorModal = this.closeErrorModal.bind(this);
-    this.handleLoadFileInput = this.handleLoadFileInput.bind(this);
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.renderContinueButton = this.renderContinueButton.bind(this);
+    super(props)
+    this.handleLoadClick = this.handleLoadClick.bind(this)
+    this.handleNewClick = this.handleNewClick.bind(this)
+    this.closeConfirmModal = this.closeConfirmModal.bind(this)
+    this.closeErrorModal = this.closeErrorModal.bind(this)
+    this.handleLoadFileInput = this.handleLoadFileInput.bind(this)
+    this.handleSaveClick = this.handleSaveClick.bind(this)
+    this.renderContinueButton = this.renderContinueButton.bind(this)
 
-    this.state = { showNewMeetModal: false, error: "" };
+    this.state = { showNewMeetModal: false, error: '' }
   }
 
   // The file input is hidden, and we want to use a button to activate it.
   // This event handler is just a proxy to call the *real* event handler.
   handleLoadClick = () => {
-    const loadhelper = document.getElementById("loadhelper");
+    const loadhelper = document.getElementById('loadhelper')
     if (loadhelper !== null) {
-      loadhelper.click();
+      loadhelper.click()
     }
-  };
+  }
 
   // When we click the new meet button
   // Open the popover modal to confirm the user is willing to delete any current progress
   handleNewClick = () => {
-    this.setState({ showNewMeetModal: true });
-  };
+    this.setState({ showNewMeetModal: true })
+  }
 
   // Close the new meet confirmation modal
   closeConfirmModal = () => {
-    this.setState({ showNewMeetModal: false });
-  };
+    this.setState({ showNewMeetModal: false })
+  }
 
   closeErrorModal = () => {
-    this.setState({ error: "" });
-  };
+    this.setState({ error: '' })
+  }
 
   // Called when a file is selected.
   handleLoadFileInput = () => {
     // Load the element and make sure it's an HTMLInputElement.
-    const loadHelper = document.getElementById("loadhelper");
-    if (loadHelper === null || !(loadHelper instanceof HTMLInputElement) || loadHelper.files === null) {
-      return;
+    const loadHelper = document.getElementById('loadhelper')
+    if (
+      loadHelper === null ||
+      !(loadHelper instanceof HTMLInputElement) ||
+      loadHelper.files === null
+    ) {
+      return
     }
 
-    const selectedFile = loadHelper.files[0];
-    const language = this.props.redux.language;
-    const rememberThis = this;
+    const selectedFile = loadHelper.files[0]
+    const language = this.props.redux.language
+    const rememberThis = this
 
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = function (event: any) {
-      let errored = false;
+      let errored = false
       try {
-        const obj = JSON.parse(event.target.result);
+        const obj = JSON.parse(event.target.result)
 
         // Basic error checking, make sure it's the right format.
         if (
@@ -129,39 +133,39 @@ class HomeContainer extends React.Component<Props, InternalState> {
           obj.registration === undefined ||
           obj.lifting === undefined
         ) {
-          errored = true;
+          errored = true
         } else {
-          rememberThis.props.overwriteStore(obj);
+          rememberThis.props.overwriteStore(obj)
         }
       } catch (err) {
-        errored = true;
+        errored = true
       }
 
       if (errored) {
-        const error = getString("error.invalid-openlifter", language);
-        rememberThis.setState({ error: error });
+        const error = getString('error.invalid-openlifter', language)
+        rememberThis.setState({ error: error })
       }
-    };
-    reader.readAsText(selectedFile);
-  };
+    }
+    reader.readAsText(selectedFile)
+  }
 
   handleSaveClick = () => {
-    let meetname = this.props.redux.meet.name;
-    if (meetname === "") {
-      meetname = getString("common.unnamed-filename", this.props.redux.language);
+    let meetname = this.props.redux.meet.name
+    if (meetname === '') {
+      meetname = getString('common.unnamed-filename', this.props.redux.language)
     }
-    meetname = meetname.replace(/ /g, "-");
+    meetname = meetname.replace(/ /g, '-')
 
-    const state = JSON.stringify(this.props.redux);
-    const blob = new Blob([state], { type: "application/json;charset=utf-8" });
-    saveAs(blob, meetname + ".openlifter");
-  };
+    const state = JSON.stringify(this.props.redux)
+    const blob = new Blob([state], { type: 'application/json;charset=utf-8' })
+    saveAs(blob, meetname + '.openlifter')
+  }
 
   renderContinueButton = () => {
-    const meetname = this.props.redux.meet.name;
-    if (meetname === "") {
+    const meetname = this.props.redux.meet.name
+    if (meetname === '') {
       // Unnamed or unstarted meet, so don't render a continue button
-      return;
+      return
     }
     return (
       <LinkContainer to="/meet-setup">
@@ -173,32 +177,32 @@ class HomeContainer extends React.Component<Props, InternalState> {
           />
         </Button>
       </LinkContainer>
-    );
-  };
+    )
+  }
 
   render() {
     let newMeetButton = (
       <Button variant="primary" block onClick={this.handleNewClick} style={buttonMargin}>
         <FormattedMessage id="home.button-new-meet" defaultMessage="New Meet" />
       </Button>
-    );
+    )
 
     // If no meet is active, make the button just a LinkContainer.
     if (!this.props.redux.meet.name) {
-      newMeetButton = <LinkContainer to="/meet-setup">{newMeetButton}</LinkContainer>;
+      newMeetButton = <LinkContainer to="/meet-setup">{newMeetButton}</LinkContainer>
     }
 
-    const wrongVersion: boolean = this.props.redux.versions.stateVersion !== stateVersion;
-    const dataReleaseVersion = this.props.redux.versions.releaseVersion;
+    const wrongVersion: boolean = this.props.redux.versions.stateVersion !== stateVersion
+    const dataReleaseVersion = this.props.redux.versions.releaseVersion
 
-    const language = this.props.redux.language;
+    const language = this.props.redux.language
 
-    let warning = null;
+    let warning = null
     if (wrongVersion === true) {
       warning = (
         <h3>
           <p>
-            <b>{getString("common.danger-allcaps", language)}</b>
+            <b>{getString('common.danger-allcaps', language)}</b>
           </p>
           <p>
             <FormattedMessage
@@ -208,7 +212,7 @@ class HomeContainer extends React.Component<Props, InternalState> {
             />
           </p>
         </h3>
-      );
+      )
     }
 
     return (
@@ -216,8 +220,8 @@ class HomeContainer extends React.Component<Props, InternalState> {
         <NewMeetModal show={this.state.showNewMeetModal} close={this.closeConfirmModal} />
         <ErrorModal
           error={this.state.error}
-          title={getString("home.error-load-popup-title", language)}
-          show={this.state.error !== ""}
+          title={getString('home.error-load-popup-title', language)}
+          show={this.state.error !== ''}
           close={this.closeErrorModal}
         />
 
@@ -233,7 +237,7 @@ class HomeContainer extends React.Component<Props, InternalState> {
                 {wrongVersion === false ? (
                   this.renderContinueButton()
                 ) : (
-                  <a href={"https://www.openlifter.com/releases/" + dataReleaseVersion}>
+                  <a href={'https://www.openlifter.com/releases/' + dataReleaseVersion}>
                     <Button variant="success" block>
                       <FormattedMessage
                         id="home.button-switch-version"
@@ -254,10 +258,23 @@ class HomeContainer extends React.Component<Props, InternalState> {
                 <div>
                   {newMeetButton}
 
-                  <Button variant="warning" block onClick={this.handleLoadClick} style={buttonMargin}>
-                    <FormattedMessage id="home.button-load-from-file" defaultMessage="Load from File" />
+                  <Button
+                    variant="warning"
+                    block
+                    onClick={this.handleLoadClick}
+                    style={buttonMargin}
+                  >
+                    <FormattedMessage
+                      id="home.button-load-from-file"
+                      defaultMessage="Load from File"
+                    />
                   </Button>
-                  <Button variant="success" block onClick={this.handleSaveClick} style={buttonMargin}>
+                  <Button
+                    variant="success"
+                    block
+                    onClick={this.handleSaveClick}
+                    style={buttonMargin}
+                  >
                     <FormattedMessage id="home.button-save-tofile" defaultMessage="Save to File" />
                   </Button>
                 </div>
@@ -270,22 +287,36 @@ class HomeContainer extends React.Component<Props, InternalState> {
                   target="_blank"
                 >
                   <Button variant="outline-secondary" block style={buttonMargin}>
-                    <FormattedMessage id="home.button-report-issue" defaultMessage="Report an Issue" />
+                    <FormattedMessage
+                      id="home.button-report-issue"
+                      defaultMessage="Report an Issue"
+                    />
                   </Button>
                 </a>
-                <a href="https://www.openlifter.com/support" rel="noopener noreferrer" target="_blank">
+                <a
+                  href="https://www.openlifter.com/support"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   <Button variant="outline-secondary" block style={buttonMargin}>
                     <FormattedMessage id="home.button-support" defaultMessage="Official Support" />
                   </Button>
                 </a>
-                <a href="https://gitlab.com/openpowerlifting/openlifter" rel="noopener noreferrer" target="_blank">
+                <a
+                  href="https://gitlab.com/openpowerlifting/openlifter"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   <Button variant="outline-secondary" block style={buttonMargin}>
                     <FormattedMessage id="home.button-source" defaultMessage="Full Source Code" />
                   </Button>
                 </a>
                 <LinkContainer to="/about">
                   <Button variant="outline-secondary" block style={buttonMargin}>
-                    <FormattedMessage id="home.button-credits" defaultMessage="Credits and License" />
+                    <FormattedMessage
+                      id="home.button-credits"
+                      defaultMessage="Credits and License"
+                    />
                   </Button>
                 </LinkContainer>
               </Col>
@@ -294,13 +325,13 @@ class HomeContainer extends React.Component<Props, InternalState> {
         </Card.Body>
 
         <Card.Footer>
-          <h4 style={{ textAlign: "center" }}>
+          <h4 style={{ textAlign: 'center' }}>
             <FormattedMessage
               id="home.version-date"
               defaultMessage="Version {releaseVersion}, {releaseDate}."
               values={{
                 releaseVersion: releaseVersion,
-                releaseDate: releaseDate,
+                releaseDate: releaseDate
               }}
             />
           </h4>
@@ -310,11 +341,11 @@ class HomeContainer extends React.Component<Props, InternalState> {
           id="loadhelper"
           type="file"
           accept=".openlifter,.openlifter.txt"
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={this.handleLoadFileInput}
         />
       </Card>
-    );
+    )
   }
 }
 
@@ -322,14 +353,14 @@ class HomeContainer extends React.Component<Props, InternalState> {
 // into a "redux" prop. Otherwise it gets contaminated by other props.
 const mapStateToProps = (state: GlobalState): StateProps => ({
   redux: {
-    ...state,
-  },
-});
+    ...state
+  }
+})
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    overwriteStore: (store) => dispatch(overwriteStore(store)),
-  };
-};
+    overwriteStore: (store) => dispatch(overwriteStore(store))
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeContainer)

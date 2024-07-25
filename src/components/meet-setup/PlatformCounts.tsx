@@ -16,41 +16,41 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import PlatformCount from "./PlatformCount";
+import PlatformCount from './PlatformCount'
 
-import { GlobalState } from "../../types/stateTypes";
+import { GlobalState } from '../../types/stateTypes'
 
 interface StateProps {
-  lengthDays: number;
+  lengthDays: number
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 class PlatformCounts extends React.Component<Props> {
   constructor(props: Props) {
-    super(props);
-    this.createPlatformInputs = this.createPlatformInputs.bind(this);
+    super(props)
+    this.createPlatformInputs = this.createPlatformInputs.bind(this)
   }
 
   createPlatformInputs = () => {
-    const inputs = [];
-    const lengthDays = this.props.lengthDays;
+    const inputs = []
+    const lengthDays = this.props.lengthDays
     for (let i = 1; i <= lengthDays; ++i) {
-      inputs.push(<PlatformCount key={i} day={i} />);
+      inputs.push(<PlatformCount key={i} day={i} />)
     }
-    return inputs;
-  };
+    return inputs
+  }
 
   render() {
-    return <div>{this.createPlatformInputs()}</div>;
+    return <div>{this.createPlatformInputs()}</div>
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  lengthDays: state.meet.lengthDays,
-});
+  lengthDays: state.meet.lengthDays
+})
 
-export default connect(mapStateToProps)(PlatformCounts);
+export default connect(mapStateToProps)(PlatformCounts)

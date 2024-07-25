@@ -18,33 +18,41 @@
 //
 // This is a split Yes/No button
 
-import React, { FunctionComponent } from "react";
-import Form from "react-bootstrap/Form";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Button from "react-bootstrap/Button";
+import React, { FunctionComponent } from 'react'
+import Form from 'react-bootstrap/Form'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Button from 'react-bootstrap/Button'
 
 interface Props {
-  value: boolean;
-  setValue: (bool: boolean) => void;
-  label: JSX.Element | string;
-  yes: string;
-  no: string;
+  value: boolean
+  setValue: (bool: boolean) => void
+  label: JSX.Element | string
+  yes: string
+  no: string
 }
 
 const YesNoButton: FunctionComponent<Props> = (props) => {
   return (
     <Form.Group>
       <Form.Label>{props.label}</Form.Label>
-      <ButtonGroup style={{ width: "100%" }}>
-        <Button active={!props.value} variant="outline-secondary" onClick={() => props.setValue(false)}>
+      <ButtonGroup style={{ width: '100%' }}>
+        <Button
+          active={!props.value}
+          variant="outline-secondary"
+          onClick={() => props.setValue(false)}
+        >
           {props.no}
         </Button>
-        <Button active={props.value} variant="outline-secondary" onClick={() => props.setValue(true)}>
+        <Button
+          active={props.value}
+          variant="outline-secondary"
+          onClick={() => props.setValue(true)}
+        >
           {props.yes}
         </Button>
       </ButtonGroup>
     </Form.Group>
-  );
-};
+  )
+}
 
-export default YesNoButton;
+export default YesNoButton

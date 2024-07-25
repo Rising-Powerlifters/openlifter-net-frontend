@@ -18,80 +18,80 @@
 
 // Defines the MeetDate date picker.
 
-import React from "react";
-import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
-import { registerLocale } from "react-datepicker";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import DatePicker from 'react-datepicker'
+import { registerLocale } from 'react-datepicker'
+import { FormattedMessage } from 'react-intl'
 
-import Form from "react-bootstrap/Form";
-import FormGroup from "react-bootstrap/FormGroup";
+import Form from 'react-bootstrap/Form'
+import FormGroup from 'react-bootstrap/FormGroup'
 
-import { setMeetDate } from "../../actions/meetSetupActions";
-import { iso8601ToLocalDate, localDateToIso8601 } from "../../logic/date";
+import { setMeetDate } from '../../actions/meetSetupActions'
+import { iso8601ToLocalDate, localDateToIso8601 } from '../../logic/date'
 
-import { GlobalState } from "../../types/stateTypes";
-import { Language } from "../../types/dataTypes";
+import { GlobalState } from '../../types/stateTypes'
+import { Language } from '../../types/dataTypes'
 
 // The react-datepicker gets locale information from the "date-fns" package.
 // In order for it to understand what our Languages are, we have to register
 // those locales. The react-datepicker provides a helper function to do this.
-import de from "date-fns/locale/de";
-import el from "date-fns/locale/el";
-import eo from "date-fns/locale/eo";
-import es from "date-fns/locale/es";
-import et from "date-fns/locale/et";
-import fr from "date-fns/locale/fr";
-import hr from "date-fns/locale/hr";
-import it from "date-fns/locale/it";
-import lt from "date-fns/locale/lt";
-import nl from "date-fns/locale/nl";
-import pt from "date-fns/locale/pt";
-import ru from "date-fns/locale/ru";
-import tr from "date-fns/locale/tr";
-import uk from "date-fns/locale/uk";
-import zh_CN from "date-fns/locale/zh-CN";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import de from 'date-fns/locale/de'
+import el from 'date-fns/locale/el'
+import eo from 'date-fns/locale/eo'
+import es from 'date-fns/locale/es'
+import et from 'date-fns/locale/et'
+import fr from 'date-fns/locale/fr'
+import hr from 'date-fns/locale/hr'
+import it from 'date-fns/locale/it'
+import lt from 'date-fns/locale/lt'
+import nl from 'date-fns/locale/nl'
+import pt from 'date-fns/locale/pt'
+import ru from 'date-fns/locale/ru'
+import tr from 'date-fns/locale/tr'
+import uk from 'date-fns/locale/uk'
+import zh_CN from 'date-fns/locale/zh-CN'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 // Register the date-fns/locales with the DatePicker.
-registerLocale("de", de);
-registerLocale("el", el);
-registerLocale("eo", eo);
-registerLocale("es", es);
-registerLocale("et", et);
-registerLocale("fr", fr);
-registerLocale("hr", hr);
-registerLocale("it", it);
-registerLocale("lt", lt);
-registerLocale("nl", nl);
-registerLocale("pt", pt);
-registerLocale("ru", ru);
-registerLocale("tr", tr);
-registerLocale("uk", uk);
-registerLocale("zh-Hans", zh_CN);
+registerLocale('de', de)
+registerLocale('el', el)
+registerLocale('eo', eo)
+registerLocale('es', es)
+registerLocale('et', et)
+registerLocale('fr', fr)
+registerLocale('hr', hr)
+registerLocale('it', it)
+registerLocale('lt', lt)
+registerLocale('nl', nl)
+registerLocale('pt', pt)
+registerLocale('ru', ru)
+registerLocale('tr', tr)
+registerLocale('uk', uk)
+registerLocale('zh-Hans', zh_CN)
 
 interface StateProps {
-  date: string;
-  language: Language;
+  date: string
+  language: Language
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 class MeetDate extends React.Component<Props> {
   setMeetDate = (date: Date) => {
-    rpcDispatch(setMeetDate(localDateToIso8601(date)));
-  };
+    rpcDispatch(setMeetDate(localDateToIso8601(date)))
+  }
 
   render() {
     // The DatePicker manipulates a Date object in local time.
-    const initialDate: Date = iso8601ToLocalDate(this.props.date);
+    const initialDate: Date = iso8601ToLocalDate(this.props.date)
 
     return (
       <FormGroup>
         <Form.Label>
           <FormattedMessage id="meet-setup.start-date" defaultMessage="Start Date" />
         </Form.Label>
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: 'center' }}>
           <DatePicker
             dateFormat="yyyy-MM-dd"
             selected={initialDate}
@@ -101,13 +101,13 @@ class MeetDate extends React.Component<Props> {
           />
         </div>
       </FormGroup>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   date: state.meet.date,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(MeetDate);
+export default connect(mapStateToProps)(MeetDate)

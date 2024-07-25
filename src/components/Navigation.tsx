@@ -18,15 +18,15 @@
 
 // Defines the Navigation component for navigating between pages using react-router.
 
-import React from "react";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { FormattedMessage } from 'react-intl'
 
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import Nav from 'react-bootstrap/Nav'
+import Navbar from 'react-bootstrap/Navbar'
 
 // The LinkContainer is used to wrap Components that change the URL,
 // hooking them up with the Router.
-import { LinkContainer } from "react-router-bootstrap";
+import { LinkContainer } from 'react-router-bootstrap'
 
 const Navigation = () => {
   return (
@@ -83,7 +83,7 @@ const Navigation = () => {
         </Nav>
       </Navbar.Collapse>
     </Navbar>
-  );
-};
+  )
+}
 
-export default Navigation;
+export default Navigation

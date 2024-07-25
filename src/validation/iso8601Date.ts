@@ -16,37 +16,37 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Validation } from "../types/dataTypes";
+import { Validation } from '../types/dataTypes'
 
 // Validates a string date in the ISO8601 "YYYY-MM-DD" format.
 export const validateIso8601Date = (s?: string): Validation => {
-  if (typeof s !== "string") return "error";
+  if (typeof s !== 'string') return 'error'
 
-  if (s === "") return null;
-  if (s.length !== "YYYY-MM-DD".length) return "error";
+  if (s === '') return null
+  if (s.length !== 'YYYY-MM-DD'.length) return 'error'
 
-  const pieces: Array<string> = s.split("-");
-  if (pieces.length !== 3) return "error";
+  const pieces: Array<string> = s.split('-')
+  if (pieces.length !== 3) return 'error'
 
-  const [yearStr, monthStr, dayStr] = pieces;
+  const [yearStr, monthStr, dayStr] = pieces
 
   // Ensure that the strings only contain numbers, because the Number() constructor
   // will ignore whitespace.
-  const onlyNumbers = /^[0-9]+$/;
+  const onlyNumbers = /^[0-9]+$/
 
-  if (!yearStr.match(onlyNumbers)) return "error";
-  if (!monthStr.match(onlyNumbers)) return "error";
-  if (!dayStr.match(onlyNumbers)) return "error";
+  if (!yearStr.match(onlyNumbers)) return 'error'
+  if (!monthStr.match(onlyNumbers)) return 'error'
+  if (!dayStr.match(onlyNumbers)) return 'error'
 
-  const year = Number(yearStr);
-  const month = Number(monthStr);
-  const day = Number(dayStr);
+  const year = Number(yearStr)
+  const month = Number(monthStr)
+  const day = Number(dayStr)
 
-  if (isNaN(year) || isNaN(month) || isNaN(day)) return "error";
-  if (year <= 0 || month <= 0 || month > 12 || day <= 0 || day > 31) return "error";
+  if (isNaN(year) || isNaN(month) || isNaN(day)) return 'error'
+  if (year <= 0 || month <= 0 || month > 12 || day <= 0 || day > 31) return 'error'
 
   // Disallow dates that are out of the plausible range for powerlifting.
-  if (year < 1880 || year >= new Date().getFullYear() + 2) return "error";
+  if (year < 1880 || year >= new Date().getFullYear() + 2) return 'error'
 
-  return "success";
-};
+  return 'success'
+}

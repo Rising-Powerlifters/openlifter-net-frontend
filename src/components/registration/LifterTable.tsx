@@ -23,25 +23,25 @@
 // This is the parent component that determines how many rows to render,
 // what data each row should see, etc.
 
-import React from "react";
+import React from 'react'
 
-import { Entry } from "../../types/dataTypes";
+import { Entry } from '../../types/dataTypes'
 
 interface OwnProps {
-  entries: ReadonlyArray<Entry>;
-  rowRenderer: any;
+  entries: ReadonlyArray<Entry>
+  rowRenderer: any
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 const LifterTable: React.FC<Props> = (props) => {
   const renderRows = () => {
-    const LifterRow = props.rowRenderer;
-    const { entries } = props;
-    return entries.map((entry) => <LifterRow key={entry.id} id={entry.id} />);
-  };
+    const LifterRow = props.rowRenderer
+    const { entries } = props
+    return entries.map((entry) => <LifterRow key={entry.id} id={entry.id} />)
+  }
 
-  return <div>{renderRows()}</div>;
-};
+  return <div>{renderRows()}</div>
+}
 
-export default LifterTable;
+export default LifterTable

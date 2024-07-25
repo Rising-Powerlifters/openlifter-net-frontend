@@ -18,23 +18,26 @@
 
 // See comments in src/versions.js.
 
-import { stateVersion, releaseVersion } from "../versions";
-import { OverwriteStoreAction } from "../types/actionTypes";
-import { VersionsState } from "../types/stateTypes";
+import { stateVersion, releaseVersion } from '../versions'
+import { OverwriteStoreAction } from '../types/actionTypes'
+import { VersionsState } from '../types/stateTypes'
 
 const initialState: VersionsState = {
   stateVersion,
-  releaseVersion,
-};
+  releaseVersion
+}
 
-type Action = OverwriteStoreAction;
+type Action = OverwriteStoreAction
 
-export default function versionReducer(state: VersionsState = initialState, action: Action): VersionsState {
+export default function versionReducer(
+  state: VersionsState = initialState,
+  action: Action
+): VersionsState {
   switch (action.type) {
-    case "OVERWRITE_STORE":
-      return action.store.versions;
+    case 'OVERWRITE_STORE':
+      return action.store.versions
 
     default:
-      return state;
+      return state
   }
 }

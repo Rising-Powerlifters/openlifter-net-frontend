@@ -18,16 +18,16 @@
 
 // Defines shared types produced by Redux actions.
 
-import { Entry, Flight, Formula, Language, Lift, Sex } from "./dataTypes";
-import { GlobalState, MeetState, LiftingState } from "./stateTypes";
+import { Entry, Flight, Formula, Language, Lift, Sex } from './dataTypes'
+import { GlobalState, MeetState, LiftingState } from './stateTypes'
 
 //////////////////////////////////////////////////////////
 // Global Actions.
 //////////////////////////////////////////////////////////
 
 export interface OverwriteStoreAction {
-  readonly type: "OVERWRITE_STORE";
-  readonly store: GlobalState;
+  readonly type: 'OVERWRITE_STORE'
+  readonly store: GlobalState
 }
 
 //////////////////////////////////////////////////////////
@@ -35,8 +35,8 @@ export interface OverwriteStoreAction {
 //////////////////////////////////////////////////////////
 
 export interface ChangeLanguageAction {
-  readonly type: "CHANGE_LANGUAGE";
-  readonly language: Language;
+  readonly type: 'CHANGE_LANGUAGE'
+  readonly language: Language
 }
 
 //////////////////////////////////////////////////////////
@@ -44,68 +44,68 @@ export interface ChangeLanguageAction {
 //////////////////////////////////////////////////////////
 
 export interface SetMeetNameAction {
-  readonly type: "SET_MEET_NAME";
-  readonly name: string;
+  readonly type: 'SET_MEET_NAME'
+  readonly name: string
 }
 
 export interface SetFormulaAction {
-  readonly type: "SET_FORMULA";
-  readonly formula: Formula;
+  readonly type: 'SET_FORMULA'
+  readonly formula: Formula
 }
 
 export interface SetFederationAction {
-  readonly type: "SET_FEDERATION";
-  readonly federation: string;
+  readonly type: 'SET_FEDERATION'
+  readonly federation: string
 }
 
 export interface SetDivisionsAction {
-  readonly type: "SET_DIVISIONS";
-  readonly divisions: ReadonlyArray<string>;
+  readonly type: 'SET_DIVISIONS'
+  readonly divisions: ReadonlyArray<string>
 }
 
 export interface SetMeetDateAction {
-  readonly type: "SET_MEET_DATE";
-  readonly date: string;
+  readonly type: 'SET_MEET_DATE'
+  readonly date: string
 }
 
 export interface SetLengthDaysAction {
-  readonly type: "SET_LENGTH_DAYS";
-  readonly length: number;
+  readonly type: 'SET_LENGTH_DAYS'
+  readonly length: number
 }
 
 export interface SetPlatformsOnDaysAction {
-  readonly type: "SET_PLATFORM_COUNT";
-  readonly day: number;
-  readonly count: number;
+  readonly type: 'SET_PLATFORM_COUNT'
+  readonly day: number
+  readonly count: number
 }
 
 export interface SetInKgAction {
-  readonly type: "SET_IN_KG";
-  readonly inKg: boolean;
+  readonly type: 'SET_IN_KG'
+  readonly inKg: boolean
 }
 
 export interface SetWeightClassesAction {
-  readonly type: "SET_WEIGHTCLASSES";
-  readonly sex: Sex;
-  readonly classesKg: ReadonlyArray<number>;
+  readonly type: 'SET_WEIGHTCLASSES'
+  readonly sex: Sex
+  readonly classesKg: ReadonlyArray<number>
 }
 
 export interface SetBarAndCollarsWeightKgAction {
-  readonly type: "SET_BAR_AND_COLLARS_WEIGHT_KG";
-  readonly lift: Lift;
-  readonly weightKg: number;
+  readonly type: 'SET_BAR_AND_COLLARS_WEIGHT_KG'
+  readonly lift: Lift
+  readonly weightKg: number
 }
 
 export interface SetPlateConfigAction {
-  readonly type: "SET_PLATE_CONFIG";
-  readonly weightKg: number;
-  readonly pairCount: number;
-  readonly color: string;
+  readonly type: 'SET_PLATE_CONFIG'
+  readonly weightKg: number
+  readonly pairCount: number
+  readonly color: string
 }
 
 export interface UpdateMeetAction {
-  readonly type: "UPDATE_MEET";
-  readonly changes: Partial<MeetState>;
+  readonly type: 'UPDATE_MEET'
+  readonly changes: Partial<MeetState>
 }
 
 export type MeetSetupAction =
@@ -120,38 +120,38 @@ export type MeetSetupAction =
   | SetWeightClassesAction
   | SetBarAndCollarsWeightKgAction
   | SetPlateConfigAction
-  | UpdateMeetAction;
+  | UpdateMeetAction
 
 //////////////////////////////////////////////////////////
 // Registration Actions.
 //////////////////////////////////////////////////////////
 
 export interface NewRegistrationAction {
-  readonly type: "NEW_REGISTRATION";
-  readonly overwriteDefaults: Partial<Entry>;
+  readonly type: 'NEW_REGISTRATION'
+  readonly overwriteDefaults: Partial<Entry>
 }
 
 export interface DeleteRegistrationAction {
-  readonly type: "DELETE_REGISTRATION";
-  readonly entryId: number;
+  readonly type: 'DELETE_REGISTRATION'
+  readonly entryId: number
 }
 
 export interface UpdateRegistrationAction {
-  readonly type: "UPDATE_REGISTRATION";
-  readonly entryId: number;
-  readonly changes: Partial<Entry>;
+  readonly type: 'UPDATE_REGISTRATION'
+  readonly entryId: number
+  readonly changes: Partial<Entry>
 }
 
 export interface MergePlatformAction {
-  readonly type: "MERGE_PLATFORM";
-  readonly day: number;
-  readonly platform: number;
-  readonly platformEntries: ReadonlyArray<Entry>;
+  readonly type: 'MERGE_PLATFORM'
+  readonly day: number
+  readonly platform: number
+  readonly platformEntries: ReadonlyArray<Entry>
 }
 
 export interface AssignLotNumbersAction {
-  readonly type: "ASSIGN_LOT_NUMBERS";
-  readonly lotNumbers: number[];
+  readonly type: 'ASSIGN_LOT_NUMBERS'
+  readonly lotNumbers: number[]
 }
 
 export type RegistrationAction =
@@ -159,49 +159,49 @@ export type RegistrationAction =
   | DeleteRegistrationAction
   | UpdateRegistrationAction
   | AssignLotNumbersAction
-  | MergePlatformAction;
+  | MergePlatformAction
 
 //////////////////////////////////////////////////////////
 // Lifting Actions.
 //////////////////////////////////////////////////////////
 
 export interface EnterAttemptAction {
-  readonly type: "ENTER_ATTEMPT";
-  readonly entryId: number;
-  readonly lift: Lift;
-  readonly attemptOneIndexed: number;
-  readonly weightKg: number;
+  readonly type: 'ENTER_ATTEMPT'
+  readonly entryId: number
+  readonly lift: Lift
+  readonly attemptOneIndexed: number
+  readonly weightKg: number
 }
 
 export interface MarkLiftAction {
-  readonly type: "MARK_LIFT";
-  readonly entryId: number;
-  readonly lift: Lift;
-  readonly attemptOneIndexed: number;
-  readonly success: boolean;
+  readonly type: 'MARK_LIFT'
+  readonly entryId: number
+  readonly lift: Lift
+  readonly attemptOneIndexed: number
+  readonly success: boolean
 }
 
 export interface SetLiftingGroupAction {
-  readonly type: "SET_LIFTING_GROUP";
-  readonly day: number;
-  readonly platform: number;
-  readonly flight: Flight;
-  readonly lift: Lift;
+  readonly type: 'SET_LIFTING_GROUP'
+  readonly day: number
+  readonly platform: number
+  readonly flight: Flight
+  readonly lift: Lift
 }
 
 export interface OverrideAttemptAction {
-  readonly type: "OVERRIDE_ATTEMPT";
-  readonly attempt: number;
+  readonly type: 'OVERRIDE_ATTEMPT'
+  readonly attempt: number
 }
 
 export interface OverrideEntryIdAction {
-  readonly type: "OVERRIDE_ENTRY_ID";
-  readonly entryId: number;
+  readonly type: 'OVERRIDE_ENTRY_ID'
+  readonly entryId: number
 }
 
 export interface SetTableInfoAction {
-  readonly type: "SET_TABLE_INFO";
-  readonly changes: Partial<LiftingState>;
+  readonly type: 'SET_TABLE_INFO'
+  readonly changes: Partial<LiftingState>
 }
 
 export type LiftingAction =
@@ -210,4 +210,4 @@ export type LiftingAction =
   | SetLiftingGroupAction
   | OverrideAttemptAction
   | OverrideEntryIdAction
-  | SetTableInfoAction;
+  | SetTableInfoAction

@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
+import React from 'react'
 
-import MeetSetup from "../components/meet-setup/MeetSetup";
-import styles from "../components/common/ContentArea.module.scss";
+import MeetSetup from '../components/meet-setup/MeetSetup'
+import styles from '../components/common/ContentArea.module.scss'
 
 class MeetSetupContainer extends React.Component<{}> {
   render() {
@@ -27,8 +27,8 @@ class MeetSetupContainer extends React.Component<{}> {
       <div className={styles.contentArea}>
         <MeetSetup />
       </div>
-    );
+    )
   }
 }
 
-export default MeetSetupContainer;
+export default MeetSetupContainer

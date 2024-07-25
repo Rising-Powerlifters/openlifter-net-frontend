@@ -22,65 +22,65 @@
 // This class performs the state calculations and communicates that to its
 // sub-components via props.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Card from "react-bootstrap/Card";
+import Card from 'react-bootstrap/Card'
 
-import LeftCard from "./LeftCard";
-import LiftingFooter from "./LiftingFooter";
-import LiftingHeader from "./LiftingHeader";
-import LiftingTable from "./LiftingTable";
-import WeighinsView from "../weighins/WeighinsView";
+import LeftCard from './LeftCard'
+import LiftingFooter from './LiftingFooter'
+import LiftingHeader from './LiftingHeader'
+import LiftingTable from './LiftingTable'
+import WeighinsView from '../weighins/WeighinsView'
 
-import ColumnWidth from "./ColumnWidth";
+import ColumnWidth from './ColumnWidth'
 
-import { getString } from "../../logic/strings";
+import { getString } from '../../logic/strings'
 
-import styles from "./LiftingView.module.scss";
+import styles from './LiftingView.module.scss'
 
-import { getLiftingOrder } from "../../logic/liftingOrder";
+import { getLiftingOrder } from '../../logic/liftingOrder'
 
-import { Entry, Flight, Language } from "../../types/dataTypes";
-import { GlobalState, MeetState, LiftingState } from "../../types/stateTypes";
+import { Entry, Flight, Language } from '../../types/dataTypes'
+import { GlobalState, MeetState, LiftingState } from '../../types/stateTypes'
 
 interface StateProps {
-  meet: MeetState;
-  lifting: LiftingState;
-  flightsOnPlatform: Array<Flight>;
-  entriesInFlight: Array<Entry>;
-  language: Language;
+  meet: MeetState
+  lifting: LiftingState
+  flightsOnPlatform: Array<Flight>
+  entriesInFlight: Array<Entry>
+  language: Language
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 interface InternalState {
   // If true, the LiftingTable is replaced with the Weighins page.
   // This lets the score table change arbitrary rack height and attempt information
   // without removing the current lifter or bar load displays.
-  replaceTableWithWeighins: boolean;
+  replaceTableWithWeighins: boolean
 }
 
 class LiftingView extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
-    this.toggleReplaceTableWithWeighins = this.toggleReplaceTableWithWeighins.bind(this);
+    super(props)
+    this.toggleReplaceTableWithWeighins = this.toggleReplaceTableWithWeighins.bind(this)
     this.state = {
-      replaceTableWithWeighins: false,
-    };
+      replaceTableWithWeighins: false
+    }
   }
 
   toggleReplaceTableWithWeighins = (): void => {
     this.setState({
-      replaceTableWithWeighins: !this.state.replaceTableWithWeighins,
-    });
-  };
+      replaceTableWithWeighins: !this.state.replaceTableWithWeighins
+    })
+  }
 
   render() {
-    const now = getLiftingOrder(this.props.entriesInFlight, this.props.lifting);
+    const now = getLiftingOrder(this.props.entriesInFlight, this.props.lifting)
 
-    let rightElement = null;
+    let rightElement = null
     if (this.state.replaceTableWithWeighins === false) {
       rightElement = (
         <LiftingTable
@@ -88,20 +88,24 @@ class LiftingView extends React.Component<Props, InternalState> {
           orderedEntries={now.orderedEntries}
           currentEntryId={now.currentEntryId}
         />
-      );
+      )
     } else {
       rightElement = (
-        <WeighinsView day={this.props.lifting.day} platform={this.props.lifting.platform} inLiftingPage={true} />
-      );
+        <WeighinsView
+          day={this.props.lifting.day}
+          platform={this.props.lifting.platform}
+          inLiftingPage={true}
+        />
+      )
     }
 
     return (
       <div>
-        <Card style={{ margin: "12px 20px" }}>
+        <Card style={{ margin: '12px 20px' }}>
           <Card.Body>
-            <div style={{ width: "160px" }}>
+            <div style={{ width: '160px' }}>
               <ColumnWidth
-                label={getString("lifting.division-column-width-label", this.props.language)}
+                label={getString('lifting.division-column-width-label', this.props.language)}
                 fieldName="columnDivisionWidthPx"
               />
             </div>
@@ -143,39 +147,39 @@ class LiftingView extends React.Component<Props, InternalState> {
           />
         </div>
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => {
-  const day = state.lifting.day;
-  const platform = state.lifting.platform;
-  const flight = state.lifting.flight;
+  const day = state.lifting.day
+  const platform = state.lifting.platform
+  const flight = state.lifting.flight
 
   const entriesOnPlatform = state.registration.entries.filter(
-    (entry) => entry.day === day && entry.platform === platform,
-  );
+    (entry) => entry.day === day && entry.platform === platform
+  )
 
   // Determine available flights from the entries themselves.
-  const flights: Array<Flight> = [];
+  const flights: Array<Flight> = []
   for (let i = 0; i < entriesOnPlatform.length; i++) {
-    const entry = entriesOnPlatform[i];
+    const entry = entriesOnPlatform[i]
     if (flights.indexOf(entry.flight) === -1) {
-      flights.push(entry.flight);
+      flights.push(entry.flight)
     }
   }
-  flights.sort();
+  flights.sort()
 
   // Only receive entries that are in the currently-lifting group.
-  const entriesInFlight = entriesOnPlatform.filter((entry) => entry.flight === flight);
+  const entriesInFlight = entriesOnPlatform.filter((entry) => entry.flight === flight)
 
   return {
     meet: state.meet,
     lifting: state.lifting,
     flightsOnPlatform: flights,
     entriesInFlight: entriesInFlight,
-    language: state.language,
-  };
-};
+    language: state.language
+  }
+}
 
-export default connect(mapStateToProps)(LiftingView);
+export default connect(mapStateToProps)(LiftingView)

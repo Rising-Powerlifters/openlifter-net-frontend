@@ -18,263 +18,284 @@
 
 // The parent component of the Registration page, contained by the RegistrationContainer.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Card from "react-bootstrap/Card";
+import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Card from 'react-bootstrap/Card'
 
-import { faSpinner, faTimes, faRandom, faSort, faDice } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner, faTimes, faRandom, faSort, faDice } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import LifterTable from "./LifterTable";
-import LifterRow from "./LifterRow";
-import NewButton from "./NewButton";
-import ErrorModal from "../ErrorModal";
+import LifterTable from './LifterTable'
+import LifterRow from './LifterRow'
+import NewButton from './NewButton'
+import ErrorModal from '../ErrorModal'
 
-import { Csv } from "../../logic/export/csv";
-import { makeExampleRegistrationsCsv, loadRegistrations } from "../../logic/import/registration-csv";
-import { makeRegistrationsCsv } from "../../logic/export/registrations";
-import { getString } from "../../logic/strings";
+import { Csv } from '../../logic/export/csv'
+import { makeExampleRegistrationsCsv, loadRegistrations } from '../../logic/import/registration-csv'
+import { makeRegistrationsCsv } from '../../logic/export/registrations'
+import { getString } from '../../logic/strings'
 
-import { newRegistration, deleteRegistration, assignLotNumbers } from "../../actions/registrationActions";
+import {
+  newRegistration,
+  deleteRegistration,
+  assignLotNumbers
+} from '../../actions/registrationActions'
 
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver'
 
-import { GlobalState } from "../../types/stateTypes";
-import { Entry } from "../../types/dataTypes";
-import { DropdownButton, Dropdown } from "react-bootstrap";
-import { shuffle } from "../debug/RandomizeHelpers";
-import { generateRandomLotNumbersSequencedByFlight } from "../../logic/lotNumbers";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { GlobalState } from '../../types/stateTypes'
+import { Entry } from '../../types/dataTypes'
+import { DropdownButton, Dropdown } from 'react-bootstrap'
+import { shuffle } from '../debug/RandomizeHelpers'
+import { generateRandomLotNumbersSequencedByFlight } from '../../logic/lotNumbers'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  global: GlobalState;
+  global: GlobalState
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 interface InternalState {
   // Controls the ErrorModal popup. Shown when error !== "".
-  error: string;
+  error: string
   // Used for showing spinning indicators when loading files
-  isLoadingFiles: boolean;
+  isLoadingFiles: boolean
 }
 
 // Used to distinguish between the Overwrite and Append modes.
-let globalImportKind: string = "Overwrite";
+let globalImportKind: string = 'Overwrite'
 
 class RegistrationView extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
-    this.handleDownloadCsvTemplateClick = this.handleDownloadCsvTemplateClick.bind(this);
-    this.handleExportCsvClick = this.handleExportCsvClick.bind(this);
-    this.handleOverwriteClick = this.handleOverwriteClick.bind(this);
-    this.handleAppendClick = this.handleAppendClick.bind(this);
-    this.handleLoadFileInput = this.handleLoadFileInput.bind(this);
-    this.handleSequentialLotNumbersClick = this.handleSequentialLotNumbersClick.bind(this);
-    this.handleRandomLotNumbersClick = this.handleRandomLotNumbersClick.bind(this);
-    this.handleRandomLotNumbersByFlightClick = this.handleRandomLotNumbersByFlightClick.bind(this);
-    this.handleRemoveLotNumbersClick = this.handleRemoveLotNumbersClick.bind(this);
-    this.closeErrorModal = this.closeErrorModal.bind(this);
+    super(props)
+    this.handleDownloadCsvTemplateClick = this.handleDownloadCsvTemplateClick.bind(this)
+    this.handleExportCsvClick = this.handleExportCsvClick.bind(this)
+    this.handleOverwriteClick = this.handleOverwriteClick.bind(this)
+    this.handleAppendClick = this.handleAppendClick.bind(this)
+    this.handleLoadFileInput = this.handleLoadFileInput.bind(this)
+    this.handleSequentialLotNumbersClick = this.handleSequentialLotNumbersClick.bind(this)
+    this.handleRandomLotNumbersClick = this.handleRandomLotNumbersClick.bind(this)
+    this.handleRandomLotNumbersByFlightClick = this.handleRandomLotNumbersByFlightClick.bind(this)
+    this.handleRemoveLotNumbersClick = this.handleRemoveLotNumbersClick.bind(this)
+    this.closeErrorModal = this.closeErrorModal.bind(this)
 
-    this.state = { error: "", isLoadingFiles: false };
+    this.state = { error: '', isLoadingFiles: false }
   }
 
   newRegistration = (obj: Partial<Entry>) => {
-    rpcDispatch(newRegistration(obj));
-  };
+    rpcDispatch(newRegistration(obj))
+  }
   deleteRegistration = (id: number) => {
-    rpcDispatch(deleteRegistration(id));
-  };
+    rpcDispatch(deleteRegistration(id))
+  }
   assignLotNumbers = (lotNumbers: number[]) => {
-    rpcDispatch(assignLotNumbers(lotNumbers));
-  };
+    rpcDispatch(assignLotNumbers(lotNumbers))
+  }
 
   handleDownloadCsvTemplateClick = () => {
-    const text = makeExampleRegistrationsCsv(this.props.global.language);
-    const blob = new Blob([text], { type: "application/text;charset=utf-8" });
-    const filename = getString("import.template-filename", this.props.global.language) + ".csv";
-    saveAs(blob, filename);
-  };
+    const text = makeExampleRegistrationsCsv(this.props.global.language)
+    const blob = new Blob([text], { type: 'application/text;charset=utf-8' })
+    const filename = getString('import.template-filename', this.props.global.language) + '.csv'
+    saveAs(blob, filename)
+  }
 
   handleExportCsvClick = () => {
-    let meetname = this.props.global.meet.name;
-    if (meetname === "") {
-      meetname = getString("common.unnamed-filename", this.props.global.language);
+    let meetname = this.props.global.meet.name
+    if (meetname === '') {
+      meetname = getString('common.unnamed-filename', this.props.global.language)
     }
-    meetname = meetname.replace(/ /g, "-");
+    meetname = meetname.replace(/ /g, '-')
 
-    const language = this.props.global.language;
-    const text = makeRegistrationsCsv(this.props.global.registration, language);
-    const blob = new Blob([text], { type: "application/text;charset=utf-8" });
+    const language = this.props.global.language
+    const text = makeRegistrationsCsv(this.props.global.registration, language)
+    const blob = new Blob([text], { type: 'application/text;charset=utf-8' })
 
-    const basename = getString("import.export-filename", this.props.global.language);
-    const filename = basename.replace("{MeetName}", meetname) + ".csv";
-    saveAs(blob, filename);
-  };
+    const basename = getString('import.export-filename', this.props.global.language)
+    const filename = basename.replace('{MeetName}', meetname) + '.csv'
+    saveAs(blob, filename)
+  }
 
   handleOverwriteClick = () => {
-    globalImportKind = "Overwrite";
-    const loadhelper = document.getElementById("loadhelper");
+    globalImportKind = 'Overwrite'
+    const loadhelper = document.getElementById('loadhelper')
     if (loadhelper !== null) {
-      loadhelper.click();
+      loadhelper.click()
     }
-  };
+  }
 
   handleSequentialLotNumbersClick = () => {
-    this.updateLotNumbers("AssignSequentially");
-  };
+    this.updateLotNumbers('AssignSequentially')
+  }
 
   handleRandomLotNumbersClick = () => {
-    this.updateLotNumbers("AssignRandomly");
-  };
+    this.updateLotNumbers('AssignRandomly')
+  }
 
   handleRandomLotNumbersByFlightClick = () => {
-    this.updateLotNumbers("RandomByFlight");
-  };
+    this.updateLotNumbers('RandomByFlight')
+  }
 
   handleRemoveLotNumbersClick = () => {
-    this.updateLotNumbers("RemoveAll");
-  };
+    this.updateLotNumbers('RemoveAll')
+  }
 
-  updateLotNumbers = (manipulation: "AssignSequentially" | "RandomByFlight" | "AssignRandomly" | "RemoveAll"): void => {
-    const entries = this.props.global.registration.entries;
-    let lotNumbers: number[];
+  updateLotNumbers = (
+    manipulation: 'AssignSequentially' | 'RandomByFlight' | 'AssignRandomly' | 'RemoveAll'
+  ): void => {
+    const entries = this.props.global.registration.entries
+    let lotNumbers: number[]
 
     // Removing lot numbers is as simple as setting the number to 0
-    if (manipulation === "RemoveAll") {
-      lotNumbers = entries.map(() => 0);
-    } else if (manipulation === "RandomByFlight") {
-      lotNumbers = generateRandomLotNumbersSequencedByFlight(this.props.global.registration.entries);
+    if (manipulation === 'RemoveAll') {
+      lotNumbers = entries.map(() => 0)
+    } else if (manipulation === 'RandomByFlight') {
+      lotNumbers = generateRandomLotNumbersSequencedByFlight(this.props.global.registration.entries)
     } else {
       // If not removing, generate a set of sequential lot numbers for all lifters.
-      lotNumbers = entries.map((_entry, index) => index + 1);
+      lotNumbers = entries.map((_entry, index) => index + 1)
     }
 
     // If randomization was requested, shuffle the lot number array in-place.
-    if (manipulation === "AssignRandomly") {
-      shuffle(lotNumbers);
+    if (manipulation === 'AssignRandomly') {
+      shuffle(lotNumbers)
     }
 
     // Finally, update the lot numbers in the state
-    this.assignLotNumbers(lotNumbers);
-  };
+    this.assignLotNumbers(lotNumbers)
+  }
 
   handleAppendClick = () => {
-    globalImportKind = "Append";
-    const loadhelper = document.getElementById("loadhelper");
+    globalImportKind = 'Append'
+    const loadhelper = document.getElementById('loadhelper')
     if (loadhelper !== null) {
-      loadhelper.click();
+      loadhelper.click()
     }
-  };
+  }
 
   handleLoadFileInput = () => {
-    const loadHelper = document.getElementById("loadhelper");
-    if (loadHelper === null || !(loadHelper instanceof HTMLInputElement) || loadHelper.files === null) {
-      return;
+    const loadHelper = document.getElementById('loadhelper')
+    if (
+      loadHelper === null ||
+      !(loadHelper instanceof HTMLInputElement) ||
+      loadHelper.files === null
+    ) {
+      return
     }
 
-    const selectedFile = loadHelper.files[0];
-    const rememberThis = this;
+    const selectedFile = loadHelper.files[0]
+    const rememberThis = this
 
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = function () {
       // If this occurs, we've introduced a bug when initiating the file reader, or the read failed.
       // Add this check as a guard so the typing is narrowed
-      if (typeof reader.result !== "string") {
-        window.alert("Unable to load file: an unexpected internal error occured");
-        return;
+      if (typeof reader.result !== 'string') {
+        window.alert('Unable to load file: an unexpected internal error occured')
+        return
       }
 
-      const csv = new Csv();
-      const maybeError = csv.fromString(reader.result.replace(/;/g, ","));
+      const csv = new Csv()
+      const maybeError = csv.fromString(reader.result.replace(/;/g, ','))
 
       // Check if an error message occurred.
-      if (typeof maybeError === "string") {
-        rememberThis.setState({ error: maybeError });
-        return;
+      if (typeof maybeError === 'string') {
+        rememberThis.setState({ error: maybeError })
+        return
       }
 
       // Convert the Csv to an Array<Entry>.
-      const language = rememberThis.props.global.language;
-      const maybeEntries = loadRegistrations(rememberThis.props.global, csv, language);
-      if (typeof maybeEntries === "string") {
-        rememberThis.setState({ error: maybeEntries });
-        return;
+      const language = rememberThis.props.global.language
+      const maybeEntries = loadRegistrations(rememberThis.props.global, csv, language)
+      if (typeof maybeEntries === 'string') {
+        rememberThis.setState({ error: maybeEntries })
+        return
       }
 
       // Successfully parsed and loaded!
-      const entries: Array<Partial<Entry>> = maybeEntries;
+      const entries: Array<Partial<Entry>> = maybeEntries
 
       // If the mode is "Overwrite", delete all existing Entries.
-      if (globalImportKind === "Overwrite") {
-        const entryIds = rememberThis.props.global.registration.entries.map((e) => e.id);
+      if (globalImportKind === 'Overwrite') {
+        const entryIds = rememberThis.props.global.registration.entries.map((e) => e.id)
         for (let i = 0; i < entryIds.length; ++i) {
-          rememberThis.deleteRegistration(entryIds[i]);
+          rememberThis.deleteRegistration(entryIds[i])
         }
       }
 
       // Add all the new Entries.
       for (let i = 0; i < entries.length; ++i) {
         // Deleting the 'id' field causes newRegistration() to assign a valid one.
-        delete entries[i].id;
-        rememberThis.newRegistration(entries[i]);
+        delete entries[i].id
+        rememberThis.newRegistration(entries[i])
       }
-    };
+    }
 
     reader.onloadstart = function () {
-      rememberThis.setState({ isLoadingFiles: true });
-    };
+      rememberThis.setState({ isLoadingFiles: true })
+    }
 
     reader.onloadend = function () {
-      rememberThis.setState({ isLoadingFiles: false });
-    };
+      rememberThis.setState({ isLoadingFiles: false })
+    }
 
-    reader.readAsText(selectedFile);
-  };
+    reader.readAsText(selectedFile)
+  }
 
   closeErrorModal = () => {
-    this.setState({ error: "" });
-  };
+    this.setState({ error: '' })
+  }
 
   render() {
-    const numEntries = this.props.global.registration.entries.length;
-    const dropdownIconStyle = { width: "16px", marginRight: "6px" };
+    const numEntries = this.props.global.registration.entries.length
+    const dropdownIconStyle = { width: '16px', marginRight: '6px' }
 
     return (
       <div>
         <ErrorModal
           error={this.state.error}
-          title={getString("registration.importation-error", this.props.global.language)}
-          show={this.state.error !== ""}
+          title={getString('registration.importation-error', this.props.global.language)}
+          show={this.state.error !== ''}
           close={this.closeErrorModal}
         />
 
-        <Card style={{ marginBottom: "17px" }}>
+        <Card style={{ marginBottom: '17px' }}>
           <Card.Header>
-            <FormattedMessage id="registration.auto-import-card-header" defaultMessage="Auto-Import Registrations" />
+            <FormattedMessage
+              id="registration.auto-import-card-header"
+              defaultMessage="Auto-Import Registrations"
+            />
           </Card.Header>
           <Card.Body>
             <Button variant="info" onClick={this.handleDownloadCsvTemplateClick}>
-              <FormattedMessage id="registration.button-download-template" defaultMessage="Download Template" />
+              <FormattedMessage
+                id="registration.button-download-template"
+                defaultMessage="Download Template"
+              />
             </Button>
 
             <Button
               variant="success"
               disabled={numEntries === 0}
               onClick={this.handleExportCsvClick}
-              style={{ marginLeft: "14px" }}
+              style={{ marginLeft: '14px' }}
             >
-              <FormattedMessage id="registration.button-export-to-csv" defaultMessage="Export to CSV" />
+              <FormattedMessage
+                id="registration.button-export-to-csv"
+                defaultMessage="Export to CSV"
+              />
             </Button>
 
-            <ButtonGroup style={{ marginLeft: "14px" }}>
+            <ButtonGroup style={{ marginLeft: '14px' }}>
               <Button variant="danger" onClick={this.handleOverwriteClick}>
-                {this.state.isLoadingFiles && <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faSpinner} spin />}
+                {this.state.isLoadingFiles && (
+                  <FontAwesomeIcon style={{ marginRight: '5px' }} icon={faSpinner} spin />
+                )}
                 <FormattedMessage
                   id="registration.button-overwrite-from-csv"
                   defaultMessage="Overwrite Registrations from CSV"
@@ -290,7 +311,7 @@ class RegistrationView extends React.Component<Props, InternalState> {
           </Card.Body>
         </Card>
 
-        <Card style={{ marginBottom: "17px" }}>
+        <Card style={{ marginBottom: '17px' }}>
           <Card.Header>
             <FormattedMessage id="registration.tools-header" defaultMessage="Tools" />
           </Card.Header>
@@ -299,7 +320,10 @@ class RegistrationView extends React.Component<Props, InternalState> {
               <DropdownButton
                 as={ButtonGroup}
                 title={
-                  <FormattedMessage id="registration.dropdown-manage-lot-numbers" defaultMessage="Manage Lot Numbers" />
+                  <FormattedMessage
+                    id="registration.dropdown-manage-lot-numbers"
+                    defaultMessage="Manage Lot Numbers"
+                  />
                 }
                 id="registration.button-assign-lot-numbers"
               >
@@ -326,7 +350,10 @@ class RegistrationView extends React.Component<Props, InternalState> {
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.handleRemoveLotNumbersClick}>
                   <FontAwesomeIcon icon={faTimes} style={dropdownIconStyle} />
-                  <FormattedMessage id="registration.button-remove-lot-numbers" defaultMessage="Remove Lot Numbers" />
+                  <FormattedMessage
+                    id="registration.button-remove-lot-numbers"
+                    defaultMessage="Remove Lot Numbers"
+                  />
                 </Dropdown.Item>
               </DropdownButton>
             </ButtonGroup>
@@ -340,16 +367,16 @@ class RegistrationView extends React.Component<Props, InternalState> {
           id="loadhelper"
           type="file"
           accept=".csv"
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={this.handleLoadFileInput}
         />
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  global: state,
-});
+  global: state
+})
 
-export default connect(mapStateToProps)(RegistrationView);
+export default connect(mapStateToProps)(RegistrationView)

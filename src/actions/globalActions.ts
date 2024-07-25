@@ -16,14 +16,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { OverwriteStoreAction } from "../types/actionTypes";
-import { GlobalState } from "../types/stateTypes";
+import { OverwriteStoreAction } from '../types/actionTypes'
+import { GlobalState } from '../types/stateTypes'
 
 // Overwrites the entire Redux store, handled separately by each reducer.
 // This is used to implement "Load from File" functionality.
 export const overwriteStore = (store: GlobalState): OverwriteStoreAction => {
   return {
-    type: "OVERWRITE_STORE",
-    store: store,
-  };
-};
+    type: 'OVERWRITE_STORE',
+    store: store
+  }
+}

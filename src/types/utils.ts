@@ -21,7 +21,7 @@
 // Because the Redux store is immutable, all types are internally prefixed
 // with the "readonly " covariant type, which makes them immutable.
 
-import { AgeCoefficients, Flight, Formula, Lift, Sex } from "./dataTypes";
+import { AgeCoefficients, Flight, Formula, Lift, Sex } from './dataTypes'
 
 // This is purely used by the type system to raise a compile error when
 // we are trying to perform an exhaustive check (eg in a switch).
@@ -31,116 +31,118 @@ export function checkExhausted(value: never): void {}
 
 // Convenience function to narrow a variable's type down to a string.
 export function isString(value: any): value is string {
-  return typeof value === "string";
+  return typeof value === 'string'
 }
 
 // Throws an error if value isn't a string, narrows the type if it is.
 export function assertString(value: any): value is string {
-  const result = isString(value);
+  const result = isString(value)
   if (!result) {
-    throw new Error(`Expected a string, but got ${value}`);
+    throw new Error(`Expected a string, but got ${value}`)
   }
-  return result;
+  return result
 }
 
 // Convenience function to narrow a variable's type to a finite number.
 export function isNumber(value: any): value is number {
-  return typeof value === "number" && isFinite(value);
+  return typeof value === 'number' && isFinite(value)
 }
 
 // Throws an error if value isn't a finite number, narrows the type if it is.
 export function assertNumber(value: any): value is number {
-  const result = isNumber(value);
+  const result = isNumber(value)
   if (!result) {
-    throw new Error(`Expected a number, but got ${value}`);
+    throw new Error(`Expected a number, but got ${value}`)
   }
-  return result;
+  return result
 }
 
 // Throws an error if value isn't a a valid flight, narrows the type if it is.
 export function assertFlight(value: string): value is Flight {
-  const flight: Flight = value as Flight;
+  const flight: Flight = value as Flight
   switch (flight) {
-    case "A":
-    case "B":
-    case "C":
-    case "D":
-    case "E":
-    case "F":
-    case "G":
-    case "H":
-    case "I":
-    case "J":
-    case "K":
-    case "L":
-    case "M":
-    case "N":
-    case "O":
-    case "P":
-      return true;
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+      return true
     default:
-      checkExhausted(flight);
-      throw new Error(`Expected a string which corresponds to a Flight, got "${value}"`);
+      checkExhausted(flight)
+      throw new Error(`Expected a string which corresponds to a Flight, got "${value}"`)
   }
 }
 
 // Throws an error if value isn't a a valid flight, narrows the type if it is.
 export function assertSex(value: string): value is Sex {
-  const sex = value as Sex;
+  const sex = value as Sex
   switch (sex) {
-    case "M":
-    case "F":
-    case "Mx":
-      return true;
+    case 'M':
+    case 'F':
+    case 'Mx':
+      return true
     default:
-      checkExhausted(sex);
-      throw new Error(`Expected a string which corresponds to a Sex, got "${value}"`);
+      checkExhausted(sex)
+      throw new Error(`Expected a string which corresponds to a Sex, got "${value}"`)
   }
 }
 
 export function assertLift(value: string): value is Lift {
-  const lift = value as Lift;
+  const lift = value as Lift
   switch (lift) {
-    case "S":
-    case "B":
-    case "D":
-      return true;
+    case 'S':
+    case 'B':
+    case 'D':
+      return true
     default:
-      checkExhausted(lift);
-      throw new Error(`Expected a string which corresponds to a Lift, got "${value}"`);
+      checkExhausted(lift)
+      throw new Error(`Expected a string which corresponds to a Lift, got "${value}"`)
   }
 }
 
 export function assertAgeCoefficients(value: string): value is AgeCoefficients {
-  const coefficient = value as AgeCoefficients;
+  const coefficient = value as AgeCoefficients
   switch (coefficient) {
-    case "FosterMcCulloch":
-    case "None":
-      return true;
+    case 'FosterMcCulloch':
+    case 'None':
+      return true
     default:
-      checkExhausted(coefficient);
-      throw new Error(`Expected a string which corresponds to a valid AgeCoefficients, got "${value}"`);
+      checkExhausted(coefficient)
+      throw new Error(
+        `Expected a string which corresponds to a valid AgeCoefficients, got "${value}"`
+      )
   }
 }
 
 export function assertFormula(value: string): value is Formula {
-  const formula = value as Formula;
+  const formula = value as Formula
   switch (formula) {
-    case "AH":
-    case "Bodyweight Multiple":
-    case "Dots":
-    case "Glossbrenner":
-    case "IPF GL Points":
-    case "IPF Points":
-    case "NASA Points":
-    case "Reshel":
-    case "Schwartz/Malone":
-    case "Total":
-    case "Wilks":
-    case "Wilks2020":
-      return true;
+    case 'AH':
+    case 'Bodyweight Multiple':
+    case 'Dots':
+    case 'Glossbrenner':
+    case 'IPF GL Points':
+    case 'IPF Points':
+    case 'NASA Points':
+    case 'Reshel':
+    case 'Schwartz/Malone':
+    case 'Total':
+    case 'Wilks':
+    case 'Wilks2020':
+      return true
     default:
-      checkExhausted(formula);
-      throw new Error(`Expected a string which corresponds to a Formula, got "${value}"`);
+      checkExhausted(formula)
+      throw new Error(`Expected a string which corresponds to a Formula, got "${value}"`)
   }
 }

@@ -23,27 +23,27 @@
 //
 // This enables reuse of translations, so long as the IDs are stable.
 
-import React from "react";
-import { IntlContext } from "react-intl";
+import React from 'react'
+import { IntlContext } from 'react-intl'
 
-import { TranslationId } from "../../types/dataTypes";
+import { TranslationId } from '../../types/dataTypes'
 
 interface OwnProps {
-  id: TranslationId; // As listed in 'src/translations/en.json'.
+  id: TranslationId // As listed in 'src/translations/en.json'.
 }
 
-type Props = OwnProps;
+type Props = OwnProps
 
 class LocalizedString extends React.Component<Props> {
   render() {
     return (
       <IntlContext.Consumer>
         {(intl) => {
-          return intl.messages[this.props.id];
+          return intl.messages[this.props.id]
         }}
       </IntlContext.Consumer>
-    );
+    )
   }
 }
 
-export default LocalizedString;
+export default LocalizedString

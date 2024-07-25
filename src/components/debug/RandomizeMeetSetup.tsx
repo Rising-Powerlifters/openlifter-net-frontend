@@ -18,14 +18,14 @@
 
 // Randomizes the Meet Setup state, for debugging.
 
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import { connect } from 'react-redux'
 
-import Button from "react-bootstrap/Button";
+import Button from 'react-bootstrap/Button'
 
-import LocalizedString from "../translations/LocalizedString";
+import LocalizedString from '../translations/LocalizedString'
 
-import { randomString, randomInt, randomFixedPoint } from "./RandomizeHelpers";
+import { randomString, randomInt, randomFixedPoint } from './RandomizeHelpers'
 
 import {
   setDivisions,
@@ -33,125 +33,125 @@ import {
   setLengthDays,
   setMeetName,
   setPlatformsOnDays,
-  setWeightClasses,
-} from "../../actions/meetSetupActions";
+  setWeightClasses
+} from '../../actions/meetSetupActions'
 
-import { GlobalState } from "../../types/stateTypes";
-import { Sex } from "../../types/dataTypes";
-import rpcDispatch from "../../rpc/rpcDispatch";
+import { GlobalState } from '../../types/stateTypes'
+import { Sex } from '../../types/dataTypes'
+import rpcDispatch from '../../rpc/rpcDispatch'
 
-type Props = GlobalState;
+type Props = GlobalState
 
 const NonsenseFederations = [
-  "CTHULHU",
-  "USPLAWH",
-  "FIREFOX",
-  "PIZZAHUT",
-  "50% RAW",
-  "TODDLERS",
-  "COFFEE",
-  "THEBORG",
-  "LETITSNOW",
-];
+  'CTHULHU',
+  'USPLAWH',
+  'FIREFOX',
+  'PIZZAHUT',
+  '50% RAW',
+  'TODDLERS',
+  'COFFEE',
+  'THEBORG',
+  'LETITSNOW'
+]
 
-const NonsenseDivisions = ["Masters", "Juniors", "Lawyers", "Infants", "Turtles", "Rabbits"];
+const NonsenseDivisions = ['Masters', 'Juniors', 'Lawyers', 'Infants', 'Turtles', 'Rabbits']
 
 class RandomizeMeetSetupButton extends React.Component<Props> {
   constructor(props: Props) {
-    super(props);
-    this.randomizeMeetSetup = this.randomizeMeetSetup.bind(this);
+    super(props)
+    this.randomizeMeetSetup = this.randomizeMeetSetup.bind(this)
   }
 
   setDivisions = (divisions: Array<string>) => {
-    rpcDispatch(setDivisions(divisions));
-  };
+    rpcDispatch(setDivisions(divisions))
+  }
 
   setFederation = (federation: string) => {
-    rpcDispatch(setFederation(federation));
-  };
+    rpcDispatch(setFederation(federation))
+  }
 
   setLengthDays = (length: number) => {
-    rpcDispatch(setLengthDays(length));
-  };
+    rpcDispatch(setLengthDays(length))
+  }
 
   setMeetName = (name: string) => {
-    rpcDispatch(setMeetName(name));
-  };
+    rpcDispatch(setMeetName(name))
+  }
 
   setPlatformsOnDays = (day: number, count: number) => {
-    rpcDispatch(setPlatformsOnDays(day, count));
-  };
+    rpcDispatch(setPlatformsOnDays(day, count))
+  }
 
   setWeightClasses = (sex: Sex, classesKg: number[]) => {
-    rpcDispatch(setWeightClasses(sex, classesKg));
-  };
+    rpcDispatch(setWeightClasses(sex, classesKg))
+  }
 
   randomizeMeetSetup() {
     // Set a gibberish MeetName.
     // ==========================================
-    this.setMeetName(randomString() + randomString());
+    this.setMeetName(randomString() + randomString())
 
     // Generate a nonsense federation.
     // ==========================================
-    const fed = NonsenseFederations[randomInt(0, NonsenseFederations.length - 1)];
-    this.setFederation(fed);
+    const fed = NonsenseFederations[randomInt(0, NonsenseFederations.length - 1)]
+    this.setFederation(fed)
 
     // Generate nonsense weight classes.
     // ==========================================
-    const numClassesMen = randomInt(5, 12);
-    const numClassesWomen = randomInt(4, 8);
+    const numClassesMen = randomInt(5, 12)
+    const numClassesWomen = randomInt(4, 8)
 
-    let classesMen = [];
+    let classesMen = []
     for (let i = 0; i < numClassesMen; i++) {
-      classesMen.push(randomFixedPoint(40, 145, 1));
+      classesMen.push(randomFixedPoint(40, 145, 1))
     }
-    classesMen = classesMen.sort((a, b) => Number(a) - Number(b));
+    classesMen = classesMen.sort((a, b) => Number(a) - Number(b))
 
-    let classesWomen = [];
+    let classesWomen = []
     for (let i = 0; i < numClassesWomen; i++) {
-      classesWomen.push(randomFixedPoint(35, 110, 1));
+      classesWomen.push(randomFixedPoint(35, 110, 1))
     }
-    classesWomen = classesWomen.sort((a, b) => Number(a) - Number(b));
+    classesWomen = classesWomen.sort((a, b) => Number(a) - Number(b))
 
-    let classesMx = [];
+    let classesMx = []
     for (let i = 0; i < numClassesWomen; i++) {
-      classesMx.push(randomFixedPoint(40, 120, 1));
+      classesMx.push(randomFixedPoint(40, 120, 1))
     }
-    classesMx = classesMx.sort((a, b) => Number(a) - Number(b));
+    classesMx = classesMx.sort((a, b) => Number(a) - Number(b))
 
-    this.setWeightClasses("M", classesMen);
-    this.setWeightClasses("F", classesWomen);
-    this.setWeightClasses("Mx", classesMx);
+    this.setWeightClasses('M', classesMen)
+    this.setWeightClasses('F', classesWomen)
+    this.setWeightClasses('Mx', classesMx)
 
     // Generate nonsense days and platforms.
     // ==========================================
-    const numDays = randomInt(1, 4);
-    this.setLengthDays(numDays);
+    const numDays = randomInt(1, 4)
+    this.setLengthDays(numDays)
 
     for (let i = 0; i < numDays; i++) {
-      const day = i + 1;
-      const numPlatforms = randomInt(1, 2);
-      this.setPlatformsOnDays(day, numPlatforms);
+      const day = i + 1
+      const numPlatforms = randomInt(1, 2)
+      this.setPlatformsOnDays(day, numPlatforms)
     }
 
     // Generate nonsense divisions.
     // ==========================================
-    const numDivisions = randomInt(1, 20);
-    const divisions = [];
+    const numDivisions = randomInt(1, 20)
+    const divisions = []
     for (let i = 0; i < numDivisions; i++) {
-      let div = NonsenseDivisions[randomInt(0, NonsenseDivisions.length - 1)];
+      let div = NonsenseDivisions[randomInt(0, NonsenseDivisions.length - 1)]
       if (Math.random() > 0.5) {
-        const age_lower = randomInt(1, 40);
-        const age_upper = randomInt(age_lower + 1, 99);
-        div = div + " " + String(age_lower) + "-" + String(age_upper);
+        const age_lower = randomInt(1, 40)
+        const age_upper = randomInt(age_lower + 1, 99)
+        div = div + ' ' + String(age_lower) + '-' + String(age_upper)
       }
 
       // Disallow repeat divisions.
       if (divisions.indexOf(div) === -1) {
-        divisions.push(div);
+        divisions.push(div)
       }
     }
-    this.setDivisions(divisions);
+    this.setDivisions(divisions)
   }
 
   render() {
@@ -159,12 +159,12 @@ class RandomizeMeetSetupButton extends React.Component<Props> {
       <Button onClick={this.randomizeMeetSetup}>
         <LocalizedString id="nav.meet-setup" />
       </Button>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): GlobalState => ({
-  ...state,
-});
+  ...state
+})
 
-export default connect(mapStateToProps)(RandomizeMeetSetupButton);
+export default connect(mapStateToProps)(RandomizeMeetSetupButton)

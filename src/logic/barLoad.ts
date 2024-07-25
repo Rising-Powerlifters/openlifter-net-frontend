@@ -16,17 +16,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { kg2lbs, displayWeight } from "../logic/units";
+import { kg2lbs, displayWeight } from '../logic/units'
 
-import { PlateColors } from "../constants/plateColors";
+import { PlateColors } from '../constants/plateColors'
 
-import { Plate, LoadedPlate } from "../types/dataTypes";
+import { Plate, LoadedPlate } from '../types/dataTypes'
 
 // Convert from kg to lbs with rounding to 2 decimal places.
 // It's OK that this is slow, since it rarely executes.
 const safeKg2Lbs = (kg: number): number => {
-  return Number(displayWeight(kg2lbs(kg)));
-};
+  return Number(displayWeight(kg2lbs(kg)))
+}
 
 // Returns a list of plate weights in loading order.
 // Any unloadable remainder is reported as a final number with a negative value.
@@ -34,69 +34,76 @@ export const selectPlates = (
   loadingKg: number,
   barAndCollarsWeightKg: number,
   plates: ReadonlyArray<Plate>,
-  inKg: boolean,
+  inKg: boolean
 ): Array<LoadedPlate> => {
   // Flow doesn't like it when arguments get redefined.
-  let loadingAny = loadingKg;
-  let barAndCollarsWeightAny = barAndCollarsWeightKg;
-  let platesAny = plates;
+  let loadingAny = loadingKg
+  let barAndCollarsWeightAny = barAndCollarsWeightKg
+  let platesAny = plates
 
   // Convert to pounds, avoiding floating point errors.
   if (inKg === false) {
-    loadingAny = safeKg2Lbs(loadingKg);
-    barAndCollarsWeightAny = safeKg2Lbs(barAndCollarsWeightKg);
-    platesAny = plates.map((x) => ({ ...x, weightKg: safeKg2Lbs(x.weightKg) }));
+    loadingAny = safeKg2Lbs(loadingKg)
+    barAndCollarsWeightAny = safeKg2Lbs(barAndCollarsWeightKg)
+    platesAny = plates.map((x) => ({ ...x, weightKg: safeKg2Lbs(x.weightKg) }))
   }
 
   // Sort a copy of the platesAny array by descending weight.
   const sortedPlates = platesAny.slice().sort((a, b) => {
-    return b.weightKg - a.weightKg;
-  });
+    return b.weightKg - a.weightKg
+  })
 
-  let sideWeightKg = (loadingAny - barAndCollarsWeightAny) / 2;
-  const loading: Array<LoadedPlate> = [];
+  let sideWeightKg = (loadingAny - barAndCollarsWeightAny) / 2
+  const loading: Array<LoadedPlate> = []
 
   // Run through each plate in order, applying as many of that plate as will fit.
   for (let i = 0; i < sortedPlates.length; i++) {
-    const weightKg = sortedPlates[i].weightKg;
-    const color = sortedPlates[i].color;
-    let pairCount = sortedPlates[i].pairCount;
+    const weightKg = sortedPlates[i].weightKg
+    const color = sortedPlates[i].color
+    let pairCount = sortedPlates[i].pairCount
     while (pairCount > 0 && weightKg <= sideWeightKg) {
-      pairCount--;
-      sideWeightKg -= weightKg;
-      loading.push({ weightAny: weightKg, isAlreadyLoaded: false, color: color });
+      pairCount--
+      sideWeightKg -= weightKg
+      loading.push({ weightAny: weightKg, isAlreadyLoaded: false, color: color })
     }
   }
 
   // Report any remainder as a negative number.
   if (sideWeightKg > 0) {
-    loading.push({ weightAny: -sideWeightKg, isAlreadyLoaded: false, color: PlateColors.PLATE_DEFAULT_RED });
+    loading.push({
+      weightAny: -sideWeightKg,
+      isAlreadyLoaded: false,
+      color: PlateColors.PLATE_DEFAULT_RED
+    })
   }
-  return loading;
-};
+  return loading
+}
 
 // Helper function: like Array.findIndex(), but starting from a specific index.
 const findWeightFrom = (loading: Array<LoadedPlate>, startFrom: number, weight: number): number => {
   for (let i = startFrom; i < loading.length; i++) {
-    if (loading[i].weightAny === weight) return i;
+    if (loading[i].weightAny === weight) return i
   }
-  return -1;
-};
+  return -1
+}
 
 // Sets the 'isAlreadyLoaded' property of each LoadedPlate relative to another loading.
 //
 // Both 'loading' and 'relativeTo' are sorted in non-ascending order of weight.
-export const makeLoadingRelative = (loading: Array<LoadedPlate>, relativeTo: Array<LoadedPlate>): void => {
-  let finger = 0; // Increasing index into the relativeTo array.
+export const makeLoadingRelative = (
+  loading: Array<LoadedPlate>,
+  relativeTo: Array<LoadedPlate>
+): void => {
+  let finger = 0 // Increasing index into the relativeTo array.
 
   // For each plate in the loading, look for a matching plate in relativeTo[finger..].
   // When found, move the finger past that point.
   for (let i = 0; i < loading.length; i++) {
-    const loadedPlate = loading[i];
-    const index = findWeightFrom(relativeTo, finger, loadedPlate.weightAny);
+    const loadedPlate = loading[i]
+    const index = findWeightFrom(relativeTo, finger, loadedPlate.weightAny)
     if (index >= 0) {
-      finger = index + 1;
-      loadedPlate.isAlreadyLoaded = true;
+      finger = index + 1
+      loadedPlate.isAlreadyLoaded = true
     }
   }
-};
+}

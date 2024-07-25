@@ -15,30 +15,30 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as React from "react";
-import { connect } from "react-redux";
-import { IntlProvider } from "react-intl";
-import translations from "../../translations";
+import * as React from 'react'
+import { connect } from 'react-redux'
+import { IntlProvider } from 'react-intl'
+import translations from '../../translations'
 
-import { GlobalState } from "../../types/stateTypes";
-import { Language } from "../../types/dataTypes";
+import { GlobalState } from '../../types/stateTypes'
+import { Language } from '../../types/dataTypes'
 
 interface StateProps {
-  language: Language;
+  language: Language
 }
 
-type Props = StateProps & { children?: React.ReactNode };
+type Props = StateProps & { children?: React.ReactNode }
 
 class OpenLifterIntlProvider extends React.Component<Props> {
   render() {
-    const language = this.props.language;
-    if (typeof language !== "string") {
-      throw new Error("language is not a string");
+    const language = this.props.language
+    if (typeof language !== 'string') {
+      throw new Error('language is not a string')
     }
 
     // Load our translations from the json files
     // TODO: This typing could be nicer, we should be able to state that es/eo = {}, en = undefined
-    const messages = (translations as any)[language];
+    const messages = (translations as any)[language]
 
     return (
       // This is going to wrap any children passed to this component with an IntlProvider
@@ -46,12 +46,12 @@ class OpenLifterIntlProvider extends React.Component<Props> {
       <IntlProvider locale={language} defaultLocale="en" key={language} messages={messages}>
         {this.props.children}
       </IntlProvider>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps, () => {})(OpenLifterIntlProvider);
+export default connect(mapStateToProps, () => {})(OpenLifterIntlProvider)

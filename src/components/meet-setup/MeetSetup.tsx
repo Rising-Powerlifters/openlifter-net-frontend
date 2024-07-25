@@ -16,125 +16,128 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import React from "react";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
+import React from 'react'
+import { connect } from 'react-redux'
+import { FormattedMessage } from 'react-intl'
 
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import FormGroup from "react-bootstrap/FormGroup";
-import Row from "react-bootstrap/Row";
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import FormControl from 'react-bootstrap/FormControl'
+import FormGroup from 'react-bootstrap/FormGroup'
+import Row from 'react-bootstrap/Row'
 
-import ValidatedInput from "../ValidatedInput";
+import ValidatedInput from '../ValidatedInput'
 
-import MeetDate from "./MeetDate";
-import MeetLength from "./MeetLength";
-import PlatformCounts from "./PlatformCounts";
-import AutoFillRules from "./AutoFillRules";
-import DivisionSelect from "./DivisionSelect";
-import WeightClassesSelect from "./WeightClassesSelect";
-import BarAndCollarsWeightKg from "./BarAndCollarsWeightKg";
-import Plates from "./Plates";
-import YesNoButton from "../common/YesNoButton";
+import MeetDate from './MeetDate'
+import MeetLength from './MeetLength'
+import PlatformCounts from './PlatformCounts'
+import AutoFillRules from './AutoFillRules'
+import DivisionSelect from './DivisionSelect'
+import WeightClassesSelect from './WeightClassesSelect'
+import BarAndCollarsWeightKg from './BarAndCollarsWeightKg'
+import Plates from './Plates'
+import YesNoButton from '../common/YesNoButton'
 
-import { getString } from "../../logic/strings";
-import { setInKg, updateMeet } from "../../actions/meetSetupActions";
+import { getString } from '../../logic/strings'
+import { setInKg, updateMeet } from '../../actions/meetSetupActions'
 
-import { GlobalState, MeetState } from "../../types/stateTypes";
-import { assertAgeCoefficients, assertFormula, assertString } from "../../types/utils";
-import { Language, Validation } from "../../types/dataTypes";
-import dispatch from "../../rpc/rpcDispatch";
+import { GlobalState, MeetState } from '../../types/stateTypes'
+import { assertAgeCoefficients, assertFormula, assertString } from '../../types/utils'
+import { Language, Validation } from '../../types/dataTypes'
+import dispatch from '../../rpc/rpcDispatch'
 
 interface StateProps {
-  meet: MeetState;
-  language: Language;
+  meet: MeetState
+  language: Language
 }
 
-type Props = StateProps;
+type Props = StateProps
 
 interface InternalState {
   // This is a number used to derive a `key` for many widgets.
   // Incrementing the ticker can be used to force a re-render.
   // This is used to re-render things after the "Auto-Fill" button is pressed.
-  ticker: number;
+  ticker: number
 }
 
 class MeetSetup extends React.Component<Props, InternalState> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
     this.state = {
-      ticker: 0,
-    };
+      ticker: 0
+    }
   }
 
   validateRequiredText = (value?: string): Validation => {
-    if (!value) return "warning";
-    if (value.includes('"')) return "error";
-    return "success";
-  };
+    if (!value) return 'warning'
+    if (value.includes('"')) return 'error'
+    return 'success'
+  }
 
   render() {
     // This is used as a key to force unit-dependent components to re-initialize state.
-    const inKg = String(this.props.meet.inKg);
-    const language = this.props.language;
+    const inKg = String(this.props.meet.inKg)
+    const language = this.props.language
 
-    const stringMeetName = getString("meet-setup.meet-name", language);
-    const stringFederation = getString("common.federation", language);
-    const stringCountry = getString("common.country", language);
-    const stringStateProvince = getString("meet-setup.state-province", language);
-    const stringCityTown = getString("meet-setup.city-town", language);
+    const stringMeetName = getString('meet-setup.meet-name', language)
+    const stringFederation = getString('common.federation', language)
+    const stringCountry = getString('common.country', language)
+    const stringStateProvince = getString('meet-setup.state-province', language)
+    const stringCityTown = getString('meet-setup.city-town', language)
 
-    const stringKilograms = getString("common.kilograms", language);
-    const stringPounds = getString("common.pounds", language);
+    const stringKilograms = getString('common.kilograms', language)
+    const stringPounds = getString('common.pounds', language)
 
-    const stringMensClasses = getString("meet-setup.label-classes-men", language);
-    const stringWomensClasses = getString("meet-setup.label-classes-women", language);
-    const stringMxClasses = getString("meet-setup.label-classes-mx", language);
+    const stringMensClasses = getString('meet-setup.label-classes-men', language)
+    const stringWomensClasses = getString('meet-setup.label-classes-women', language)
+    const stringMxClasses = getString('meet-setup.label-classes-mx', language)
 
-    const stringAH = getString("formula.ah", language);
-    const stringBodyweightMultiple = getString("formula.bodyweight-multiple", language);
-    const stringDots = getString("formula.dots", language);
-    const stringGlossbrenner = getString("formula.glossbrenner", language);
-    const stringIPFGLPoints = getString("formula.ipf-gl-points", language);
-    const stringIPFPoints = getString("formula.ipf-points", language);
-    const stringNASAPoints = getString("formula.nasa-points", language);
-    const stringReshel = getString("formula.reshel", language);
-    const stringSchwartzMalone = getString("formula.schwartz-malone", language);
-    const stringTotal = getString("formula.total", language);
-    const stringWilks = getString("formula.wilks", language);
-    const stringWilks2020 = getString("formula.wilks2020", language);
-    const stringNone = getString("age-coefficients.none", language);
-    const stringFosterMcCulloch = getString("age-coefficients.foster-mcculloch", language);
-    const stringNo = getString("common.response-no", language);
-    const stringYes = getString("common.response-yes", language);
+    const stringAH = getString('formula.ah', language)
+    const stringBodyweightMultiple = getString('formula.bodyweight-multiple', language)
+    const stringDots = getString('formula.dots', language)
+    const stringGlossbrenner = getString('formula.glossbrenner', language)
+    const stringIPFGLPoints = getString('formula.ipf-gl-points', language)
+    const stringIPFPoints = getString('formula.ipf-points', language)
+    const stringNASAPoints = getString('formula.nasa-points', language)
+    const stringReshel = getString('formula.reshel', language)
+    const stringSchwartzMalone = getString('formula.schwartz-malone', language)
+    const stringTotal = getString('formula.total', language)
+    const stringWilks = getString('formula.wilks', language)
+    const stringWilks2020 = getString('formula.wilks2020', language)
+    const stringNone = getString('age-coefficients.none', language)
+    const stringFosterMcCulloch = getString('age-coefficients.foster-mcculloch', language)
+    const stringNo = getString('common.response-no', language)
+    const stringYes = getString('common.response-yes', language)
 
-    const stringAlsoKilograms = getString("meet-setup.label-also-show-kilograms", language);
-    const stringAlsoPounds = getString("meet-setup.label-also-show-pounds", language);
+    const stringAlsoKilograms = getString('meet-setup.label-also-show-kilograms', language)
+    const stringAlsoPounds = getString('meet-setup.label-also-show-pounds', language)
 
-    const setMeetName = (name: string) => dispatch(updateMeet({ name: name }));
-    const setCountry = (country: string) => dispatch(updateMeet({ country: country }));
-    const setState = (state: string) => dispatch(updateMeet({ state: state }));
-    const setCity = (city: string) => dispatch(updateMeet({ city: city }));
-    const setFederation = (fed: string) => dispatch(updateMeet({ federation: fed }));
-    const setCombineSleevesAndWraps = (bool: boolean) => dispatch(updateMeet({ combineSleevesAndWraps: bool }));
-    const setCombineSingleAndMulti = (bool: boolean) => dispatch(updateMeet({ combineSingleAndMulti: bool }));
-    const setAllow4thAttempts = (bool: boolean) => dispatch(updateMeet({ allow4thAttempts: bool }));
-    const setInKgs = (bool: boolean) => dispatch(setInKg(bool));
-    const setShowAlternateUnits = (bool: boolean) => dispatch(updateMeet({ showAlternateUnits: bool }));
+    const setMeetName = (name: string) => dispatch(updateMeet({ name: name }))
+    const setCountry = (country: string) => dispatch(updateMeet({ country: country }))
+    const setState = (state: string) => dispatch(updateMeet({ state: state }))
+    const setCity = (city: string) => dispatch(updateMeet({ city: city }))
+    const setFederation = (fed: string) => dispatch(updateMeet({ federation: fed }))
+    const setCombineSleevesAndWraps = (bool: boolean) =>
+      dispatch(updateMeet({ combineSleevesAndWraps: bool }))
+    const setCombineSingleAndMulti = (bool: boolean) =>
+      dispatch(updateMeet({ combineSingleAndMulti: bool }))
+    const setAllow4thAttempts = (bool: boolean) => dispatch(updateMeet({ allow4thAttempts: bool }))
+    const setInKgs = (bool: boolean) => dispatch(setInKg(bool))
+    const setShowAlternateUnits = (bool: boolean) =>
+      dispatch(updateMeet({ showAlternateUnits: bool }))
     const setFormula = (event: React.ChangeEvent<HTMLInputElement>) => {
       assertString(event.currentTarget.value) &&
         assertFormula(event.currentTarget.value) &&
-        dispatch(updateMeet({ formula: event.currentTarget.value }));
-    };
+        dispatch(updateMeet({ formula: event.currentTarget.value }))
+    }
     const setAgeCoefficients = (event: React.ChangeEvent<HTMLInputElement>) => {
       assertString(event.currentTarget.value) &&
         assertAgeCoefficients(event.currentTarget.value) &&
-        dispatch(updateMeet({ ageCoefficients: event.currentTarget.value }));
-    };
+        dispatch(updateMeet({ ageCoefficients: event.currentTarget.value }))
+    }
 
     return (
       <Container>
@@ -142,7 +145,10 @@ class MeetSetup extends React.Component<Props, InternalState> {
           <Col md={4}>
             <Card>
               <Card.Header>
-                <FormattedMessage id="meet-setup.header-sanction-info" defaultMessage="Sanction Information" />
+                <FormattedMessage
+                  id="meet-setup.header-sanction-info"
+                  defaultMessage="Sanction Information"
+                />
               </Card.Header>
               <Card.Body>
                 <ValidatedInput
@@ -199,14 +205,29 @@ class MeetSetup extends React.Component<Props, InternalState> {
               </Card.Header>
               <Card.Body>
                 <AutoFillRules onChange={() => this.setState({ ticker: this.state.ticker + 1 })} />
-                <DivisionSelect key={this.state.ticker + "-divselect"} />
-                <WeightClassesSelect sex="M" label={stringMensClasses} key={this.state.ticker + "-M"} />
-                <WeightClassesSelect sex="F" label={stringWomensClasses} key={this.state.ticker + "-F"} />
-                <WeightClassesSelect sex="Mx" label={stringMxClasses} key={this.state.ticker + "-Mx"} />
+                <DivisionSelect key={this.state.ticker + '-divselect'} />
+                <WeightClassesSelect
+                  sex="M"
+                  label={stringMensClasses}
+                  key={this.state.ticker + '-M'}
+                />
+                <WeightClassesSelect
+                  sex="F"
+                  label={stringWomensClasses}
+                  key={this.state.ticker + '-F'}
+                />
+                <WeightClassesSelect
+                  sex="Mx"
+                  label={stringMxClasses}
+                  key={this.state.ticker + '-Mx'}
+                />
 
-                <FormGroup key={this.state.ticker + "-formula"}>
+                <FormGroup key={this.state.ticker + '-formula'}>
                   <Form.Label>
-                    <FormattedMessage id="meet-setup.formula" defaultMessage="Best Lifter Formula" />
+                    <FormattedMessage
+                      id="meet-setup.formula"
+                      defaultMessage="Best Lifter Formula"
+                    />
                   </Form.Label>
                   <FormControl
                     as="select"
@@ -229,7 +250,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   </FormControl>
                 </FormGroup>
 
-                <FormGroup key={this.state.ticker + "-ageCoefficients"}>
+                <FormGroup key={this.state.ticker + '-ageCoefficients'}>
                   <Form.Label>
                     <FormattedMessage
                       id="meet-setup.age-coefficients"
@@ -251,7 +272,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   </FormControl>
                 </FormGroup>
 
-                <FormGroup key={this.state.ticker + "-sleeves-wraps"}>
+                <FormGroup key={this.state.ticker + '-sleeves-wraps'}>
                   <YesNoButton
                     label={
                       <FormattedMessage
@@ -266,7 +287,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   />
                 </FormGroup>
 
-                <FormGroup key={this.state.ticker + "-single-multi"}>
+                <FormGroup key={this.state.ticker + '-single-multi'}>
                   <YesNoButton
                     label={
                       <FormattedMessage
@@ -281,7 +302,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   />
                 </FormGroup>
 
-                <FormGroup key={this.state.ticker + "-4th-attempts"}>
+                <FormGroup key={this.state.ticker + '-4th-attempts'}>
                   <YesNoButton
                     label={
                       <FormattedMessage
@@ -302,7 +323,10 @@ class MeetSetup extends React.Component<Props, InternalState> {
           <Col md={4}>
             <Card>
               <Card.Header>
-                <FormattedMessage id="meet-setup.header-loading" defaultMessage="Weights and Loading" />
+                <FormattedMessage
+                  id="meet-setup.header-loading"
+                  defaultMessage="Weights and Loading"
+                />
               </Card.Header>
               <Card.Body>
                 <FormGroup>
@@ -330,22 +354,22 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   />
                 </FormGroup>
 
-                <BarAndCollarsWeightKg key={"S" + inKg} lift="S" />
-                <BarAndCollarsWeightKg key={"B" + inKg} lift="B" />
-                <BarAndCollarsWeightKg key={"D" + inKg} lift="D" />
+                <BarAndCollarsWeightKg key={'S' + inKg} lift="S" />
+                <BarAndCollarsWeightKg key={'B' + inKg} lift="B" />
+                <BarAndCollarsWeightKg key={'D' + inKg} lift="D" />
                 <Plates />
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: GlobalState): StateProps => ({
   meet: state.meet,
-  language: state.language,
-});
+  language: state.language
+})
 
-export default connect(mapStateToProps)(MeetSetup);
+export default connect(mapStateToProps)(MeetSetup)

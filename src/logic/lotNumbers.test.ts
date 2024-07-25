@@ -16,81 +16,81 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Flight } from "../types/dataTypes";
-import { generateRandomLotNumbersSequencedByFlight } from "./lotNumbers";
+import { Flight } from '../types/dataTypes'
+import { generateRandomLotNumbersSequencedByFlight } from './lotNumbers'
 
 const entries: { flight: Flight }[] = [
   {
-    flight: "B",
+    flight: 'B'
   },
   {
-    flight: "B",
+    flight: 'B'
   },
   {
-    flight: "E",
+    flight: 'E'
   },
   {
-    flight: "A",
+    flight: 'A'
   },
   {
-    flight: "O",
+    flight: 'O'
   },
   {
-    flight: "A",
+    flight: 'A'
   },
   {
-    flight: "C",
+    flight: 'C'
   },
   {
-    flight: "C",
+    flight: 'C'
   },
   {
-    flight: "E",
+    flight: 'E'
   },
   {
-    flight: "A",
+    flight: 'A'
   },
   {
-    flight: "D",
+    flight: 'D'
   },
   {
-    flight: "B",
+    flight: 'B'
   },
   {
-    flight: "D",
-  },
-];
+    flight: 'D'
+  }
+]
 
-it("should not contain duplicate lot numbers", () => {
-  const generatedLotNumbers = generateRandomLotNumbersSequencedByFlight(entries);
-  const uniqueNumbers = new Set(generatedLotNumbers);
-  expect(generatedLotNumbers.length).toEqual(uniqueNumbers.size);
-});
+it('should not contain duplicate lot numbers', () => {
+  const generatedLotNumbers = generateRandomLotNumbersSequencedByFlight(entries)
+  const uniqueNumbers = new Set(generatedLotNumbers)
+  expect(generatedLotNumbers.length).toEqual(uniqueNumbers.size)
+})
 
-it("should start at 1 and finish at N", () => {
-  const generatedLotNumbers = generateRandomLotNumbersSequencedByFlight(entries);
-  const minLotNumber = Math.min(...generatedLotNumbers);
-  const maxLotNumber = Math.max(...generatedLotNumbers);
-  expect(minLotNumber).toEqual(1);
-  expect(maxLotNumber).toEqual(entries.length);
-});
+it('should start at 1 and finish at N', () => {
+  const generatedLotNumbers = generateRandomLotNumbersSequencedByFlight(entries)
+  const minLotNumber = Math.min(...generatedLotNumbers)
+  const maxLotNumber = Math.max(...generatedLotNumbers)
+  expect(minLotNumber).toEqual(1)
+  expect(maxLotNumber).toEqual(entries.length)
+})
 
-it("should be loosely ordered by flight", () => {
-  const generatedLotNumbers = generateRandomLotNumbersSequencedByFlight(entries);
+it('should be loosely ordered by flight', () => {
+  const generatedLotNumbers = generateRandomLotNumbersSequencedByFlight(entries)
   for (let i = 0; i < entries.length; i++) {
-    const flight = entries[i].flight;
-    const lotNo = generatedLotNumbers[i];
+    const flight = entries[i].flight
+    const lotNo = generatedLotNumbers[i]
     for (let j = 0; j < entries.length; j++) {
-      const otherFlight = entries[j].flight;
-      const otherLotNo = generatedLotNumbers[j];
+      const otherFlight = entries[j].flight
+      const otherLotNo = generatedLotNumbers[j]
 
       // EG: B > A - expect B's lot number to be higher then A
       if (flight > otherFlight) {
-        expect(lotNo).toBeGreaterThan(otherLotNo);
+        expect(lotNo).toBeGreaterThan(otherLotNo)
       } else if (flight < otherFlight) {
-        expect(lotNo).toBeLessThan(otherLotNo);
+        expect(lotNo).toBeLessThan(otherLotNo)
       }
       // else same flight - nothing to assert
     }
   }
-});
+})
