@@ -112,6 +112,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
       // We cast here since this is not how the reducer is really intended to work
       const defaultStore = rootReducer(
         { language: language } as GlobalState,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         'OVERWRITE_STORE' as any
       )
       dispatch(overwriteStore(defaultStore))

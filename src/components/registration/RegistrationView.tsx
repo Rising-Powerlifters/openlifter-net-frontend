@@ -188,6 +188,7 @@ class RegistrationView extends React.Component<Props, InternalState> {
     }
 
     const selectedFile = loadHelper.files[0]
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const rememberThis = this
 
     const reader = new FileReader()

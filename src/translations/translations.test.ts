@@ -24,6 +24,7 @@ describe('translations', () => {
   it('preserves in-string variables', () => {
     const en = translations.en
     for (const id in en) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const english: string = (en as any)[id]
 
       let searchStart = 0
@@ -40,6 +41,7 @@ describe('translations', () => {
 
         // Ensure that the variable appears in each translation.
         for (const language in translations) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const str = (translations as any)[language][id]
           expect(str).toEqual(expect.stringContaining(variable))
         }

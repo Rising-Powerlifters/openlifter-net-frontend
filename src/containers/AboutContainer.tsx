@@ -38,7 +38,7 @@ const licenseText =
   'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n' +
   'GNU Affero General Public License for more details.'
 
-class AboutContainer extends React.Component<{}> {
+class AboutContainer extends React.Component {
   render() {
     return (
       <Container className={styles.contentArea}>

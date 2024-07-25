@@ -245,7 +245,7 @@ export default function registrationReducer(
     case 'OVERWRITE_STORE':
       return action.store.registration
 
-    case 'ASSIGN_LOT_NUMBERS':
+    case 'ASSIGN_LOT_NUMBERS': {
       // Clone & assign entry with its new lot number.
       const updatedEntries = state.entries.map((entry, index) => ({
         ...entry,
@@ -256,6 +256,7 @@ export default function registrationReducer(
         ...state,
         entries: updatedEntries
       }
+    }
 
     default:
       checkExhausted(action)

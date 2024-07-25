@@ -38,6 +38,7 @@ class OpenLifterIntlProvider extends React.Component<Props> {
 
     // Load our translations from the json files
     // TODO: This typing could be nicer, we should be able to state that es/eo = {}, en = undefined
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const messages = (translations as any)[language]
 
     return (

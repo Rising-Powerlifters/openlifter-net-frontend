@@ -232,6 +232,7 @@ class LiftingFooter extends React.Component<Props> {
 
   // Check whether "document.fullscreenElement" exists, including prefixes.
   hasFullscreenElement = (): boolean => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const doc: any = document
     if (doc.fullscreenElement) return true
     if (doc.webkitFullscreenElement) return true
@@ -242,6 +243,7 @@ class LiftingFooter extends React.Component<Props> {
 
   // Calls exitFullscreen(), but with prefixes.
   exitFullscreen = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const doc: any = document
     if (typeof doc.exitFullscreen === 'function') doc.exitFullscreen()
     else if (typeof doc.webkitExitFullscreen === 'function') doc.webkitExitFullscreen()
@@ -250,6 +252,7 @@ class LiftingFooter extends React.Component<Props> {
   }
 
   // Calls requestFullscreen(), but with prefixes.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestFullscreen = (e: any) => {
     if (typeof e.requestFullscreen === 'function') e.requestFullscreen()
     else if (typeof e.webkitRequestFullscreen === 'function') e.webkitRequestFullscreen()

@@ -118,13 +118,14 @@ class HomeContainer extends React.Component<Props, InternalState> {
 
     const selectedFile = loadHelper.files[0]
     const language = this.props.redux.language
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const rememberThis = this
 
     const reader = new FileReader()
-    reader.onload = function (event: any) {
+    reader.onload = function (event: ProgressEvent<FileReader>) {
       let errored = false
       try {
-        const obj = JSON.parse(event.target.result)
+        const obj = JSON.parse(event.target?.result as string)
 
         // Basic error checking, make sure it's the right format.
         if (

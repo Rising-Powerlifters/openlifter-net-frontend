@@ -23,7 +23,7 @@ import React from 'react'
 import ResultsView from '../components/results/ResultsView'
 import styles from '../components/common/ContentArea.module.scss'
 
-class ResultsContainer extends React.Component<{}> {
+class ResultsContainer extends React.Component {
   render() {
     return (
       <div className={styles.contentArea}>

@@ -23,7 +23,7 @@ import React from 'react'
 import RegistrationView from '../components/registration/RegistrationView'
 import styles from '../components/common/ContentArea.module.scss'
 
-class RegistrationContainer extends React.Component<{}> {
+class RegistrationContainer extends React.Component {
   render() {
     return (
       <div className={styles.contentArea}>

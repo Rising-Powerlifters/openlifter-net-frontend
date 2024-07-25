@@ -30,12 +30,12 @@ import { AgeCoefficients, Flight, Formula, Lift, Sex } from './dataTypes'
 export function checkExhausted(value: never): void {}
 
 // Convenience function to narrow a variable's type down to a string.
-export function isString(value: any): value is string {
+export function isString(value: unknown): value is string {
   return typeof value === 'string'
 }
 
 // Throws an error if value isn't a string, narrows the type if it is.
-export function assertString(value: any): value is string {
+export function assertString(value: unknown): value is string {
   const result = isString(value)
   if (!result) {
     throw new Error(`Expected a string, but got ${value}`)
@@ -44,12 +44,12 @@ export function assertString(value: any): value is string {
 }
 
 // Convenience function to narrow a variable's type to a finite number.
-export function isNumber(value: any): value is number {
+export function isNumber(value: unknown): value is number {
   return typeof value === 'number' && isFinite(value)
 }
 
 // Throws an error if value isn't a finite number, narrows the type if it is.
-export function assertNumber(value: any): value is number {
+export function assertNumber(value: unknown): value is number {
   const result = isNumber(value)
   if (!result) {
     throw new Error(`Expected a number, but got ${value}`)

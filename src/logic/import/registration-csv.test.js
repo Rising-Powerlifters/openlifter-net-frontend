@@ -16,6 +16,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+// TODO why is describe, it and expect not defined?
+/* eslint-disable */
+
 import { Csv } from '../export/csv'
 import { makeExampleRegistrationsCsv, loadRegistrations } from './registration-csv'
 import { getString } from '../strings'

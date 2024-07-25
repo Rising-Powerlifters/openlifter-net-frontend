@@ -26,10 +26,10 @@ import Button from 'react-bootstrap/Button'
 import LocalizedString from '../translations/LocalizedString'
 
 import { randomInt } from './RandomizeHelpers'
-import { newRegistration, deleteRegistration } from '../../actions/registrationActions'
+import { deleteRegistration, newRegistration } from '../../actions/registrationActions'
 
 import { GlobalState } from '../../types/stateTypes'
-import { Event, Entry, Sex, Equipment, Flight } from '../../types/dataTypes'
+import { Entry, Equipment, Event, Flight, Sex } from '../../types/dataTypes'
 import rpcDispatch from '../../rpc/rpcDispatch'
 
 const NonsenseFirstNames = [

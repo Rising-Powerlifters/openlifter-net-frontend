@@ -21,7 +21,7 @@
 // Because they're not defined in the source code itself, the automatic scanner
 // won't pick them up. So they're defined here instead.
 //
-// The "manage.js" script picks these up and combines them with the automatically
+// The "manage.cjs" script picks these up and combines them with the automatically
 // detected messages to create the JSON translation files.
 
 let strings = []

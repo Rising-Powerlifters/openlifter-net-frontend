@@ -39,6 +39,7 @@ interface InternalState {
 
   // Handle returned by setTimeout() for the timeout that closes the color
   // selector popup after the mouse leaves and time has elapsed.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   timeoutId: any
 }
 
@@ -80,6 +81,7 @@ class ColorPicker extends React.Component<Props, InternalState> {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleChange = (color: ColorResult, event: any) => {
     // @types/react-color doesn't define an event for onChange but it is published in
     // their documentation: https://casesandberg.github.io/react-color/#api-onChange
@@ -103,7 +105,7 @@ class ColorPicker extends React.Component<Props, InternalState> {
                 color={this.state.color}
                 colors={colors}
                 triangle="hide"
-                onChange={this.handleChange as any}
+                onChange={this.handleChange}
               />
             </div>
           )}

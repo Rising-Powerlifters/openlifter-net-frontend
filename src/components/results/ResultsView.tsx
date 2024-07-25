@@ -217,6 +217,7 @@ class ResultsView extends React.Component<Props, InternalState> {
     const props = this.props
     const language = props.language
 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const rememberThis = this
     const selectedFile = loadHelper.files[0]
     const reader = new FileReader()

@@ -29,6 +29,7 @@ import { Entry } from '../../types/dataTypes'
 
 interface OwnProps {
   entries: ReadonlyArray<Entry>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rowRenderer: any
 }
 

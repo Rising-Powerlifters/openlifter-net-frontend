@@ -100,6 +100,8 @@ class DivisionSelect extends React.Component<Props, InternalState> {
   }
 
   // Handles the case of deleting an existing division.
+  // TODO Fix this bad typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleChange = (value: any): void => {
     if (value instanceof Array) {
       this.setState({ value: value })

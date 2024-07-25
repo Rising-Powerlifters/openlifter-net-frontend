@@ -29,6 +29,7 @@ import { GlobalState } from '../../types/stateTypes'
 
 interface OwnProps {
   entries: Array<Entry>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rowRenderer: any
   inLiftingPage?: boolean
 }

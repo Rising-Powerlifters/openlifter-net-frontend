@@ -57,7 +57,7 @@ class Plates extends React.Component<Props> {
   }
 
   validateAmountInput: (id: string) => 'error' | null | undefined = (id) => {
-    const widget: any = document.getElementById(id)
+    const widget: HTMLInputElement | null = document.getElementById(id) as HTMLInputElement
 
     // This can happen because the FormGroup is created before the widget exists.
     if (widget === null) return

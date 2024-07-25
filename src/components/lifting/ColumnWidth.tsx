@@ -91,6 +91,7 @@ class ColumnWidth extends React.Component<Props, InternalState> {
       // As callback, save successful value into Redux store.
       if (this.validate() !== 'error') {
         // TODO: figure out how to type this nicely. For now, use any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const changes: any = {}
         changes[this.props.fieldName] = Math.floor(Number(value) * MULTIPLE)
         this.setTableInfo(changes)

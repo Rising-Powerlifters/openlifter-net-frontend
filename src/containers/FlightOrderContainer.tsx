@@ -23,7 +23,7 @@ import React from 'react'
 import FlightOrderView from '../components/flight-order/FlightOrderView'
 import styles from '../components/common/ContentArea.module.scss'
 
-class FlightOrderContainer extends React.Component<{}> {
+class FlightOrderContainer extends React.Component {
   render() {
     return (
       <div className={styles.contentArea}>

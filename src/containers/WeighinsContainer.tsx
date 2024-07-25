@@ -23,7 +23,7 @@ import React from 'react'
 import WeighinsView from '../components/weighins/WeighinsView'
 import styles from '../components/common/ContentArea.module.scss'
 
-class WeighinsContainer extends React.Component<{}> {
+class WeighinsContainer extends React.Component {
   render() {
     return (
       <div className={styles.contentArea}>

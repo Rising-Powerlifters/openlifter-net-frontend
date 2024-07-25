@@ -103,6 +103,8 @@ class WeightClassesSelect extends React.Component<Props, InternalState> {
     this.setWeightClasses(this.props.sex, classes)
   }
 
+  // TODO Fix this bad typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleChange = (value: any): void => {
     if (value instanceof Array) {
       this.setState({ value: value })

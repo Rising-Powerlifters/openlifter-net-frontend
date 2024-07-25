@@ -40,7 +40,7 @@ function configureStore(initialState: Partial<GlobalState> = {}) {
     initialState,
     composeWithDevTools(applyMiddleware(thunk))
   )
-  const persistor = persistStore(store as any)
+  const persistor = persistStore(store)
   return { store, persistor }
 }
 

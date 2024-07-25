@@ -21,6 +21,7 @@ import { validatePositiveInteger } from './positiveInteger'
 describe('validatePositiveInteger', () => {
   it("doesn't accept undefined or null", () => {
     expect(validatePositiveInteger(undefined)).toEqual('error')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(validatePositiveInteger(null as any)).toEqual('error')
   })
 

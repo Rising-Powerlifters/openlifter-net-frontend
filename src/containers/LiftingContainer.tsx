@@ -21,7 +21,7 @@
 import React from 'react'
 import LiftingView from '../components/lifting/LiftingView'
 
-class LiftingContainer extends React.Component<{}> {
+class LiftingContainer extends React.Component {
   render() {
     return <LiftingView />
   }

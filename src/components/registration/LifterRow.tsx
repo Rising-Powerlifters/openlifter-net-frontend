@@ -190,6 +190,8 @@ class LifterRow extends React.Component<Props, InternalState> {
     }
   }
 
+  // TODO Fix this bad typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateRegistrationDivisions(value: any) {
     if (value instanceof Array) {
       // Since updates are synchronous, we can just compare lengths.
@@ -208,6 +210,8 @@ class LifterRow extends React.Component<Props, InternalState> {
     }
   }
 
+  // TODO Fix this bad typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateRegistrationEvents(value: any) {
     if (value instanceof Array) {
       // Since updates are synchronous, we can just compare lengths.

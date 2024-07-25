@@ -31,7 +31,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  changeLanguage: (event: React.BaseSyntheticEvent) => any
+  changeLanguage: (event: React.BaseSyntheticEvent) => void
 }
 
 type Props = StateProps & DispatchProps

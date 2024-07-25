@@ -21,7 +21,7 @@ import React from 'react'
 import MeetSetup from '../components/meet-setup/MeetSetup'
 import styles from '../components/common/ContentArea.module.scss'
 
-class MeetSetupContainer extends React.Component<{}> {
+class MeetSetupContainer extends React.Component {
   render() {
     return (
       <div className={styles.contentArea}>

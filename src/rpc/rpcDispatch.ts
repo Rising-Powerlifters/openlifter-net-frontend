@@ -10,7 +10,7 @@ type Action = MeetSetupAction | OverwriteStoreAction | RegistrationAction | Lift
 
 interface RpcCall {
   method: string
-  params: any
+  params: object
 }
 
 function actionToRpcCall(action: Action): RpcCall {

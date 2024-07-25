@@ -43,7 +43,7 @@ const EXTRACT_MESSAGE_FILE_PATTERN = 'src/**/*.@(tsx|ts)'
 const TEMP_DIR = './temp'
 const TEMP_MESSAGE_FILENAME = 'allMessages.json'
 
-const { strings } = require('./strings.js')
+const { strings } = require('./strings.cjs')
 
 const fs = require('fs')
 const path = require('path')
@@ -55,7 +55,7 @@ const { readMessageFiles, getDefaultMessages } = require('react-intl-translation
 
 function extractTranslations(pattern, cb) {
   // Array of { id: string, defaultMessage: string } objects.
-  // It's initialized with manually-defined objects from 'strings.js'.
+  // It's initialized with manually-defined objects from 'strings.cjs'.
   let results = strings
 
   pattern = pattern || 'src/**/*.@(tsx|ts)'
