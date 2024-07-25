@@ -36,7 +36,7 @@ import { kg2lbs, lbs2kg, string2number, displayWeight } from "../../logic/units"
 import { Entry, Language, Lift, Validation } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
 import { assertString } from "../../types/utils";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface OwnProps {
   id: number; // The EntryID.
@@ -60,12 +60,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  updateRegistration: (entryId: number, obj: Partial<Entry>) => void;
-  enterAttempt: (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 interface InternalState {
   weightStr: string;
@@ -90,6 +85,14 @@ class WeightInput extends React.Component<Props, InternalState> {
       weightStr: weight === 0.0 ? "" : displayWeight(weight, props.language),
     };
   }
+
+  updateRegistration = (entryId: number, obj: Partial<Entry>) => {
+    rpcDispatch(updateRegistration(entryId, obj));
+  };
+
+  enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
+  };
 
   validate = (): Validation => {
     const weightNum = string2number(this.state.weightStr);
@@ -126,12 +129,12 @@ class WeightInput extends React.Component<Props, InternalState> {
     if (this.props.attemptOneIndexed !== undefined && this.props.lift !== undefined) {
       const attemptOneIndexed = this.props.attemptOneIndexed;
       const lift = this.props.lift;
-      this.props.enterAttempt(this.props.id, lift, attemptOneIndexed, weightKg);
+      this.enterAttempt(this.props.id, lift, attemptOneIndexed, weightKg);
     } else if (this.props.field !== undefined) {
       // Otherwise, the field is a Number.
       const newfields: Partial<Entry> = {};
       newfields[this.props.field] = weightKg;
-      this.props.updateRegistration(this.props.id, newfields);
+      this.updateRegistration(this.props.id, newfields);
     }
   };
 
@@ -183,12 +186,4 @@ const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    updateRegistration: (entryId, obj) => dispatch(updateRegistration(entryId, obj)),
-    enterAttempt: (entryId, lift, attemptOneIndexed, weightKg) =>
-      dispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(WeightInput);
+export default connect(mapStateToProps)(WeightInput);

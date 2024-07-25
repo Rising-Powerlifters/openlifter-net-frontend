@@ -33,7 +33,7 @@ import { setTableInfo } from "../../actions/liftingActions";
 import { Validation } from "../../types/dataTypes";
 import { GlobalState, LiftingState } from "../../types/stateTypes";
 import { isNumber, isString } from "../../types/utils";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 type WidthFields = "columnDivisionWidthPx";
 
@@ -46,11 +46,7 @@ interface StateProps {
   lifting: LiftingState;
 }
 
-interface DispatchProps {
-  setTableInfo: (changes: Partial<LiftingState>) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 interface InternalState {
   value: number | string;
@@ -70,6 +66,10 @@ class ColumnWidth extends React.Component<Props, InternalState> {
       value: Math.ceil(this.props.lifting[this.props.fieldName] / MULTIPLE),
     };
   }
+
+  setTableInfo = (changes: Partial<LiftingState>) => {
+    rpcDispatch(setTableInfo(changes));
+  };
 
   validate = (): Validation => {
     const { value } = this.state;
@@ -93,7 +93,7 @@ class ColumnWidth extends React.Component<Props, InternalState> {
         // TODO: figure out how to type this nicely. For now, use any
         const changes: any = {};
         changes[this.props.fieldName] = Math.floor(Number(value) * MULTIPLE);
-        this.props.setTableInfo(changes);
+        this.setTableInfo(changes);
       }
     });
   };
@@ -124,10 +124,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   lifting: state.lifting,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setTableInfo: (changes: Partial<LiftingState>) => dispatch(setTableInfo(changes)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ColumnWidth);
+export default connect(mapStateToProps)(ColumnWidth);

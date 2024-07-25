@@ -32,9 +32,9 @@ import { displayWeight, kg2lbs } from "../../logic/units";
 
 import { Language, Plate } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
-import { Dispatch } from "redux";
 import { isNumber, isString } from "../../types/utils";
 import PlateInput from "./PlateInput";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   inKg: boolean;
@@ -42,11 +42,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  setPlateConfig: (weight: number, amount: number, color: string) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 class Plates extends React.Component<Props> {
   constructor(props: Props) {
@@ -55,6 +51,10 @@ class Plates extends React.Component<Props> {
     this.validateAmountInput = this.validateAmountInput.bind(this);
     this.updateHandler = this.updateHandler.bind(this);
   }
+
+  setPlateConfig = (weight: number, amount: number, color: string) => {
+    rpcDispatch(setPlateConfig(weight, amount, color));
+  };
 
   validateAmountInput: (id: string) => "error" | null | undefined = (id) => {
     const widget: any = document.getElementById(id);
@@ -85,7 +85,7 @@ class Plates extends React.Component<Props> {
       return this.setState({});
     }
 
-    this.props.setPlateConfig(weightKg, Number(amount), color);
+    this.setPlateConfig(weightKg, Number(amount), color);
   };
 
   renderWeightRow = (weightKg: number, amount: number, color: string) => {
@@ -141,10 +141,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setPlateConfig: (weightKg, amount, color) => dispatch(setPlateConfig(weightKg, amount, color)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Plates);
+export default connect(mapStateToProps)(Plates);

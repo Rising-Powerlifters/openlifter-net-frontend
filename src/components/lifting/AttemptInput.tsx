@@ -31,7 +31,7 @@ import { Entry, Language, Lift, Validation } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
 
 import styles from "./LiftingTable.module.scss";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   inKg: boolean;
@@ -45,11 +45,7 @@ interface OwnProps {
   id: string;
 }
 
-interface DispatchProps {
-  enterAttempt: (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => void;
-}
-
-type Props = StateProps & OwnProps & DispatchProps;
+type Props = StateProps & OwnProps;
 
 interface InternalState {
   lastGoodValue: string;
@@ -78,6 +74,10 @@ class AttemptInput extends React.Component<Props, InternalState> {
       value: weightStr,
     };
   }
+
+  enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
+  };
 
   validate = (): Validation => {
     let { value } = this.state;
@@ -157,7 +157,7 @@ class AttemptInput extends React.Component<Props, InternalState> {
     const asNumber = string2number(this.state.value);
     const weightKg = this.props.inKg ? asNumber : lbs2kg(asNumber);
 
-    this.props.enterAttempt(entryId, lift, attemptOneIndexed, weightKg);
+    this.enterAttempt(entryId, lift, attemptOneIndexed, weightKg);
     this.setState({ lastGoodValue: this.state.value });
   };
 
@@ -190,9 +190,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  enterAttempt: (entryId, lift, attemptOneIndexed, weightKg) =>
-    dispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(AttemptInput);
+export default connect(mapStateToProps)(AttemptInput);

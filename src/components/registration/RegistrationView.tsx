@@ -45,22 +45,16 @@ import { saveAs } from "file-saver";
 
 import { GlobalState } from "../../types/stateTypes";
 import { Entry } from "../../types/dataTypes";
-import { Dispatch } from "redux";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 import { shuffle } from "../debug/RandomizeHelpers";
 import { generateRandomLotNumbersSequencedByFlight } from "../../logic/lotNumbers";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   global: GlobalState;
 }
 
-interface DispatchProps {
-  newRegistration: (obj: Partial<Entry>) => void;
-  deleteRegistration: (id: number) => void;
-  assignLotNumbers: (lotNumbers: number[]) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 interface InternalState {
   // Controls the ErrorModal popup. Shown when error !== "".
@@ -88,6 +82,16 @@ class RegistrationView extends React.Component<Props, InternalState> {
 
     this.state = { error: "", isLoadingFiles: false };
   }
+
+  newRegistration = (obj: Partial<Entry>) => {
+    rpcDispatch(newRegistration(obj));
+  };
+  deleteRegistration = (id: number) => {
+    rpcDispatch(deleteRegistration(id));
+  };
+  assignLotNumbers = (lotNumbers: number[]) => {
+    rpcDispatch(assignLotNumbers(lotNumbers));
+  };
 
   handleDownloadCsvTemplateClick = () => {
     const text = makeExampleRegistrationsCsv(this.props.global.language);
@@ -156,7 +160,7 @@ class RegistrationView extends React.Component<Props, InternalState> {
     }
 
     // Finally, update the lot numbers in the state
-    this.props.assignLotNumbers(lotNumbers);
+    this.assignLotNumbers(lotNumbers);
   };
 
   handleAppendClick = () => {
@@ -210,7 +214,7 @@ class RegistrationView extends React.Component<Props, InternalState> {
       if (globalImportKind === "Overwrite") {
         const entryIds = rememberThis.props.global.registration.entries.map((e) => e.id);
         for (let i = 0; i < entryIds.length; ++i) {
-          rememberThis.props.deleteRegistration(entryIds[i]);
+          rememberThis.deleteRegistration(entryIds[i]);
         }
       }
 
@@ -218,7 +222,7 @@ class RegistrationView extends React.Component<Props, InternalState> {
       for (let i = 0; i < entries.length; ++i) {
         // Deleting the 'id' field causes newRegistration() to assign a valid one.
         delete entries[i].id;
-        rememberThis.props.newRegistration(entries[i]);
+        rememberThis.newRegistration(entries[i]);
       }
     };
 
@@ -348,12 +352,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   global: state,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    newRegistration: (obj: Partial<Entry>) => dispatch(newRegistration(obj)),
-    deleteRegistration: (id: number) => dispatch(deleteRegistration(id)),
-    assignLotNumbers: (lotNumbers: number[]) => dispatch(assignLotNumbers(lotNumbers)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrationView);
+export default connect(mapStateToProps)(RegistrationView);

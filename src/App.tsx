@@ -33,15 +33,10 @@ import ResultsContainer from "./containers/ResultsContainer";
 import DebugContainer from "./containers/DebugContainer";
 import AboutContainer from "./containers/AboutContainer";
 import Navigation from "./components/Navigation";
-
-import configureStore from "./store";
-
-import { getDefaultLanguage } from "./logic/strings";
+import { persistor, store } from "./store";
 
 class App extends React.Component {
   render() {
-    const { store, persistor } = configureStore({ language: getDefaultLanguage() });
-
     return (
       // Provider is a React component from the react-redux library.
       // Its purpose is to "provide" the given store to its child components.

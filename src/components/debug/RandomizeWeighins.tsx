@@ -20,7 +20,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import Button from "react-bootstrap/Button";
 
@@ -34,24 +33,28 @@ import { enterAttempt } from "../../actions/liftingActions";
 
 import { GlobalState, MeetState, RegistrationState } from "../../types/stateTypes";
 import { Entry, Lift } from "../../types/dataTypes";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   meet: MeetState;
   registration: RegistrationState;
 }
 
-interface DispatchProps {
-  updateRegistration: (entryId: number, obj: Partial<Entry>) => void;
-  enterAttempt: (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 class RandomizeWeighinsButton extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
     this.randomizeWeighins = this.randomizeWeighins.bind(this);
   }
+
+  updateRegistration = (entryId: number, obj: Partial<Entry>) => {
+    rpcDispatch(updateRegistration(entryId, obj));
+  };
+
+  enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
+  };
 
   randomAttempt = () => {
     return randomAttempt(this.props.meet.inKg);
@@ -67,13 +70,13 @@ class RandomizeWeighinsButton extends React.Component<Props> {
       // Get a random bodyweight.
       // ==========================================
       const bodyweightKg = inKg ? randomFixedPoint(20, 150, 1) : lbs2kg(randomFixedPoint(40, 320, 1));
-      this.props.updateRegistration(entry.id, {
+      this.updateRegistration(entry.id, {
         bodyweightKg: bodyweightKg,
       });
 
       // Get a random age.
       const age = randomInt(5, 79);
-      this.props.updateRegistration(entry.id, {
+      this.updateRegistration(entry.id, {
         age: age,
       });
 
@@ -98,13 +101,13 @@ class RandomizeWeighinsButton extends React.Component<Props> {
       // Set attempts.
       // ==========================================
       if (hasSquat) {
-        this.props.enterAttempt(entry.id, "S", 1, this.randomAttempt());
+        this.enterAttempt(entry.id, "S", 1, this.randomAttempt());
       }
       if (hasBench) {
-        this.props.enterAttempt(entry.id, "B", 1, this.randomAttempt());
+        this.enterAttempt(entry.id, "B", 1, this.randomAttempt());
       }
       if (hasDeadlift) {
-        this.props.enterAttempt(entry.id, "D", 1, this.randomAttempt());
+        this.enterAttempt(entry.id, "D", 1, this.randomAttempt());
       }
 
       // Set rack info.
@@ -112,7 +115,7 @@ class RandomizeWeighinsButton extends React.Component<Props> {
       if (hasSquat) {
         const height = String(randomInt(2, 18));
         const pos = Math.random() < 0.9 ? "out" : "in";
-        this.props.updateRegistration(entry.id, {
+        this.updateRegistration(entry.id, {
           squatRackInfo: height + pos,
         });
       }
@@ -120,7 +123,7 @@ class RandomizeWeighinsButton extends React.Component<Props> {
       if (hasBench) {
         const height = String(randomInt(0, 12));
         const safety = String(randomInt(0, 4));
-        this.props.updateRegistration(entry.id, {
+        this.updateRegistration(entry.id, {
           benchRackInfo: height + "/" + safety,
         });
       }
@@ -141,10 +144,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   registration: state.registration,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  updateRegistration: (entryId, obj) => dispatch(updateRegistration(entryId, obj)),
-  enterAttempt: (entryId, lift, attemptOneIndexed, weightKg) =>
-    dispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RandomizeWeighinsButton);
+export default connect(mapStateToProps)(RandomizeWeighinsButton);

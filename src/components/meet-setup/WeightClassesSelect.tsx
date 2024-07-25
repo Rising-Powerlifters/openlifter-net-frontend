@@ -31,7 +31,7 @@ import { setWeightClasses } from "../../actions/meetSetupActions";
 import { Language, Sex } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
 import { checkExhausted } from "../../types/utils";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 const components = {
   DropdownIndicator: null,
@@ -57,11 +57,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  setWeightClasses: (sex: Sex, classesKg: ReadonlyArray<number>) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 interface InternalState {
   inputValue: string;
@@ -89,6 +85,8 @@ class WeightClassesSelect extends React.Component<Props, InternalState> {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  setWeightClasses = (sex: Sex, classesKg: ReadonlyArray<number>) => rpcDispatch(setWeightClasses(sex, classesKg));
+
   // Updates the Redux store if a weightclass was added or removed.
   // Since updates are synchronous, we can simply check length.
   maybeUpdateRedux = (objarray: Array<OptionType>): void => {
@@ -101,7 +99,7 @@ class WeightClassesSelect extends React.Component<Props, InternalState> {
     for (let i = 0; i < objarray.length; i++) {
       classes.push(Number(objarray[i].value));
     }
-    this.props.setWeightClasses(this.props.sex, classes);
+    this.setWeightClasses(this.props.sex, classes);
   };
 
   handleChange = (value: any): void => {
@@ -208,10 +206,4 @@ const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setWeightClasses: (sex, classesKg) => dispatch(setWeightClasses(sex, classesKg)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(WeightClassesSelect);
+export default connect(mapStateToProps)(WeightClassesSelect);

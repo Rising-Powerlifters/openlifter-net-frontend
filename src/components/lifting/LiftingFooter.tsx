@@ -38,8 +38,8 @@ import { Entry, Flight, Language, Lift } from "../../types/dataTypes";
 import { GlobalState, LiftingState } from "../../types/stateTypes";
 
 import styles from "./LiftingFooter.module.scss";
-import { Dispatch } from "redux";
 import { assertFlight, assertString, assertLift } from "../../types/utils";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface OwnProps {
   attemptOneIndexed: number;
@@ -57,14 +57,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  setLiftingGroup: (day: number, platform: number, flight: Flight, lift: Lift) => void;
-  overrideAttempt: (attempt: number) => void;
-  overrideEntryId: (entryId: number) => void;
-  markLift: (entryId: number, lift: Lift, attempt: number, success: boolean) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 class LiftingFooter extends React.Component<Props> {
   constructor(props: Props) {
@@ -87,6 +80,22 @@ class LiftingFooter extends React.Component<Props> {
     this.makeLifterOptions = this.makeLifterOptions.bind(this);
   }
 
+  setLiftingGroup = (day: number, platform: number, flight: Flight, lift: Lift) => {
+    rpcDispatch(setLiftingGroup(day, platform, flight, lift));
+  };
+
+  overrideAttempt = (attempt: number) => {
+    rpcDispatch(overrideAttempt(attempt));
+  };
+
+  overrideEntryId = (entryId: number) => {
+    rpcDispatch(overrideEntryId(entryId));
+  };
+
+  markLift = (entryId: number, lift: Lift, attempt: number, success: boolean) => {
+    rpcDispatch(markLift(entryId, lift, attempt, success));
+  };
+
   handleDayChange = (event: React.BaseSyntheticEvent) => {
     const day = Number(event.currentTarget.value);
     const flight = this.props.lifting.flight;
@@ -98,7 +107,7 @@ class LiftingFooter extends React.Component<Props> {
       platform = 1;
     }
 
-    this.props.setLiftingGroup(day, platform, flight, lift);
+    this.setLiftingGroup(day, platform, flight, lift);
   };
 
   handlePlatformChange = (event: React.BaseSyntheticEvent) => {
@@ -106,7 +115,7 @@ class LiftingFooter extends React.Component<Props> {
     const platform = Number(event.currentTarget.value);
     const flight = this.props.lifting.flight;
     const lift = this.props.lifting.lift;
-    this.props.setLiftingGroup(day, platform, flight, lift);
+    this.setLiftingGroup(day, platform, flight, lift);
   };
 
   handleFlightChange = (event: React.BaseSyntheticEvent) => {
@@ -115,7 +124,7 @@ class LiftingFooter extends React.Component<Props> {
     const flight = event.currentTarget.value;
     const lift = this.props.lifting.lift;
     if (assertString(flight) && assertFlight(flight)) {
-      this.props.setLiftingGroup(day, platform, flight, lift);
+      this.setLiftingGroup(day, platform, flight, lift);
     }
   };
 
@@ -125,13 +134,13 @@ class LiftingFooter extends React.Component<Props> {
     const flight = "A"; // Always reset to Flight A.
     const lift = event.currentTarget.value;
     if (assertString(lift) && assertLift(lift)) {
-      this.props.setLiftingGroup(day, platform, flight, lift);
+      this.setLiftingGroup(day, platform, flight, lift);
     }
   };
 
   handleAttemptChange = (event: React.BaseSyntheticEvent) => {
     const attempt = Number(event.currentTarget.value);
-    this.props.overrideAttempt(attempt);
+    this.overrideAttempt(attempt);
     //also override EntryId so that we stay on the current
     //lifter when changing attempt, otherwise liftingOrder.ts:getCurrentEntryId()
     //can't figure out the current entry based on which entries have
@@ -140,13 +149,13 @@ class LiftingFooter extends React.Component<Props> {
     //overridden via the lifter change control
     if (this.props.currentEntryId !== null) {
       const entryId = Number(this.props.currentEntryId);
-      this.props.overrideEntryId(entryId);
+      this.overrideEntryId(entryId);
     }
   };
 
   handleLifterChange = (event: React.BaseSyntheticEvent) => {
     const entryId = Number(event.currentTarget.value);
-    this.props.overrideEntryId(entryId);
+    this.overrideEntryId(entryId);
   };
 
   // After a "No Lift" or "Good Lift" button is clicked, try to change focus
@@ -199,7 +208,7 @@ class LiftingFooter extends React.Component<Props> {
     const entryId = Number(this.props.currentEntryId);
     const lift = this.props.lifting.lift;
     const attempt = this.props.attemptOneIndexed;
-    this.props.markLift(entryId, lift, attempt, true);
+    this.markLift(entryId, lift, attempt, true);
     this.setFocusAttemptInputTimeout();
   };
 
@@ -212,7 +221,7 @@ class LiftingFooter extends React.Component<Props> {
     const entryId = Number(this.props.currentEntryId);
     const lift = this.props.lifting.lift;
     const attempt = this.props.attemptOneIndexed;
-    this.props.markLift(entryId, lift, attempt, false);
+    this.markLift(entryId, lift, attempt, false);
     this.setFocusAttemptInputTimeout();
   };
 
@@ -445,15 +454,4 @@ const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    setLiftingGroup: (day: number, platform: number, flight: Flight, lift: Lift) =>
-      dispatch(setLiftingGroup(day, platform, flight, lift)),
-    overrideAttempt: (attempt: number) => dispatch(overrideAttempt(attempt)),
-    overrideEntryId: (entryId: number) => dispatch(overrideEntryId(entryId)),
-    markLift: (entryId: number, lift: Lift, attempt: number, success: boolean) =>
-      dispatch(markLift(entryId, lift, attempt, success)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LiftingFooter);
+export default connect(mapStateToProps)(LiftingFooter);

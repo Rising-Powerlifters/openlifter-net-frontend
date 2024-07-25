@@ -24,8 +24,8 @@ import { setPlatformsOnDays } from "../../actions/meetSetupActions";
 
 import { GlobalState } from "../../types/stateTypes";
 import { Validation } from "../../types/dataTypes";
-import { Dispatch } from "redux";
 import NumberInput from "../common/NumberInput";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface OwnProps {
   day: number;
@@ -35,11 +35,7 @@ interface StateProps {
   platformsOnDays: ReadonlyArray<number>;
 }
 
-interface DispatchProps {
-  setPlatformsOnDays: (day: number, count: number) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 interface InternalState {
   initialValue: number;
@@ -57,6 +53,10 @@ class PlatformCount extends React.Component<Props, InternalState> {
     };
   }
 
+  setPlatformsOnDays = (day: number, count: number) => {
+    rpcDispatch(setPlatformsOnDays(day, count));
+  };
+
   validate = (n: number): Validation => {
     if (!Number.isInteger(n) || n <= 0 || n > 20) {
       return "error";
@@ -66,7 +66,7 @@ class PlatformCount extends React.Component<Props, InternalState> {
 
   handleChange = (n: number): void => {
     if (this.validate(n) === "success") {
-      this.props.setPlatformsOnDays(this.props.day, n);
+      this.setPlatformsOnDays(this.props.day, n);
     }
   };
 
@@ -95,10 +95,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   platformsOnDays: state.meet.platformsOnDays,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setPlatformsOnDays: (day, count) => dispatch(setPlatformsOnDays(day, count)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlatformCount);
+export default connect(mapStateToProps)(PlatformCount);

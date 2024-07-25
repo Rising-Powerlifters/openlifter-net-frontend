@@ -18,7 +18,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { FormattedMessage } from "react-intl";
 
 import NumberInput from "../common/NumberInput";
@@ -27,16 +26,13 @@ import { setLengthDays } from "../../actions/meetSetupActions";
 
 import { Validation } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   lengthDays: number;
 }
 
-interface DispatchProps {
-  setLengthDays: (days: number) => any;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 interface InternalState {
   initialValue: number;
@@ -54,6 +50,10 @@ class MeetLength extends React.Component<Props, InternalState> {
     };
   }
 
+  setLengthDays = (days: number) => {
+    rpcDispatch(setLengthDays(days));
+  };
+
   validate = (n: number): Validation => {
     if (!Number.isInteger(n) || n <= 0 || n > 14) {
       return "error";
@@ -63,7 +63,7 @@ class MeetLength extends React.Component<Props, InternalState> {
 
   handleChange = (n: number): void => {
     if (this.validate(n)) {
-      this.props.setLengthDays(n);
+      this.setLengthDays(n);
     }
   };
 
@@ -84,10 +84,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   lengthDays: state.meet.lengthDays,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setLengthDays: (days) => dispatch(setLengthDays(days)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeetLength);
+export default connect(mapStateToProps)(MeetLength);

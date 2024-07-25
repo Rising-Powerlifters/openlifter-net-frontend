@@ -37,8 +37,8 @@ import { updateRegistration } from "../../actions/registrationActions";
 
 import { Entry, Language, Validation } from "../../types/dataTypes";
 import { GlobalState, MeetState } from "../../types/stateTypes";
-import { Dispatch } from "redux";
 import { assertFlight, assertString } from "../../types/utils";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface OwnProps {
   id: number;
@@ -51,11 +51,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  updateRegistration: (entryId: number, obj: Partial<Entry>) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 class LifterRow extends React.Component<Props> {
   constructor(props: Props) {
@@ -66,29 +62,33 @@ class LifterRow extends React.Component<Props> {
     this.updateRegistrationAge = this.updateRegistrationAge.bind(this);
   }
 
+  updateRegistration = (entryId: number, obj: Partial<Entry>) => {
+    rpcDispatch(updateRegistration(entryId, obj));
+  };
+
   updateRegistrationFlight = (event: React.BaseSyntheticEvent) => {
     const flight = event.currentTarget.value;
     if (this.props.entry.flight !== flight && assertString(flight) && assertFlight(flight)) {
-      this.props.updateRegistration(this.props.id, { flight: flight });
+      this.updateRegistration(this.props.id, { flight: flight });
     }
   };
 
   updateRegistrationSquatRackInfo = (value: string) => {
     if (this.props.entry.squatRackInfo !== value) {
-      this.props.updateRegistration(this.props.id, { squatRackInfo: value });
+      this.updateRegistration(this.props.id, { squatRackInfo: value });
     }
   };
 
   updateRegistrationBenchRackInfo = (value: string) => {
     if (this.props.entry.benchRackInfo !== value) {
-      this.props.updateRegistration(this.props.id, { benchRackInfo: value });
+      this.updateRegistration(this.props.id, { benchRackInfo: value });
     }
   };
 
   updateRegistrationAge = (value: string) => {
     const age: number = value === "" ? 0 : Number(value);
     if (this.props.entry.age !== age) {
-      this.props.updateRegistration(this.props.id, { age: age });
+      this.updateRegistration(this.props.id, { age: age });
     }
   };
 
@@ -262,10 +262,4 @@ const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    updateRegistration: (entryId: number, obj: Partial<Entry>) => dispatch(updateRegistration(entryId, obj)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LifterRow);
+export default connect(mapStateToProps)(LifterRow);

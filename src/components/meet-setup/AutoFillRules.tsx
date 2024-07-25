@@ -34,15 +34,11 @@ import { updateMeet } from "../../actions/meetSetupActions";
 import { GlobalState, MeetState } from "../../types/stateTypes";
 import { Language } from "../../types/dataTypes";
 import { checkExhausted } from "../../types/utils";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   federation: string;
   language: Language;
-}
-
-interface DispatchProps {
-  updateMeet: (changes: Partial<MeetState>) => void;
 }
 
 interface OwnProps {
@@ -50,7 +46,7 @@ interface OwnProps {
   onChange: () => void;
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & OwnProps;
 
 type AutoFillOption =
   | "Traditional"
@@ -1555,6 +1551,10 @@ class AutoFillRules extends React.Component<Props, InternalState> {
     };
   }
 
+  updateMeet = (changes: Partial<MeetState>) => {
+    rpcDispatch(updateMeet(changes));
+  };
+
   handleSelectChange = (event: React.BaseSyntheticEvent) => {
     const value = event.currentTarget.value as AutoFillOption;
     // Only handle any valid values & assist the compiler in giving us a compile error if AutoFillOption has more values added
@@ -1586,63 +1586,63 @@ class AutoFillRules extends React.Component<Props, InternalState> {
   handleClick = () => {
     switch (this.state.selectedOption) {
       case "Traditional":
-        this.props.updateMeet(traditionalDefaults);
+        this.updateMeet(traditionalDefaults);
         this.props.onChange();
         return;
       case "365Strong":
-        this.props.updateMeet(_365strongDefaults);
+        this.updateMeet(_365strongDefaults);
         this.props.onChange();
         return;
       case "BP":
-        this.props.updateMeet(bpDefaults);
+        this.updateMeet(bpDefaults);
         this.props.onChange();
         return;
       case "GPC":
-        this.props.updateMeet(gpcDefaults);
+        this.updateMeet(gpcDefaults);
         this.props.onChange();
         return;
       case "RPS":
-        this.props.updateMeet(rpsDefaults);
+        this.updateMeet(rpsDefaults);
         this.props.onChange();
         return;
       case "SPF":
-        this.props.updateMeet(spfDefaults);
+        this.updateMeet(spfDefaults);
         this.props.onChange();
         return;
       case "UPA":
-        this.props.updateMeet(upaDefaults);
+        this.updateMeet(upaDefaults);
         this.props.onChange();
         return;
       case "USAPL":
-        this.props.updateMeet(usaplDefaults);
+        this.updateMeet(usaplDefaults);
         this.props.onChange();
         return;
       case "USPA":
-        this.props.updateMeet(uspaDefaults);
+        this.updateMeet(uspaDefaults);
         this.props.onChange();
         return;
       case "USPC":
-        this.props.updateMeet(uspcDefaults);
+        this.updateMeet(uspcDefaults);
         this.props.onChange();
         return;
       case "WABDL":
-        this.props.updateMeet(wabdlDefaults);
+        this.updateMeet(wabdlDefaults);
         this.props.onChange();
         return;
       case "WP":
-        this.props.updateMeet(wpDefaults);
+        this.updateMeet(wpDefaults);
         this.props.onChange();
         return;
       case "WPC":
-        this.props.updateMeet(wpcDefaults);
+        this.updateMeet(wpcDefaults);
         this.props.onChange();
         return;
       case "WPPO":
-        this.props.updateMeet(wppoDefaults);
+        this.updateMeet(wppoDefaults);
         this.props.onChange();
         return;
       case "WRPF":
-        this.props.updateMeet(wrpfDefaults);
+        this.updateMeet(wrpfDefaults);
         this.props.onChange();
         return;
       default:
@@ -1746,10 +1746,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    updateMeet: (changes) => dispatch(updateMeet(changes)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AutoFillRules);
+export default connect(mapStateToProps)(AutoFillRules);

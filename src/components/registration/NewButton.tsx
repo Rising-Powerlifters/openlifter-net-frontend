@@ -19,7 +19,6 @@
 // Defines the button that adds a new entry to the registrations table.
 
 import React from "react";
-import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 
 import Button from "react-bootstrap/Button";
@@ -27,22 +26,22 @@ import Button from "react-bootstrap/Button";
 import { newRegistration } from "../../actions/registrationActions";
 
 import { Entry } from "../../types/dataTypes";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
-interface DispatchProps {
-  newRegistration: (obj: Partial<Entry>) => void;
-}
+type Props = never;
 
-type Props = DispatchProps;
-
-class NewButton extends React.Component<Props> {
+class NewButton extends React.Component {
   constructor(props: Props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 
+  newRegistration = (obj: Partial<Entry>) => {
+    rpcDispatch(newRegistration(obj));
+  };
+
   handleClick = () => {
-    this.props.newRegistration({});
+    this.newRegistration({});
   };
 
   render() {
@@ -54,10 +53,4 @@ class NewButton extends React.Component<Props> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    newRegistration: (obj: Partial<Entry>) => dispatch(newRegistration(obj)),
-  };
-};
-
-export default connect(null, mapDispatchToProps)(NewButton);
+export default NewButton;

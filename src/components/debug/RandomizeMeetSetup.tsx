@@ -37,19 +37,10 @@ import {
 } from "../../actions/meetSetupActions";
 
 import { GlobalState } from "../../types/stateTypes";
-import { Dispatch } from "redux";
 import { Sex } from "../../types/dataTypes";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
-interface DispatchProps {
-  setDivisions: (divisions: Array<string>) => void;
-  setFederation: (federation: string) => void;
-  setLengthDays: (length: number) => void;
-  setMeetName: (name: string) => void;
-  setPlatformsOnDays: (day: number, count: number) => void;
-  setWeightClasses: (sex: Sex, classesKg: number[]) => void;
-}
-
-type Props = GlobalState & DispatchProps;
+type Props = GlobalState;
 
 const NonsenseFederations = [
   "CTHULHU",
@@ -71,15 +62,39 @@ class RandomizeMeetSetupButton extends React.Component<Props> {
     this.randomizeMeetSetup = this.randomizeMeetSetup.bind(this);
   }
 
+  setDivisions = (divisions: Array<string>) => {
+    rpcDispatch(setDivisions(divisions));
+  };
+
+  setFederation = (federation: string) => {
+    rpcDispatch(setFederation(federation));
+  };
+
+  setLengthDays = (length: number) => {
+    rpcDispatch(setLengthDays(length));
+  };
+
+  setMeetName = (name: string) => {
+    rpcDispatch(setMeetName(name));
+  };
+
+  setPlatformsOnDays = (day: number, count: number) => {
+    rpcDispatch(setPlatformsOnDays(day, count));
+  };
+
+  setWeightClasses = (sex: Sex, classesKg: number[]) => {
+    rpcDispatch(setWeightClasses(sex, classesKg));
+  };
+
   randomizeMeetSetup() {
     // Set a gibberish MeetName.
     // ==========================================
-    this.props.setMeetName(randomString() + randomString());
+    this.setMeetName(randomString() + randomString());
 
     // Generate a nonsense federation.
     // ==========================================
     const fed = NonsenseFederations[randomInt(0, NonsenseFederations.length - 1)];
-    this.props.setFederation(fed);
+    this.setFederation(fed);
 
     // Generate nonsense weight classes.
     // ==========================================
@@ -104,19 +119,19 @@ class RandomizeMeetSetupButton extends React.Component<Props> {
     }
     classesMx = classesMx.sort((a, b) => Number(a) - Number(b));
 
-    this.props.setWeightClasses("M", classesMen);
-    this.props.setWeightClasses("F", classesWomen);
-    this.props.setWeightClasses("Mx", classesMx);
+    this.setWeightClasses("M", classesMen);
+    this.setWeightClasses("F", classesWomen);
+    this.setWeightClasses("Mx", classesMx);
 
     // Generate nonsense days and platforms.
     // ==========================================
     const numDays = randomInt(1, 4);
-    this.props.setLengthDays(numDays);
+    this.setLengthDays(numDays);
 
     for (let i = 0; i < numDays; i++) {
       const day = i + 1;
       const numPlatforms = randomInt(1, 2);
-      this.props.setPlatformsOnDays(day, numPlatforms);
+      this.setPlatformsOnDays(day, numPlatforms);
     }
 
     // Generate nonsense divisions.
@@ -136,7 +151,7 @@ class RandomizeMeetSetupButton extends React.Component<Props> {
         divisions.push(div);
       }
     }
-    this.props.setDivisions(divisions);
+    this.setDivisions(divisions);
   }
 
   render() {
@@ -152,15 +167,4 @@ const mapStateToProps = (state: GlobalState): GlobalState => ({
   ...state,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setDivisions: (divisions: Array<string>) => dispatch(setDivisions(divisions)),
-    setFederation: (federation: string) => dispatch(setFederation(federation)),
-    setLengthDays: (length: number) => dispatch(setLengthDays(length)),
-    setMeetName: (name: string) => dispatch(setMeetName(name)),
-    setPlatformsOnDays: (day: number, count: number) => dispatch(setPlatformsOnDays(day, count)),
-    setWeightClasses: (sex: Sex, classesKg: number[]) => dispatch(setWeightClasses(sex, classesKg)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RandomizeMeetSetupButton);
+export default connect(mapStateToProps)(RandomizeMeetSetupButton);

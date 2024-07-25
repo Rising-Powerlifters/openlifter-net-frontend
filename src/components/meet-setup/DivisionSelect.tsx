@@ -30,7 +30,7 @@ import { setDivisions } from "../../actions/meetSetupActions";
 
 import { GlobalState } from "../../types/stateTypes";
 import { Language } from "../../types/dataTypes";
-import { Dispatch } from "redux";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 const components = {
   DropdownIndicator: null,
@@ -51,11 +51,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  setDivisions: (divisions: ReadonlyArray<string>) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 interface InternalState {
   inputValue: string;
@@ -83,6 +79,10 @@ class DivisionSelect extends React.Component<Props, InternalState> {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  setDivisions = (divisions: ReadonlyArray<string>) => {
+    rpcDispatch(setDivisions(divisions));
+  };
+
   // Updates the Redux store if a division was added or removed.
   // Since updates are synchronous, we can simply check length.
   maybeUpdateRedux = (objarray: Array<OptionType>): void => {
@@ -96,7 +96,7 @@ class DivisionSelect extends React.Component<Props, InternalState> {
     for (let i = 0; i < objarray.length; i++) {
       divisions.push(objarray[i].label);
     }
-    this.props.setDivisions(divisions);
+    this.setDivisions(divisions);
   };
 
   // Handles the case of deleting an existing division.
@@ -169,10 +169,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setDivisions: (divisions) => dispatch(setDivisions(divisions)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DivisionSelect);
+export default connect(mapStateToProps)(DivisionSelect);

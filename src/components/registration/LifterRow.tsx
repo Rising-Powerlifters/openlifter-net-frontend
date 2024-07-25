@@ -45,8 +45,8 @@ import { validatePositiveInteger } from "../../validation/positiveInteger";
 import { deleteRegistration, updateRegistration } from "../../actions/registrationActions";
 import { checkExhausted, assertString, assertFlight, assertSex } from "../../types/utils";
 import { Entry, Equipment, Language, Validation } from "../../types/dataTypes";
-import { Dispatch } from "redux";
 import { GlobalState, MeetState } from "../../types/stateTypes";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface OwnProps {
   id: number;
@@ -58,16 +58,11 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  deleteRegistration: (entryId: number) => void;
-  updateRegistration: (entryId: number, obj: Partial<Entry>) => void;
-}
-
 interface InternalState {
   selectedDay: number;
 }
 
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 class LifterRow extends React.Component<Props, InternalState> {
   constructor(props: Props) {
@@ -100,8 +95,16 @@ class LifterRow extends React.Component<Props, InternalState> {
     this.updateRegistrationNotes = this.updateRegistrationNotes.bind(this);
   }
 
+  deleteRegistration = (entryId: number) => {
+    rpcDispatch(deleteRegistration(entryId));
+  };
+
+  updateRegistration = (entryId: number, obj: Partial<Entry>) => {
+    rpcDispatch(updateRegistration(entryId, obj));
+  };
+
   deleteRegistrationClick() {
-    this.props.deleteRegistration(this.props.id);
+    this.deleteRegistration(this.props.id);
   }
 
   updateRegistrationDay(event: React.BaseSyntheticEvent) {
@@ -116,74 +119,74 @@ class LifterRow extends React.Component<Props, InternalState> {
 
     if (entry.day !== day) {
       this.setState({ selectedDay: day });
-      this.props.updateRegistration(this.props.id, { day: day, platform: platform });
+      this.updateRegistration(this.props.id, { day: day, platform: platform });
     }
   }
 
   updateRegistrationPlatform(event: React.BaseSyntheticEvent) {
     const platform = Number(event.currentTarget.value);
     if (this.props.entry.platform !== platform) {
-      this.props.updateRegistration(this.props.id, { platform: platform });
+      this.updateRegistration(this.props.id, { platform: platform });
     }
   }
 
   updateRegistrationFlight(event: React.BaseSyntheticEvent) {
     const value = event.currentTarget.value;
     if (this.props.entry.flight !== value && assertString(value) && assertFlight(value)) {
-      this.props.updateRegistration(this.props.id, { flight: value });
+      this.updateRegistration(this.props.id, { flight: value });
     }
   }
 
   updateRegistrationName(event: React.BaseSyntheticEvent) {
     const name = event.currentTarget.value;
     if (this.props.entry.name !== name && assertString(name)) {
-      this.props.updateRegistration(this.props.id, { name: name });
+      this.updateRegistration(this.props.id, { name: name });
     }
   }
 
   updateRegistrationSex(event: React.BaseSyntheticEvent) {
     const sex = event.currentTarget.value;
     if (this.props.entry.sex !== sex && assertString(sex) && assertSex(sex)) {
-      this.props.updateRegistration(this.props.id, { sex: sex });
+      this.updateRegistration(this.props.id, { sex: sex });
     }
   }
 
   updateRegistrationLot(event: React.BaseSyntheticEvent & { currentTarget: { value: string } }) {
     const asNumber = string2number(event.currentTarget.value);
     if (asNumber >= 0 && asNumber !== this.props.entry.lot) {
-      this.props.updateRegistration(this.props.id, { lot: asNumber });
+      this.updateRegistration(this.props.id, { lot: asNumber });
     }
   }
 
   updateRegistrationMemberId = (event: React.BaseSyntheticEvent) => {
     const memberId = event.currentTarget.value;
     if (this.props.entry.memberId !== memberId && typeof memberId === "string") {
-      this.props.updateRegistration(this.props.id, { memberId: memberId });
+      this.updateRegistration(this.props.id, { memberId: memberId });
     }
   };
 
   updateRegistrationBirthDate = (birthDate: string) => {
     if (this.props.entry.birthDate !== birthDate) {
-      this.props.updateRegistration(this.props.id, { birthDate: birthDate });
+      this.updateRegistration(this.props.id, { birthDate: birthDate });
     }
   };
 
   updateRegistrationAge = (age: string) => {
     const num = string2number(age);
     if (this.props.entry.age !== num) {
-      this.props.updateRegistration(this.props.id, { age: num });
+      this.updateRegistration(this.props.id, { age: num });
     }
   };
 
   updateRegistrationCountry = (country: string) => {
     if (this.props.entry.country !== country) {
-      this.props.updateRegistration(this.props.id, { country: country });
+      this.updateRegistration(this.props.id, { country: country });
     }
   };
 
   updateRegistrationState = (state: string) => {
     if (this.props.entry.state !== state) {
-      this.props.updateRegistration(this.props.id, { state: state });
+      this.updateRegistration(this.props.id, { state: state });
     }
   };
 
@@ -195,12 +198,12 @@ class LifterRow extends React.Component<Props, InternalState> {
         for (let i = 0; i < value.length; i++) {
           divisions.push(value[i].value);
         }
-        this.props.updateRegistration(this.props.id, { divisions: divisions });
+        this.updateRegistration(this.props.id, { divisions: divisions });
       }
     } else if (value === null) {
       // Null happens when the list has been cleared fully.
       if (this.props.entry.divisions.length > 0) {
-        this.props.updateRegistration(this.props.id, { divisions: [] });
+        this.updateRegistration(this.props.id, { divisions: [] });
       }
     }
   }
@@ -213,12 +216,12 @@ class LifterRow extends React.Component<Props, InternalState> {
         for (let i = 0; i < value.length; i++) {
           events.push(value[i].value);
         }
-        this.props.updateRegistration(this.props.id, { events: events });
+        this.updateRegistration(this.props.id, { events: events });
       }
     } else if (value === null) {
       // Null happens when the list has been cleared fully.
       if (this.props.entry.events.length > 0) {
-        this.props.updateRegistration(this.props.id, { events: [] });
+        this.updateRegistration(this.props.id, { events: [] });
       }
     }
   }
@@ -234,7 +237,7 @@ class LifterRow extends React.Component<Props, InternalState> {
         case "Single-ply":
         case "Multi-ply":
         case "Unlimited":
-          this.props.updateRegistration(this.props.id, { equipment: equipment });
+          this.updateRegistration(this.props.id, { equipment: equipment });
           break;
         default:
           checkExhausted(equipment);
@@ -245,27 +248,27 @@ class LifterRow extends React.Component<Props, InternalState> {
 
   updateRegistrationGuest = (event: React.BaseSyntheticEvent) => {
     if (event.currentTarget.value === "true") {
-      this.props.updateRegistration(this.props.id, { guest: true });
+      this.updateRegistration(this.props.id, { guest: true });
     } else {
-      this.props.updateRegistration(this.props.id, { guest: false });
+      this.updateRegistration(this.props.id, { guest: false });
     }
   };
 
   updateRegistrationTeam = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.props.updateRegistration(this.props.id, { team: event.currentTarget.value });
+      this.updateRegistration(this.props.id, { team: event.currentTarget.value });
     }
   };
 
   updateRegistrationInstagram = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.props.updateRegistration(this.props.id, { instagram: event.currentTarget.value });
+      this.updateRegistration(this.props.id, { instagram: event.currentTarget.value });
     }
   };
 
   updateRegistrationNotes = (event: React.BaseSyntheticEvent) => {
     if (assertString(event.currentTarget.value)) {
-      this.props.updateRegistration(this.props.id, { notes: event.currentTarget.value });
+      this.updateRegistration(this.props.id, { notes: event.currentTarget.value });
     }
   };
 
@@ -672,11 +675,4 @@ const mapStateToProps = (state: GlobalState, ownProps: OwnProps): StateProps => 
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    deleteRegistration: (entryId: number) => dispatch(deleteRegistration(entryId)),
-    updateRegistration: (entryId: number, obj: Partial<Entry>) => dispatch(updateRegistration(entryId, obj)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LifterRow);
+export default connect(mapStateToProps)(LifterRow);

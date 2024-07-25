@@ -20,7 +20,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import Button from "react-bootstrap/Button";
 
@@ -31,6 +30,7 @@ import { newRegistration, deleteRegistration } from "../../actions/registrationA
 
 import { GlobalState } from "../../types/stateTypes";
 import { Event, Entry, Sex, Equipment, Flight } from "../../types/dataTypes";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 const NonsenseFirstNames = [
   "Aragorn",
@@ -181,12 +181,7 @@ const NonsenseLastNames = [
   "Zabini",
 ];
 
-interface DispatchProps {
-  newRegistration: (obj: Partial<Entry>) => void;
-  deleteRegistration: (entryId: number) => void;
-}
-
-type Props = GlobalState & DispatchProps;
+type Props = GlobalState;
 
 class RandomizeRegistrationButton extends React.Component<Props> {
   constructor(props: Props) {
@@ -196,10 +191,18 @@ class RandomizeRegistrationButton extends React.Component<Props> {
     this.randomizeRegistration = this.randomizeRegistration.bind(this);
   }
 
+  newRegistration = (obj: Partial<Entry>) => {
+    rpcDispatch(newRegistration(obj));
+  };
+
+  deleteRegistration = (entryId: number) => {
+    rpcDispatch(deleteRegistration(entryId));
+  };
+
   deleteExistingRegistrations() {
     const entryIds = this.props.registration.entries.map((e) => e.id);
     for (let i = 0; i < entryIds.length; i++) {
-      this.props.deleteRegistration(entryIds[i]);
+      this.deleteRegistration(entryIds[i]);
     }
   }
 
@@ -297,7 +300,7 @@ class RandomizeRegistrationButton extends React.Component<Props> {
         }
       }
 
-      this.props.newRegistration({
+      this.newRegistration({
         day: day,
         platform: platform,
         flight: flight,
@@ -340,11 +343,4 @@ const mapStateToProps = (state: GlobalState): GlobalState => ({
   ...state,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    newRegistration: (obj: Partial<Entry>) => dispatch(newRegistration(obj)),
-    deleteRegistration: (entryId: number) => dispatch(deleteRegistration(entryId)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RandomizeRegistrationButton);
+export default connect(mapStateToProps)(RandomizeRegistrationButton);

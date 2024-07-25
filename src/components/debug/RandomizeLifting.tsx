@@ -20,7 +20,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import Button from "react-bootstrap/Button";
 
@@ -32,34 +31,39 @@ import { markLift, enterAttempt } from "../../actions/liftingActions";
 
 import { GlobalState, MeetState, RegistrationState } from "../../types/stateTypes";
 import { Lift } from "../../types/dataTypes";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   meet: MeetState;
   registration: RegistrationState;
 }
 
-interface DispatchProps {
-  enterAttempt: (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => void;
-  markLift: (entryId: number, lift: Lift, attempt: number, success: boolean) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 class RandomizeLiftingButton extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
     this.randomizeLifting = this.randomizeLifting.bind(this);
   }
+
+  enterAttempt = (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) => {
+    rpcDispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg));
+  };
+
+  markLift = (entryId: number, lift: Lift, attempt: number, success: boolean) => {
+    rpcDispatch(markLift(entryId, lift, attempt, success));
+  };
+
   setLiftsForLift(entryId: number, lift: Lift, inKg: boolean) {
     // enter opener
     const firstAttempt = randomAttempt(inKg);
-    this.props.enterAttempt(entryId, lift, 1, firstAttempt);
+    this.enterAttempt(entryId, lift, 1, firstAttempt);
 
     // set random chance of failing attempt
     let success = Math.random() > 0.15;
 
     // mark opener as success or failure
-    this.props.markLift(entryId, lift, 1, success);
+    this.markLift(entryId, lift, 1, success);
 
     // enter 2nd attempt
     // re-take first attempt if it failed
@@ -69,13 +73,13 @@ class RandomizeLiftingButton extends React.Component<Props> {
       // increase attempt if opener was successful
       secondAttempt = randomAttemptWithMin(inKg, firstAttempt + 1);
     }
-    this.props.enterAttempt(entryId, lift, 2, secondAttempt);
+    this.enterAttempt(entryId, lift, 2, secondAttempt);
 
     // set slightly higher chance of failing 2nd
     success = Math.random() > 0.25;
 
     // mark 2nd lift success or failure
-    this.props.markLift(entryId, lift, 2, success);
+    this.markLift(entryId, lift, 2, success);
 
     // record 3rd attempt
     let thirdAttempt = secondAttempt;
@@ -83,12 +87,12 @@ class RandomizeLiftingButton extends React.Component<Props> {
       // increment weight for 3rd
       thirdAttempt = randomAttemptWithMin(inKg, secondAttempt + 1);
     }
-    this.props.enterAttempt(entryId, lift, 3, thirdAttempt);
+    this.enterAttempt(entryId, lift, 3, thirdAttempt);
 
     // set slightly higher chance of failing 3rd
     success = Math.random() > 0.3;
     // record success or failure
-    this.props.markLift(entryId, lift, 3, success);
+    this.markLift(entryId, lift, 3, success);
   }
 
   randomizeLifting = () => {
@@ -142,11 +146,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   registration: state.registration,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  enterAttempt: (entryId: number, lift: Lift, attemptOneIndexed: number, weightKg: number) =>
-    dispatch(enterAttempt(entryId, lift, attemptOneIndexed, weightKg)),
-  markLift: (entryId: number, lift: Lift, attempt: number, success: boolean) =>
-    dispatch(markLift(entryId, lift, attempt, success)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RandomizeLiftingButton);
+export default connect(mapStateToProps)(RandomizeLiftingButton);

@@ -41,34 +41,19 @@ import Plates from "./Plates";
 import YesNoButton from "../common/YesNoButton";
 
 import { getString } from "../../logic/strings";
-import { updateMeet, setInKg } from "../../actions/meetSetupActions";
+import { setInKg, updateMeet } from "../../actions/meetSetupActions";
 
 import { GlobalState, MeetState } from "../../types/stateTypes";
-import { Dispatch } from "redux";
-import { assertString, assertFormula, assertAgeCoefficients } from "../../types/utils";
+import { assertAgeCoefficients, assertFormula, assertString } from "../../types/utils";
 import { Language, Validation } from "../../types/dataTypes";
+import dispatch from "../../rpc/rpcDispatch";
 
 interface StateProps {
   meet: MeetState;
   language: Language;
 }
 
-interface DispatchProps {
-  setMeetName: (name: string) => void;
-  setCountry: (country: string) => void;
-  setState: (state: string) => void;
-  setCity: (city: string) => void;
-  setFederation: (fed: string) => void;
-  setCombineSleevesAndWraps: (bool: boolean) => void;
-  setCombineSingleAndMulti: (bool: boolean) => void;
-  setAllow4thAttempts: (bool: boolean) => void;
-  setInKg: (bool: boolean) => void;
-  setShowAlternateUnits: (bool: boolean) => void;
-  setFormula: (event: React.BaseSyntheticEvent) => void;
-  setAgeCoefficients: (event: React.BaseSyntheticEvent) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 interface InternalState {
   // This is a number used to derive a `key` for many widgets.
@@ -130,6 +115,27 @@ class MeetSetup extends React.Component<Props, InternalState> {
     const stringAlsoKilograms = getString("meet-setup.label-also-show-kilograms", language);
     const stringAlsoPounds = getString("meet-setup.label-also-show-pounds", language);
 
+    const setMeetName = (name: string) => dispatch(updateMeet({ name: name }));
+    const setCountry = (country: string) => dispatch(updateMeet({ country: country }));
+    const setState = (state: string) => dispatch(updateMeet({ state: state }));
+    const setCity = (city: string) => dispatch(updateMeet({ city: city }));
+    const setFederation = (fed: string) => dispatch(updateMeet({ federation: fed }));
+    const setCombineSleevesAndWraps = (bool: boolean) => dispatch(updateMeet({ combineSleevesAndWraps: bool }));
+    const setCombineSingleAndMulti = (bool: boolean) => dispatch(updateMeet({ combineSingleAndMulti: bool }));
+    const setAllow4thAttempts = (bool: boolean) => dispatch(updateMeet({ allow4thAttempts: bool }));
+    const setInKgs = (bool: boolean) => dispatch(setInKg(bool));
+    const setShowAlternateUnits = (bool: boolean) => dispatch(updateMeet({ showAlternateUnits: bool }));
+    const setFormula = (event: React.ChangeEvent<HTMLInputElement>) => {
+      assertString(event.currentTarget.value) &&
+        assertFormula(event.currentTarget.value) &&
+        dispatch(updateMeet({ formula: event.currentTarget.value }));
+    };
+    const setAgeCoefficients = (event: React.ChangeEvent<HTMLInputElement>) => {
+      assertString(event.currentTarget.value) &&
+        assertAgeCoefficients(event.currentTarget.value) &&
+        dispatch(updateMeet({ ageCoefficients: event.currentTarget.value }));
+    };
+
     return (
       <Container>
         <Row>
@@ -144,7 +150,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   placeholder={stringMeetName}
                   initialValue={this.props.meet.name}
                   validate={this.validateRequiredText}
-                  onSuccess={this.props.setMeetName}
+                  onSuccess={setMeetName}
                   keepMargin={true}
                 />
                 <ValidatedInput
@@ -152,7 +158,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   placeholder={stringFederation}
                   initialValue={this.props.meet.federation}
                   validate={this.validateRequiredText}
-                  onSuccess={this.props.setFederation}
+                  onSuccess={setFederation}
                   keepMargin={true}
                 />
                 <ValidatedInput
@@ -160,7 +166,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   placeholder={stringCountry}
                   initialValue={this.props.meet.country}
                   validate={this.validateRequiredText}
-                  onSuccess={this.props.setCountry}
+                  onSuccess={setCountry}
                   keepMargin={true}
                 />
                 <ValidatedInput
@@ -168,7 +174,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   placeholder={stringStateProvince}
                   initialValue={this.props.meet.state}
                   validate={this.validateRequiredText}
-                  onSuccess={this.props.setState}
+                  onSuccess={setState}
                   keepMargin={true}
                 />
                 <ValidatedInput
@@ -176,7 +182,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   placeholder={stringCityTown}
                   initialValue={this.props.meet.city}
                   validate={this.validateRequiredText}
-                  onSuccess={this.props.setCity}
+                  onSuccess={setCity}
                   keepMargin={true}
                 />
                 <MeetDate />
@@ -205,7 +211,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   <FormControl
                     as="select"
                     value={this.props.meet.formula}
-                    onChange={this.props.setFormula}
+                    onChange={setFormula}
                     className="custom-select"
                   >
                     <option value="AH">{stringAH}</option>
@@ -233,7 +239,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   <FormControl
                     as="select"
                     value={this.props.meet.ageCoefficients}
-                    onChange={this.props.setAgeCoefficients}
+                    onChange={setAgeCoefficients}
                     className="custom-select"
                   >
                     <option key="None" value="None">
@@ -254,7 +260,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                       />
                     }
                     value={this.props.meet.combineSleevesAndWraps}
-                    setValue={this.props.setCombineSleevesAndWraps}
+                    setValue={setCombineSleevesAndWraps}
                     yes={stringYes}
                     no={stringNo}
                   />
@@ -269,7 +275,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                       />
                     }
                     value={this.props.meet.combineSingleAndMulti}
-                    setValue={this.props.setCombineSingleAndMulti}
+                    setValue={setCombineSingleAndMulti}
                     yes={stringYes}
                     no={stringNo}
                   />
@@ -284,7 +290,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                       />
                     }
                     value={this.props.meet.allow4thAttempts}
-                    setValue={this.props.setAllow4thAttempts}
+                    setValue={setAllow4thAttempts}
                     yes={stringYes}
                     no={stringNo}
                   />
@@ -308,7 +314,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                       />
                     }
                     value={this.props.meet.inKg}
-                    setValue={this.props.setInKg}
+                    setValue={setInKgs}
                     yes={stringKilograms}
                     no={stringPounds}
                   />
@@ -318,7 +324,7 @@ class MeetSetup extends React.Component<Props, InternalState> {
                   <YesNoButton
                     label={this.props.meet.inKg ? stringAlsoPounds : stringAlsoKilograms}
                     value={this.props.meet.showAlternateUnits}
-                    setValue={this.props.setShowAlternateUnits}
+                    setValue={setShowAlternateUnits}
                     yes={stringYes}
                     no={stringNo}
                   />
@@ -342,25 +348,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  setMeetName: (name: string) => dispatch(updateMeet({ name: name })),
-  setCountry: (country: string) => dispatch(updateMeet({ country: country })),
-  setState: (state: string) => dispatch(updateMeet({ state: state })),
-  setCity: (city: string) => dispatch(updateMeet({ city: city })),
-  setFederation: (fed: string) => dispatch(updateMeet({ federation: fed })),
-  setCombineSleevesAndWraps: (bool) => dispatch(updateMeet({ combineSleevesAndWraps: bool })),
-  setCombineSingleAndMulti: (bool) => dispatch(updateMeet({ combineSingleAndMulti: bool })),
-  setAllow4thAttempts: (bool) => dispatch(updateMeet({ allow4thAttempts: bool })),
-  setInKg: (bool) => dispatch(setInKg(bool)),
-  setShowAlternateUnits: (bool) => dispatch(updateMeet({ showAlternateUnits: bool })),
-  setFormula: (event) =>
-    assertString(event.currentTarget.value) &&
-    assertFormula(event.currentTarget.value) &&
-    dispatch(updateMeet({ formula: event.currentTarget.value })),
-  setAgeCoefficients: (event) =>
-    assertString(event.currentTarget.value) &&
-    assertAgeCoefficients(event.currentTarget.value) &&
-    dispatch(updateMeet({ ageCoefficients: event.currentTarget.value })),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeetSetup);
+export default connect(mapStateToProps)(MeetSetup);

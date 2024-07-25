@@ -26,9 +26,8 @@ import { kg2lbs, lbs2kg } from "../../logic/units";
 import { Language, Lift, Validation } from "../../types/dataTypes";
 import { GlobalState } from "../../types/stateTypes";
 import { checkExhausted } from "../../types/utils";
-import { Dispatch } from "redux";
-import { SetBarAndCollarsWeightKgAction } from "../../types/actionTypes";
 import NumberInput from "../common/NumberInput";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 interface OwnProps {
   lift: Lift;
@@ -42,11 +41,7 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  setBarAndCollarsWeightKg: (lift: Lift, weight: number) => SetBarAndCollarsWeightKgAction;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StateProps;
 
 interface InternalState {
   initialValue: number;
@@ -65,6 +60,10 @@ class BarAndCollarsWeightKg extends React.Component<Props, InternalState> {
       initialValue: this.props.inKg ? weight : kg2lbs(weight),
     };
   }
+
+  setBarAndCollarsWeightKg = (lift: Lift, weight: number) => {
+    rpcDispatch(setBarAndCollarsWeightKg(lift, weight));
+  };
 
   getInitialBarAndCollarsWeightKg = (lift: Lift): number => {
     switch (lift) {
@@ -91,7 +90,7 @@ class BarAndCollarsWeightKg extends React.Component<Props, InternalState> {
   handleChange = (n: number) => {
     if (this.validate(n) === "success") {
       const weight = this.props.inKg ? n : lbs2kg(n);
-      this.props.setBarAndCollarsWeightKg(this.props.lift, weight);
+      this.setBarAndCollarsWeightKg(this.props.lift, weight);
     }
   };
 
@@ -142,10 +141,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setBarAndCollarsWeightKg: (lift: Lift, weightKg: number) => dispatch(setBarAndCollarsWeightKg(lift, weightKg)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BarAndCollarsWeightKg);
+export default connect(mapStateToProps)(BarAndCollarsWeightKg);

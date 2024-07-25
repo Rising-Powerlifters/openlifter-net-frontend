@@ -203,3 +203,11 @@ export interface SetTableInfoAction {
   readonly type: "SET_TABLE_INFO";
   readonly changes: Partial<LiftingState>;
 }
+
+export type LiftingAction =
+  | EnterAttemptAction
+  | MarkLiftAction
+  | SetLiftingGroupAction
+  | OverrideAttemptAction
+  | OverrideEntryIdAction
+  | SetTableInfoAction;

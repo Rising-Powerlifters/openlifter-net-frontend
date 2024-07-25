@@ -1,10 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "plugins": ["react", "prettier", "@typescript-eslint"],
   "parserOptions": {
     "sourceType": "module",
@@ -27,11 +23,14 @@
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-this-alias": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-unused-vars": ["error", {
-      "vars": "all",
-      "args": "after-used",
-      "ignoreRestSiblings": false
-    }],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false
+      }
+    ],
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/ban-types": [
       "error",

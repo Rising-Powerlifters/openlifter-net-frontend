@@ -8,32 +8,32 @@ Please also add yourself to the in-program credits in `src/containers/AboutConta
 
 ## Maintainers
 
-* Sean Stangl ([GitHub](https://github.com/sstangl/), [GitLab](https://gitlab.com/sstangl))
-* Mike Vessia ([GitLab](https://gitlab.com/michaelvessia))
+- Sean Stangl ([GitHub](https://github.com/sstangl/), [GitLab](https://gitlab.com/sstangl))
+- Mike Vessia ([GitLab](https://gitlab.com/michaelvessia))
 
 ## Contributors
 
-* Irene Aguilar
-* Baptiste Appel
-* Baptiste Marchais
-* Romina Basting
-* Mike Beelen
-* Jerônimo Cavalcante
-* Arman Danielyan
-* Tommy DeFea
-* Alper Dokucu
-* Delaney Fish
-* Jared Klopper
-* Boris Lerner
-* Kai Ma
-* Rodney Marsh
-* Giulio Maschi
-* Trystan Oakley
-* Matt Pearce
-* David Sacras
-* Alan Sambol
-* Milena Schaefer
-* Vitaliy Shvarz
-* Andrius Virbičianskas
-* Sarah Wellberg
-* Jo Whiteley
+- Irene Aguilar
+- Baptiste Appel
+- Baptiste Marchais
+- Romina Basting
+- Mike Beelen
+- Jerônimo Cavalcante
+- Arman Danielyan
+- Tommy DeFea
+- Alper Dokucu
+- Delaney Fish
+- Jared Klopper
+- Boris Lerner
+- Kai Ma
+- Rodney Marsh
+- Giulio Maschi
+- Trystan Oakley
+- Matt Pearce
+- David Sacras
+- Alan Sambol
+- Milena Schaefer
+- Vitaliy Shvarz
+- Andrius Virbičianskas
+- Sarah Wellberg
+- Jo Whiteley

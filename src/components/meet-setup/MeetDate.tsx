@@ -32,7 +32,6 @@ import { iso8601ToLocalDate, localDateToIso8601 } from "../../logic/date";
 
 import { GlobalState } from "../../types/stateTypes";
 import { Language } from "../../types/dataTypes";
-import { Dispatch } from "redux";
 
 // The react-datepicker gets locale information from the "date-fns" package.
 // In order for it to understand what our Languages are, we have to register
@@ -52,6 +51,7 @@ import ru from "date-fns/locale/ru";
 import tr from "date-fns/locale/tr";
 import uk from "date-fns/locale/uk";
 import zh_CN from "date-fns/locale/zh-CN";
+import rpcDispatch from "../../rpc/rpcDispatch";
 
 // Register the date-fns/locales with the DatePicker.
 registerLocale("de", de);
@@ -75,13 +75,13 @@ interface StateProps {
   language: Language;
 }
 
-interface DispatchProps {
-  setMeetDate: (date: Date) => void;
-}
-
-type Props = StateProps & DispatchProps;
+type Props = StateProps;
 
 class MeetDate extends React.Component<Props> {
+  setMeetDate = (date: Date) => {
+    rpcDispatch(setMeetDate(localDateToIso8601(date)));
+  };
+
   render() {
     // The DatePicker manipulates a Date object in local time.
     const initialDate: Date = iso8601ToLocalDate(this.props.date);
@@ -95,7 +95,7 @@ class MeetDate extends React.Component<Props> {
           <DatePicker
             dateFormat="yyyy-MM-dd"
             selected={initialDate}
-            onChange={this.props.setMeetDate}
+            onChange={this.setMeetDate}
             inline
             locale={this.props.language}
           />
@@ -110,12 +110,4 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   language: state.language,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    setMeetDate: (date) => {
-      dispatch(setMeetDate(localDateToIso8601(date)));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeetDate);
+export default connect(mapStateToProps)(MeetDate);
