@@ -4,7 +4,7 @@ import {
   OverwriteStoreAction,
   RegistrationAction
 } from '../types/actionTypes'
-import rpc from './rpc'
+import { RPC } from './rpc'
 
 type Action = MeetSetupAction | OverwriteStoreAction | RegistrationAction | LiftingAction
 
@@ -21,7 +21,12 @@ function actionToRpcCall(action: Action): RpcCall {
   }
 }
 
+const rpc = new RPC()
+
 export default function (action: Action) {
   const rpcCall = actionToRpcCall(action)
-  rpc.client.request(rpcCall.method, rpcCall.params).then((result) => console.log(result))
+  rpc
+    .client()
+    .request(rpcCall.method, rpcCall.params)
+    .then((result) => console.log(result))
 }

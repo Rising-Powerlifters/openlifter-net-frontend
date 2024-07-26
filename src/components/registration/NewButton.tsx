@@ -28,7 +28,7 @@ import { newRegistration } from '../../actions/registrationActions'
 import { Entry } from '../../types/dataTypes'
 import rpcDispatch from '../../rpc/rpcDispatch'
 
-type Props = never
+type Props = Record<string, never>
 
 class NewButton extends React.Component {
   constructor(props: Props) {
@@ -46,7 +46,7 @@ class NewButton extends React.Component {
 
   render() {
     return (
-      <Button onClick={this.handleClick} variant="primary" size="lg" block>
+      <Button onClick={this.handleClick} variant="primary" size="lg">
         <FormattedMessage id="registration.button-new-lifter" defaultMessage="New Lifter" />
       </Button>
     )

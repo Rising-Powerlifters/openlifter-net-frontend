@@ -122,10 +122,10 @@ class NumberInput extends React.Component<Props, InternalState> {
     const validation: Validation = this.props.validate(string2number(this.state.value))
 
     return (
-      <Form.Group style={{ marginBottom: `${this.props.marginBottom || undefined}` }}>
-        {this.props.label && <Form.Label>{this.props.label}</Form.Label>}
-        <InputGroup>
-          <InputGroup.Prepend>
+      <Form>
+        <Form.Group style={{ marginBottom: `${this.props.marginBottom || undefined}` }}>
+          {this.props.label && <Form.Label>{this.props.label}</Form.Label>}
+          <InputGroup>
             <Button
               variant="outline-secondary"
               style={{ borderRight: '0px' }}
@@ -133,16 +133,14 @@ class NumberInput extends React.Component<Props, InternalState> {
             >
               <FontAwesomeIcon icon={faMinus} />
             </Button>
-          </InputGroup.Prepend>
-          <Form.Control
-            value={this.state.value}
-            onChange={this.handleChange}
-            onBlur={this.handleBlur}
-            isValid={validation === 'success'}
-            isInvalid={validation === 'error'}
-            className={validation === 'warning' ? 'is-warning' : undefined}
-          />
-          <InputGroup.Append>
+            <Form.Control
+              value={this.state.value}
+              onChange={this.handleChange}
+              onBlur={this.handleBlur}
+              isValid={validation === 'success'}
+              isInvalid={validation === 'error'}
+              className={validation === 'warning' ? 'is-warning' : undefined}
+            />
             <Button
               variant="outline-secondary"
               style={{ borderLeft: '0px' }}
@@ -150,9 +148,9 @@ class NumberInput extends React.Component<Props, InternalState> {
             >
               <FontAwesomeIcon icon={faPlus} />
             </Button>
-          </InputGroup.Append>
-        </InputGroup>
-      </Form.Group>
+          </InputGroup>
+        </Form.Group>
+      </Form>
     )
   }
 }

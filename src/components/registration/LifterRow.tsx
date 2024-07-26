@@ -659,9 +659,7 @@ class LifterRow extends React.Component<Props, InternalState> {
                     />
                   </Form.Label>
                   <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>@</InputGroup.Text>
-                    </InputGroup.Prepend>
+                    <InputGroup.Text>@</InputGroup.Text>
                     <Form.Control
                       type="text"
                       placeholder=""

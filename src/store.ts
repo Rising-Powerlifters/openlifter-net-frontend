@@ -16,32 +16,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { createStore, applyMiddleware } from 'redux'
-import { persistStore, persistReducer } from 'redux-persist'
-import { composeWithDevTools } from 'redux-devtools-extension'
-import storage from 'redux-persist/lib/storage'
-
-import thunk from 'redux-thunk'
 import rootReducer from './reducers/rootReducer'
+import { configureStore } from '@reduxjs/toolkit'
 
-import { GlobalState } from './types/stateTypes'
-import { getDefaultLanguage } from './logic/strings'
-
-const persistConfig = {
-  key: 'root',
-  storage
-}
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-
-function configureStore(initialState: Partial<GlobalState> = {}) {
-  const store = createStore(
-    persistedReducer,
-    initialState,
-    composeWithDevTools(applyMiddleware(thunk))
-  )
-  const persistor = persistStore(store)
-  return { store, persistor }
-}
-
-export const { store, persistor } = configureStore({ language: getDefaultLanguage() })
+export const store = configureStore({ reducer: rootReducer })
