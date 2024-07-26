@@ -170,7 +170,7 @@ class HomeContainer extends React.Component<Props, InternalState> {
     }
     return (
       <LinkContainer to="/meet-setup">
-        <Button variant="primary" style={buttonMargin}>
+        <Button block variant="primary" style={buttonMargin}>
           <FormattedMessage
             id="home.button-continue"
             defaultMessage="Continue {meetName}"
@@ -183,7 +183,7 @@ class HomeContainer extends React.Component<Props, InternalState> {
 
   render() {
     let newMeetButton = (
-      <Button variant="primary" onClick={this.handleNewClick} style={buttonMargin}>
+      <Button block variant="primary" onClick={this.handleNewClick} style={buttonMargin}>
         <FormattedMessage id="home.button-new-meet" defaultMessage="New Meet" />
       </Button>
     )
@@ -259,13 +259,13 @@ class HomeContainer extends React.Component<Props, InternalState> {
                 <div>
                   {newMeetButton}
 
-                  <Button variant="warning" onClick={this.handleLoadClick} style={buttonMargin}>
+                  <Button block variant="warning" onClick={this.handleLoadClick} style={buttonMargin}>
                     <FormattedMessage
                       id="home.button-load-from-file"
                       defaultMessage="Load from File"
                     />
                   </Button>
-                  <Button variant="success" onClick={this.handleSaveClick} style={buttonMargin}>
+                  <Button block variant="success" onClick={this.handleSaveClick} style={buttonMargin}>
                     <FormattedMessage id="home.button-save-tofile" defaultMessage="Save to File" />
                   </Button>
                 </div>
