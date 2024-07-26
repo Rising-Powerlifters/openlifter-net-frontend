@@ -70,6 +70,11 @@ const Navigation = () => {
               <FormattedMessage id="nav.lifting" defaultMessage="Lifting" />
             </Nav.Link>
           </LinkContainer>
+          <LinkContainer to="/platform">
+            <Nav.Link>
+              <FormattedMessage id="nav.platform" defaultMessage="Platform" />
+            </Nav.Link>
+          </LinkContainer>
           <LinkContainer to="/results">
             <Nav.Link>
               <FormattedMessage id="nav.results" defaultMessage="Results" />

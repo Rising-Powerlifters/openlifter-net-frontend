@@ -33,6 +33,7 @@ import DebugContainer from './containers/DebugContainer'
 import AboutContainer from './containers/AboutContainer'
 import Navigation from './components/Navigation'
 import { store } from './store'
+import PlatformContainer from './containers/PlatformContainer'
 
 class App extends React.Component {
   render() {
@@ -56,6 +57,7 @@ class App extends React.Component {
                 <Route path="/weigh-ins" element={<WeighinsContainer />} />
                 <Route path="/flight-order" element={<FlightOrderContainer />} />
                 <Route path="/lifting" element={<LiftingContainer />} />
+                <Route path="/platform" element={<PlatformContainer />} />
                 <Route path="/results" element={<ResultsContainer />} />
                 <Route path="/debug" element={<DebugContainer />} />
                 <Route path="/about" element={<AboutContainer />} />

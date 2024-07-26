@@ -29,6 +29,7 @@ import { displayWeight } from './units'
 
 // Fetches a simple string from the translations store. No formatting is performed.
 export const getString = (id: TranslationId, lang: Language): string => {
+  // @ts-expect-error idk, localization
   return translations[lang][id]
 }
 

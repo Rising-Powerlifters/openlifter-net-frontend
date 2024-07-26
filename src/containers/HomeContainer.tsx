@@ -259,13 +259,23 @@ class HomeContainer extends React.Component<Props, InternalState> {
                 <div>
                   {newMeetButton}
 
-                  <Button block variant="warning" onClick={this.handleLoadClick} style={buttonMargin}>
+                  <Button
+                    block
+                    variant="warning"
+                    onClick={this.handleLoadClick}
+                    style={buttonMargin}
+                  >
                     <FormattedMessage
                       id="home.button-load-from-file"
                       defaultMessage="Load from File"
                     />
                   </Button>
-                  <Button block variant="success" onClick={this.handleSaveClick} style={buttonMargin}>
+                  <Button
+                    block
+                    variant="success"
+                    onClick={this.handleSaveClick}
+                    style={buttonMargin}
+                  >
                     <FormattedMessage id="home.button-save-tofile" defaultMessage="Save to File" />
                   </Button>
                 </div>

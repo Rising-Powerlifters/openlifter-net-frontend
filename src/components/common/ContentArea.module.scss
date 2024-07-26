@@ -30,3 +30,8 @@ $horizontal-margin: 20px;
 div.contentArea {
   margin: $vertical-margin $horizontal-margin $vertical-margin $horizontal-margin;
 }
+
+div.contentAreaFull {
+  margin: $vertical-margin $horizontal-margin $vertical-margin $horizontal-margin;
+  height: 90vh;
+}
