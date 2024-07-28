@@ -33,7 +33,7 @@ import { setTableInfo } from '../../actions/liftingActions'
 import { Validation } from '../../types/dataTypes'
 import { GlobalState, LiftingState } from '../../types/stateTypes'
 import { isNumber, isString } from '../../types/utils'
-import rpcDispatch from '../../rpc/rpcDispatch'
+import { Dispatch } from 'redux'
 
 type WidthFields = 'columnDivisionWidthPx'
 
@@ -46,7 +46,12 @@ interface StateProps {
   lifting: LiftingState
 }
 
-type Props = OwnProps & StateProps
+interface DispatchProps {
+  setTableInfo: (changes: Partial<LiftingState>) => void
+}
+
+
+type Props = OwnProps & StateProps & DispatchProps
 
 interface InternalState {
   value: number | string
@@ -65,10 +70,6 @@ class ColumnWidth extends React.Component<Props, InternalState> {
     this.state = {
       value: Math.ceil(this.props.lifting[this.props.fieldName] / MULTIPLE)
     }
-  }
-
-  setTableInfo = (changes: Partial<LiftingState>) => {
-    rpcDispatch(setTableInfo(changes))
   }
 
   validate = (): Validation => {
@@ -94,7 +95,7 @@ class ColumnWidth extends React.Component<Props, InternalState> {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const changes: any = {}
         changes[this.props.fieldName] = Math.floor(Number(value) * MULTIPLE)
-        this.setTableInfo(changes)
+        this.props.setTableInfo(changes)
       }
     })
   }
@@ -125,4 +126,15 @@ const mapStateToProps = (state: GlobalState): StateProps => ({
   lifting: state.lifting
 })
 
-export default connect(mapStateToProps)(ColumnWidth)
+/*
+ * This dispatch only changes LiftingState.columnDivisionWidthPx,
+ * which is purely local. No changes on the remote state are made here.
+ * TODO this gets overwritten by server-side state update.
+ */
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    setTableInfo: (changes: Partial<LiftingState>) => dispatch(setTableInfo(changes))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ColumnWidth)

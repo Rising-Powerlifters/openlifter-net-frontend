@@ -74,6 +74,7 @@ export type LiftingState = {
   readonly lift: Lift
   readonly overrideAttempt: number | null
   readonly overrideEntryId: number | null
+  // TODO this gets overwritten by server side state update
   readonly columnDivisionWidthPx: number
 }
 

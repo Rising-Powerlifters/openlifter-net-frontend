@@ -71,8 +71,11 @@ div.loadingBar {
   color: $color-dark;
   background: $color-light;
 
+  min-height: 45rem;
+  min-width: 45rem;
+
   border-radius: $border-rounding;
-  border: solid 2px black;
+  border: solid 1px black;
   width: 45%;
 }
 
